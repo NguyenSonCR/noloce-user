@@ -1,5 +1,1 @@
-function Music() {
-    return <div>Music page</div>;
-}
-
-export default Music;
+export { default } from './Music';
