@@ -1,19 +1,11 @@
-
 // menu
 .menu-list {
-    width: 130px;
+    width: 224px;
     .menu-item {
         margin-left: 0;
     }
     display: flex;
     align-items: center;
-}
-
-@media (min-width: 740px) {
-    .menu-list {
-        width: 224px;
-    }
-    
 }
 
 .menu-item {
@@ -28,7 +20,7 @@
     line-height: 1.8rem;
 
     &.separate {
-        border-top: 1px solid rgba(22, 24, 35, 0.12)
+        border-top: 1px solid rgba(22, 24, 35, 0.12);
     }
 }
 .menu-popper {
@@ -54,8 +46,8 @@
 }
 
 .header-title {
-    position:absolute;
+    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,  -50%);
+    transform: translate(-50%, -50%);
 }

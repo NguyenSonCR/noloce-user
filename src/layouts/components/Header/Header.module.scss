@@ -19,7 +19,7 @@
     width: 200px;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -48,7 +48,7 @@
 
 .action {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     height: 100%;
     width: 200px;

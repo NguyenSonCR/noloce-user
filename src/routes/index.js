@@ -8,7 +8,7 @@ import { HeaderOnly } from '~/layouts';
 const publicRoutes = [
     { path: config.routes.home, component: Home },
     { path: config.routes.music, component: Music },
-    { path: config.routes.cinema, component: Cinema, layout: null },
+    { path: config.routes.cinema, component: Cinema },
     { path: config.routes.search, component: Search, layout: HeaderOnly },
 ];
 

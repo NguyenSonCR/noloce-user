@@ -3,12 +3,31 @@ import { Link } from 'react-router-dom';
 import styles from './Header.module.scss';
 import images from '~/assets/img';
 import config from '~/config';
-import Tippy from '@tippyjs/react/headless';
 import Search from '../Search';
-import { Wrapper } from '~/components/Popper';
+import Menu from '~/components/Popper/Menu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faSignOut, faStore } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 function Header() {
+    const userMenu = [
+        {
+            icon: <FontAwesomeIcon icon={faUser} />,
+            title: 'Tài khoản',
+            to: config.routes.profile,
+        },
+        {
+            icon: <FontAwesomeIcon icon={faStore} />,
+            title: 'Đơn hàng',
+            to: config.routes.purchase,
+        },
+        {
+            icon: <FontAwesomeIcon icon={faSignOut} />,
+            title: 'Đăng xuất',
+            separate: true,
+        },
+    ];
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx(['grid', 'wide'])}>
@@ -28,25 +47,12 @@ function Header() {
                             </div>
                             <div className={cx('action')}>
                                 <div className={cx('notify')}></div>
-                                <Tippy
-                                    delay={400}
-                                    interactive={true}
-                                    hideOnClick={false}
-                                    offset={[0, 0]}
-                                    placement={'top-end'}
-                                    render={(attrs) => (
-                                        <div className={cx('user-wrapper')} tabIndex="-1" {...attrs}>
-                                            <Wrapper>
-                                                <p>Content</p>
-                                            </Wrapper>
-                                        </div>
-                                    )}
-                                >
+                                <Menu items={userMenu}>
                                     <div className={cx('user')}>
                                         <img src={images.avatar} alt="user" className={cx('user-img')}></img>
-                                        <span className={cx('user-name')}>Son nguyen</span>
+                                        <span className={cx('user-name')}>Sơn nguyễn</span>
                                     </div>
-                                </Tippy>
+                                </Menu>
                             </div>
                         </div>
                     </div>

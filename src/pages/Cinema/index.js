@@ -1,5 +1,1 @@
-function Cinema() {
-    return <div>Cinema page</div>;
-}
-
-export default Cinema;
+export { default } from './Cinema';
