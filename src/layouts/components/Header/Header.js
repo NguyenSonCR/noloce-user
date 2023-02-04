@@ -35,7 +35,7 @@ function Header() {
                     <div className={cx(['col', 'l-12'])}>
                         <div className={cx('header')}>
                             <div className={cx('logo')}>
-                                <Link className={cx('logo-link')}>
+                                <Link className={cx('logo-link')} to={config.routes.home}>
                                     <img src={images.logo} alt="logo" className={cx('logo-img')}></img>
                                 </Link>
                                 <Link to={config.routes.home} className={cx('logo-text')}>

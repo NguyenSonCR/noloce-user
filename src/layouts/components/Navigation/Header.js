@@ -1,19 +1,20 @@
 import classNames from 'classnames/bind';
 import styles from './Navigation.module.scss';
 import PropTypes from 'prop-types';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import images from '~/assets/img';
 
 const cx = classNames.bind(styles);
 
-function Header({ title, onBack }) {
+function Header({ title, onBack, to }) {
     return (
         <header className={cx('header')}>
             <div className={cx('back-btn')} onClick={onBack}>
-                <FontAwesomeIcon icon={faChevronLeft}></FontAwesomeIcon>
+                <img src={images.back} alt="" className={cx('header-img')}></img>
             </div>
-            <h4 className={cx('header-title')}>{title}</h4>
+            <Link to={to} className={cx('header-title')}>
+                {title}
+            </Link>
         </header>
     );
 }

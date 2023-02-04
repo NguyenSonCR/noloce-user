@@ -1,5 +1,6 @@
 .wrapper {
     position: fixed;
+    z-index: 10;
     left: 0;
     right: 0;
     bottom: 0;
@@ -9,6 +10,33 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
+}
+
+@keyframes fadeIn {
+    from {
+        top: 400px;
+        bottom: -400px;
+    }
+    to {
+        top: 60px;
+        bottom: 0;
+    }
+}
+.page_lyrics {
+    position: fixed;
+    z-index: 10;
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px 16px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 60px;
+    animation-name: fadeIn;
+    animation-duration: 0.8s;
 }
 
 .info {
@@ -53,6 +81,15 @@
     flex-direction: column;
 }
 
+.page_lyrics-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 90px;
+    width: 500px;
+}
+
 .button {
     display: flex;
     justify-content: center;
@@ -66,10 +103,16 @@
     justify-content: center;
     align-items: center;
     border-radius: 99px;
+    color: var(--text-color);
+    cursor: pointer;
     margin: 0 4px;
     &:hover {
         background-color: rgb(241, 239, 246);
     }
+}
+
+.button-list.active .button-icon {
+    color: var(--primary-color);
 }
 
 .button-list-play,
@@ -156,4 +199,62 @@
     &:hover {
         background-color: rgb(241, 239, 246);
     }
+}
+
+// lyrics
+
+.lyrics {
+    height: 100%;
+    width: 100%;
+}
+
+.lyrics-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lyrics-logo {
+    flex: 1;
+}
+
+.lyrics-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.lyrics-title p {
+    color: var(--white-color);
+    font-weight: 400;
+    font-size: 1.6rem;
+    flex: 1;
+    border-radius: 99px;
+    background-color: rgb(177, 165, 230);
+    padding: 0 24px;
+    cursor: pointer;
+}
+
+.lyrics-icon {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.lyrics-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.lyrics-content-img {
+    flex: 1;
+    padding: 24px;
+}
+
+.lyrics-content-text {
+    flex: 2;
+    padding: 24px;
+    overflow: auto;
 }

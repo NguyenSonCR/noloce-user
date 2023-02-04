@@ -1,16 +1,11 @@
-import styles from './Music.module.scss';
+import styles from './MyMusic.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SongItem from '~/layouts/components/SongItem';
-import Audio from '~/layouts/components/Audio';
-import songs from '~/assets/songs';
-import { useRef } from 'react';
 
 const cx = classNames.bind(styles);
-function Music() {
-    const audio = useRef();
-    console.log(audio);
+function MyMusic() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('playlist')}>
@@ -35,18 +30,10 @@ function Music() {
                         </div>
                     </div>
                     <SongItem />
-                    <SongItem />
-                    <SongItem />
-                    <SongItem />
-                    <SongItem />
                 </ul>
             </div>
-            <audio ref={audio}>
-                <source src={songs.song1} type="audio/ogg" />
-            </audio>
-            <Audio />
         </div>
     );
 }
 
-export default Music;
+export default MyMusic;

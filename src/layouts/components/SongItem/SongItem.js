@@ -5,10 +5,15 @@ import { faMusic, faMicrophone, faHeart, faEllipsis } from '@fortawesome/free-so
 import { useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import { useDispatch } from 'react-redux';
+import { loadSong } from '~/slices/songSlice';
+import songs from '~/assets/songs';
 
 const cx = classNames.bind(styles);
 
 function SongItem() {
+    const dispatch = useDispatch();
+
     const [hover, setHover] = useState(false);
     const [choose, setChoose] = useState(false);
     const handleHover = () => {
@@ -31,8 +36,27 @@ function SongItem() {
         }
     };
 
+    const handleSelectSong = () => {
+        dispatch(
+            loadSong({
+                songId: 1,
+                name: 'Đêm trăng tình yêu',
+                author: 'Hải Băng',
+                url: songs.song1,
+                duration: '04:37',
+                album: 'Tình yêu',
+                img: 'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_webp/covers/6/2/62df066e6f9196dbeedadd35931b88ae_1382408334.jpg',
+            }),
+        );
+    };
+
     return (
-        <div className={cx('wrapper', hover && 'hover')} onMouseOver={handleHover} onMouseLeave={handleLeave}>
+        <div
+            className={cx('wrapper', hover && 'hover')}
+            onMouseOver={handleHover}
+            onMouseLeave={handleLeave}
+            onClick={handleSelectSong}
+        >
             <div className={cx('song')}>
                 {!hover ? (
                     <FontAwesomeIcon className={cx('icon')} icon={faMusic} />
@@ -43,16 +67,16 @@ function SongItem() {
                     <img
                         className={cx('img')}
                         alt=""
-                        src="https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_webp/cover/d/f/9/b/df9b187a2b0e565ebe5b6bd60bdef622.jpg"
+                        src="https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_webp/covers/6/2/62df066e6f9196dbeedadd35931b88ae_1382408334.jpg"
                     ></img>
                     <div className={cx('info-list')}>
-                        <p className={cx('name')}>Tòng phu</p>
-                        <p className={cx('author')}>Keyo</p>
+                        <p className={cx('name')}>Đêm trăng tình yêu</p>
+                        <p className={cx('author')}>Hải Băng</p>
                     </div>
                 </div>
             </div>
             <div className={cx('album')}>
-                <p>Tòng phu (Single)</p>
+                <p> Tình yêu </p>
                 {hover ? (
                     <div className={cx('action')}>
                         <Tippy content="Phát cùng lời bài hát">
@@ -72,7 +96,7 @@ function SongItem() {
                         </Tippy>
                     </div>
                 ) : (
-                    <p>04:55</p>
+                    <p>04:37</p>
                 )}
             </div>
         </div>

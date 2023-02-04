@@ -1,51 +1,60 @@
 import classNames from 'classnames/bind';
 import styles from './Navigation.module.scss';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignsPost, faStore } from '@fortawesome/free-solid-svg-icons';
 import config from '~/config';
 import { useState } from 'react';
 import NavItem from './NavItem';
 import Header from './Header';
+import { ReactComponent as IconMusic } from '~/assets/icon/icons8-music.svg';
+import { ReactComponent as IconKinds } from '~/assets/icon/kinds.svg';
+import images from '~/assets/img';
 
 const cx = classNames.bind(styles);
 
 function Navigation() {
     const NAV_MENU = [
         {
-            icon: <FontAwesomeIcon icon={faStore} />,
+            icon: <IconMusic />,
             title: 'Music',
             code: 'music',
             to: config.routes.music,
             children: {
                 title: 'Music',
+                to: config.routes.music,
                 data: [
                     {
+                        icon: <img src={images.musicUser} alt=""></img>,
                         title: 'Cá nhân',
                         code: '',
+                        to: config.routes.myMusic,
                     },
                     {
-                        title: 'Mới nhất',
+                        icon: <img src={images.cd} alt=""></img>,
+                        title: 'Khám phá',
                         code: '',
+                        to: config.routes.music,
                     },
                     {
+                        icon: <img src={images.star} alt=""></img>,
                         title: 'Top 100',
                         code: '',
                     },
                     {
+                        icon: <IconKinds />,
                         title: 'Thể loại',
                         code: '',
+                        to: config.routes.kindMusic,
                     },
                 ],
             },
         },
         {
-            icon: <FontAwesomeIcon icon={faSignsPost} />,
+            icon: <img src={images.cenima} alt=""></img>,
             code: 'cinema',
             title: 'Cinema',
             to: config.routes.cinema,
         },
         {
-            icon: <FontAwesomeIcon icon={faBars} />,
+            icon: <img src={images.website} alt="" />,
             code: 'website',
             title: 'Website',
             children: {
@@ -63,6 +72,7 @@ function Navigation() {
     const [history, setHistory] = useState([{ data: NAV_MENU }]);
 
     const current = history[history.length - 1];
+
     const renderItems = () => {
         return (
             current.data &&
@@ -75,7 +85,6 @@ function Navigation() {
                         onClick={() => {
                             if (isParent) {
                                 setHistory((prev) => [...prev, item.children]);
-                            } else {
                             }
                         }}
                     />
@@ -89,6 +98,7 @@ function Navigation() {
             {history.length > 1 && (
                 <Header
                     title={current.title}
+                    to={current.to}
                     onBack={() => {
                         setHistory((prev) => prev.slice(0, prev.length - 1));
                     }}

@@ -1,5 +1,5 @@
 function Cinema() {
-    return <div></div>;
+    return <div>Cenima</div>;
 }
 
 export default Cinema;

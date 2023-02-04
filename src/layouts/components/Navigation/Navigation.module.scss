@@ -36,14 +36,26 @@
 .icon {
     width: 30px;
     padding-left: 12px;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
     text-align: center;
+    align-items: center;
+}
+
+.icon img {
+    width: 16px;
+    object-fit: contain;
+}
+
+.icon svg {
+    width: 16px;
 }
 
 .text {
     padding: 8px 8px;
     background-color: transparent;
     font-size: 1.4rem;
+    width: 100%;
 }
 // menu header
 .header {
@@ -55,7 +67,7 @@
 }
 .back-btn {
     background-color: transparent;
-    padding: 8px;
+    padding: 8px 16px;
     color: var(--text-color);
     font-size: 1.4rem;
     font-weight: 300;
@@ -63,11 +75,20 @@
     &:hover {
         background-color: rgba(22, 24, 35, 0.03);
     }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.header-img {
+    width: 16px;
 }
 
 .header-title {
     font-weight: 400;
     font-size: 1.6rem;
+    width: 100%;
 }
 
 body .navigation {

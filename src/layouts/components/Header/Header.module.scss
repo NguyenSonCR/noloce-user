@@ -6,6 +6,8 @@
     width: 100%;
     justify-content: center;
     top: 0;
+    z-index: 99;
+    background-color: var(--white-color);
 }
 
 .header {
