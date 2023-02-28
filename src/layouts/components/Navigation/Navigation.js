@@ -11,6 +11,7 @@ import images from '~/assets/img';
 const cx = classNames.bind(styles);
 
 function Navigation() {
+    const [navItem, setNavItem] = useState('home');
     const NAV_MENU = [
         {
             icon: <IconMusic />,
@@ -24,25 +25,26 @@ function Navigation() {
                     {
                         icon: <img src={images.musicUser} alt=""></img>,
                         title: 'Cá nhân',
-                        code: '',
+                        code: 'mymusic',
                         to: config.routes.myMusic,
                     },
                     {
                         icon: <img src={images.cd} alt=""></img>,
                         title: 'Khám phá',
-                        code: '',
+                        code: 'home',
                         to: config.routes.music,
                     },
                     {
                         icon: <img src={images.star} alt=""></img>,
                         title: 'Top 100',
-                        code: '',
+                        code: 'top',
+                        to: config.routes.top100,
                     },
                     {
                         icon: <IconKinds />,
                         title: 'Thể loại',
-                        code: '',
-                        to: config.routes.kindMusic,
+                        code: 'genres',
+                        to: config.routes.genresMusic,
                     },
                 ],
             },
@@ -57,12 +59,30 @@ function Navigation() {
             icon: <img src={images.website} alt="" />,
             code: 'website',
             title: 'Website',
+            to: config.routes.website,
             children: {
+                to: config.routes.website,
                 title: 'Website',
                 data: [
                     {
-                        title: 'React',
-                        code: 'react',
+                        title: 'Website bán hàng',
+                        code: 'economic',
+                        to: config.routes.economic,
+                    },
+                    {
+                        title: 'Website giới thiệu',
+                        code: 'economic',
+                        to: config.routes.economic,
+                    },
+                    {
+                        title: 'Website âm nhạc',
+                        code: 'economic',
+                        to: config.routes.economic,
+                    },
+                    {
+                        title: 'Website nhà hàng',
+                        code: 'economic',
+                        to: config.routes.economic,
                     },
                 ],
             },
@@ -82,9 +102,12 @@ function Navigation() {
                     <NavItem
                         key={index}
                         data={item}
+                        navItem={navItem}
                         onClick={() => {
                             if (isParent) {
                                 setHistory((prev) => [...prev, item.children]);
+                            } else {
+                                setNavItem(item.code);
                             }
                         }}
                     />

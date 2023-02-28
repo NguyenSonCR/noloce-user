@@ -82,3 +82,35 @@
     max-width: 120px;
     display: block;
 }
+
+// login
+.authentication {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.authentication a {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text-color);
+    &:hover {
+        color: var(--primary-color);
+    }
+    cursor: pointer;
+    padding: 4px 10px;
+}
+
+.register {
+    position: relative;
+}
+
+.register::before {
+    position: absolute;
+    content: '';
+    height: 60%;
+    border-right: 1px solid var(--border-color);
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}

@@ -1,0 +1,51 @@
+.wrapper {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    bottom: 90px;
+    width: 300px;
+    z-index: 10;
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+
+.header {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    background-color: var(--white-color);
+    padding: 2px 12px;
+    border-radius: 99px;
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.6rem;
+}
+
+.content {
+    margin-top: 4px;
+}
+
+.content-header {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.6rem;
+}
+
+.content-header p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.text-album {
+    color: var(--primary-color);
+}

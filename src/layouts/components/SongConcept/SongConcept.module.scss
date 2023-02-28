@@ -12,9 +12,9 @@
 
 .content-header p {
     font-weight: 400;
-    font-size: 2rem;
-    padding: 4px 12px;
+    font-size: 1.8rem;
     color: var(--text-color);
+    padding: 4px 12px;
 }
 
 .content-header-all {
@@ -28,6 +28,9 @@
 }
 
 .content-header-all p {
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--text-color);
     padding: 4px 6px;
     &:hover {
         color: var(--primary-color);
@@ -44,6 +47,7 @@
     height: 180px;
     border-radius: 4px;
     &:hover {
+        cursor: pointer;
         .overlay {
             display: flex;
         }

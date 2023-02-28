@@ -1,3 +1,12 @@
+.wrapper {
+    margin-bottom: 100px;
+}
+
+// playlist
+.playlist {
+    cursor: pointer;
+}
+
 .playlist-header {
     display: flex;
     align-items: center;
@@ -7,6 +16,7 @@
     span {
         padding: 4px 0px;
     }
+    margin: 12px 0;
 }
 
 .playlist-header-add {
@@ -18,6 +28,42 @@
     height: 24px;
     border-radius: 50%;
     margin: 0 8px;
+    cursor: pointer;
+}
+
+.model-content {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.model-content p {
+    font-weight: 400;
+    font-size: 2rem;
+    color: var(--text-color);
+}
+
+.model-input {
+    width: 70%;
+    font-weight: 400;
+    font-size: 1.6rem;
+    border-radius: 99px;
+    outline: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    height: 36px;
+    padding: 0 12px;
+    margin: 12px 0;
+    &:focus {
+        border-color: var(--primary-color);
+    }
+}
+
+// content
+.content {
+    margin-top: 24px;
 }
 
 .content-header {

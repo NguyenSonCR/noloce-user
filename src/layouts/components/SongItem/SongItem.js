@@ -1,31 +1,30 @@
 import styles from './SongItem.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMusic, faMicrophone, faHeart, faEllipsis } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { faMicrophone, faHeart, faEllipsis, faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { useDispatch } from 'react-redux';
-import { loadSong } from '~/slices/songSlice';
-import songs from '~/assets/songs';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadSong, play, pause } from '~/slices/songSlice';
+import { TfiMusicAlt } from 'react-icons/tfi';
+import musicApi from '~/api/music/musicApi';
+import React from 'react';
 
 const cx = classNames.bind(styles);
 
-function SongItem() {
+function SongItem({ songList }) {
     const dispatch = useDispatch();
-
-    const [hover, setHover] = useState(false);
+    const songState = useSelector((state) => state.song);
     const [choose, setChoose] = useState(false);
-    const handleHover = () => {
-        setHover(true);
-    };
 
-    const handleLeave = () => {
-        if (!choose) {
-            setHover(false);
-        } else {
-            setHover(true);
-        }
+    // function
+    const calculateTime = (secs) => {
+        const minutes = Math.floor(secs / 60);
+        const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const seconds = Math.floor(secs % 60);
+        const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+        return `${returnedMinutes}:${returnedSeconds}`;
     };
 
     const handleChoose = () => {
@@ -36,69 +35,122 @@ function SongItem() {
         }
     };
 
-    const handleSelectSong = () => {
-        dispatch(
-            loadSong({
-                songId: 1,
-                name: 'Đêm trăng tình yêu',
-                author: 'Hải Băng',
-                url: songs.song1,
-                duration: '04:37',
-                album: 'Tình yêu',
-                img: 'https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_webp/covers/6/2/62df066e6f9196dbeedadd35931b88ae_1382408334.jpg',
-            }),
-        );
+    const handleSelectSong = async (item) => {
+        try {
+            const response = await musicApi.getSong(item.encodeId);
+            if (response.success) {
+                dispatch(
+                    loadSong({
+                        ...item,
+                        link: response.data['128'],
+                    }),
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
+    // scroll
+
+    const refs = songList.reduce((song, value) => {
+        song[value.encodeId] = React.createRef();
+        return song;
+    }, {});
+
+    const handleClickScroll = (id) => {
+        refs[id]?.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+        });
+    };
+
+    useEffect(() => {
+        if (songState.song) {
+            handleClickScroll(songState.song.encodeId);
+        }
+        // eslint-disable-next-line
+    }, [songState?.song?.encodeId]);
+
     return (
-        <div
-            className={cx('wrapper', hover && 'hover')}
-            onMouseOver={handleHover}
-            onMouseLeave={handleLeave}
-            onClick={handleSelectSong}
-        >
-            <div className={cx('song')}>
-                {!hover ? (
-                    <FontAwesomeIcon className={cx('icon')} icon={faMusic} />
-                ) : (
-                    <input className={cx('input')} type={'checkbox'} onClick={handleChoose}></input>
-                )}
-                <div className={cx('info')}>
-                    <img
-                        className={cx('img')}
-                        alt=""
-                        src="https://photo-resize-zmp3.zmdcdn.me/w240_r1x1_webp/covers/6/2/62df066e6f9196dbeedadd35931b88ae_1382408334.jpg"
-                    ></img>
-                    <div className={cx('info-list')}>
-                        <p className={cx('name')}>Đêm trăng tình yêu</p>
-                        <p className={cx('author')}>Hải Băng</p>
+        <div>
+            {songList &&
+                songList.map((item, index) => (
+                    <div
+                        key={index}
+                        className={cx(
+                            'wrapper',
+                            songState.song && songState.song.encodeId === item.encodeId && 'active',
+                        )}
+                        onClick={() => {
+                            handleSelectSong(item);
+                        }}
+                        ref={refs[item.encodeId]}
+                    >
+                        <div className={cx('song')}>
+                            <TfiMusicAlt className={cx('icon')} />
+                            <input className={cx('input')} type={'checkbox'} onClick={handleChoose}></input>
+                            <div className={cx('info')}>
+                                <div
+                                    className={cx('info-img')}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                    }}
+                                >
+                                    <img className={cx('img')} alt="" src={item.thumbnail}></img>
+                                    {songState.song && songState.song.encodeId === item.encodeId && songState.isPlay ? (
+                                        <div
+                                            className={cx('img-play')}
+                                            onClick={() => {
+                                                dispatch(pause());
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faPause} className={cx('img-play-icon')} />
+                                        </div>
+                                    ) : (
+                                        <div
+                                            className={cx('img-play')}
+                                            onClick={() => {
+                                                if (songState.song && songState.song.encodeId === item.encodeId) {
+                                                    dispatch(play());
+                                                } else {
+                                                    handleSelectSong(item);
+                                                }
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={faPlay} className={cx('img-play-icon')} />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={cx('info-list')}>
+                                    <p className={cx('name')}>{item.title}</p>
+                                    <p className={cx('author')}>{item.artistsNames}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={cx('album')}>
+                            <p> {item.album && item.album.title}</p>
+                            <div className={cx('action')}>
+                                <Tippy content="Phát cùng lời bài hát">
+                                    <div className={cx('action-wrapper')}>
+                                        <FontAwesomeIcon className={cx('action-item')} icon={faMicrophone} />
+                                    </div>
+                                </Tippy>
+                                <Tippy content="Thêm vào thư viện">
+                                    <div className={cx('action-wrapper')}>
+                                        <FontAwesomeIcon className={cx('action-item')} icon={faHeart} />
+                                    </div>
+                                </Tippy>
+                                <Tippy content="Khác">
+                                    <div className={cx('action-wrapper')}>
+                                        <FontAwesomeIcon className={cx('action-item')} icon={faEllipsis} />
+                                    </div>
+                                </Tippy>
+                            </div>
+                            <p className={cx('duration')}>{calculateTime(item.duration)}</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div className={cx('album')}>
-                <p> Tình yêu </p>
-                {hover ? (
-                    <div className={cx('action')}>
-                        <Tippy content="Phát cùng lời bài hát">
-                            <div className={cx('action-wrapper')}>
-                                <FontAwesomeIcon className={cx('action-item')} icon={faMicrophone} />
-                            </div>
-                        </Tippy>
-                        <Tippy content="Thêm vào thư viện">
-                            <div className={cx('action-wrapper')}>
-                                <FontAwesomeIcon className={cx('action-item')} icon={faHeart} />
-                            </div>
-                        </Tippy>
-                        <Tippy content="Khác">
-                            <div className={cx('action-wrapper')}>
-                                <FontAwesomeIcon className={cx('action-item')} icon={faEllipsis} />
-                            </div>
-                        </Tippy>
-                    </div>
-                ) : (
-                    <p>04:37</p>
-                )}
-            </div>
+                ))}
         </div>
     );
 }

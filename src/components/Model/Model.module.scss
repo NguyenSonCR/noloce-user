@@ -1,0 +1,38 @@
+.model {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.container {
+    position: relative;
+    height: 300px;
+    width: 400px;
+    background-color: var(--background-color);
+    border-radius: 12px;
+    box-shadow: rgb(0 0 0 / 12%) 0px 2px 12px;
+}
+
+.btn-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    :hover {
+        .icon {
+            color: var(--primary-color);
+        }
+    }
+}

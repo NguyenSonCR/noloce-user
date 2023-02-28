@@ -19,6 +19,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+    margin: 2px 0;
 }
 
 .nav-item {
@@ -31,6 +32,10 @@
         background-color: rgba(22, 24, 35, 0.03);
     }
     border-radius: 8px;
+}
+
+.nav-item.active {
+    background-color: rgba(22, 24, 35, 0.03);
 }
 
 .icon {

@@ -5,10 +5,10 @@ import Button from '~/components/Button';
 
 const cx = classNames.bind(styles);
 
-function NavItem({ data, onClick }) {
+function NavItem({ data, onClick, navItem }) {
     return (
         <div className={cx('content')}>
-            <div className={cx('nav-item')}>
+            <div className={cx('nav-item', navItem === data.code && 'active')}>
                 {data.icon && <div className={cx('icon')}>{data.icon}</div>}
                 <Button className={cx('text', 'navigation')} to={data.to} onClick={onClick}>
                     {data.title && data.title}

@@ -13,5 +13,9 @@ const images = {
     cd: require('~/assets/img/cd.png'),
     star: require('~/assets/img/star.png'),
     back: require('~/assets/img/back.png'),
+    shrink: require('~/assets/img/shrink.png'),
+    enlarge: require('~/assets/img/enlarge.png'),
+    rhythm: require('~/assets/img/rhythm.png'),
+    fallback: require('~/assets/img/fallback.png'),
 };
 export default images;

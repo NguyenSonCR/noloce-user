@@ -4,11 +4,36 @@
     align-items: center;
     padding: 8px;
     border-radius: 4px;
-    border: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    cursor: pointer;
+    &:hover {
+        background-color: var(--background-color);
+        .icon {
+            display: none;
+        }
+        .input {
+            display: block;
+        }
+        .action {
+            display: flex;
+        }
+
+        .duration {
+            display: none;
+        }
+
+        .img-play {
+            display: block;
+        }
+    }
 }
 
-.wrapper.hover {
+.wrapper.active {
     background-color: var(--background-color);
+}
+
+.wrapper:last-child {
+    border-bottom: 1px solid var(--border-color);
 }
 
 .song {
@@ -24,6 +49,24 @@
     align-items: center;
 }
 
+.info-img {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.img-play {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+}
+
+.img-play-icon {
+    color: var(--white-color);
+}
+
 .img {
     width: 48px;
     height: 48px;
@@ -36,7 +79,7 @@
     font-size: 1.6rem;
     font-weight: 300;
     color: var(--text-color);
-    padding: 0 4px;
+    margin: 0 4px;
 }
 
 .input {
@@ -46,6 +89,7 @@
     width: 16px;
     height: 16px;
     margin: 0 4px;
+    display: none;
 }
 
 .name {
@@ -71,7 +115,7 @@
 }
 
 .action {
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
 }
@@ -88,9 +132,27 @@
         background-color: rgb(241, 239, 246);
     }
 }
+
+.action-wrapper-lyrics {
+    width: 40px;
+    height: 40px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 99px;
+    margin: 0 4px;
+    &:hover {
+        background-color: rgb(241, 239, 246);
+    }
+}
+
 .action-item {
     font-size: 1.6rem;
     font-weight: 400;
     color: var(--text-color);
     padding: 0 8px;
+}
+
+.duration {
+    display: block;
 }

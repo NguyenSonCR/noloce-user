@@ -7,6 +7,7 @@
     --border-color: #dbdbdb;
     --icon-color: rgba(22, 24, 35, 0.4);
     --background-color: rgb(217, 210, 249);
+    --error-color: #ff0000;
 }
 
 * {
@@ -45,4 +46,29 @@ html *::-webkit-scrollbar-thumb {
 html *::-webkit-scrollbar-track {
     border-radius: 0;
     background-color: rgba(0, 0, 0, 0);
+}
+
+// animation
+
+@keyframes fadeIn {
+    from {
+        right: -300px;
+        opacity: 0.5;
+    }
+    to {
+        right: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    // Animation khi unmount component
+    from {
+        right: 0;
+        opacity: 1;
+    }
+    to {
+        right: -300px;
+        opacity: 0;
+    }
 }

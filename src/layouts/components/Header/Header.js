@@ -28,6 +28,8 @@ function Header() {
         },
     ];
 
+    const user = false;
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx(['grid', 'wide'])}>
@@ -47,12 +49,21 @@ function Header() {
                             </div>
                             <div className={cx('action')}>
                                 <div className={cx('notify')}></div>
-                                <Menu items={userMenu}>
-                                    <div className={cx('user')}>
-                                        <img src={images.avatar} alt="user" className={cx('user-img')}></img>
-                                        <span className={cx('user-name')}>Sơn nguyễn</span>
+                                {user ? (
+                                    <Menu items={userMenu}>
+                                        <div className={cx('user')}>
+                                            <img src={images.avatar} alt="user" className={cx('user-img')}></img>
+                                            <span className={cx('user-name')}>Sơn nguyễn</span>
+                                        </div>
+                                    </Menu>
+                                ) : (
+                                    <div className={cx('authentication')}>
+                                        <Link to={config.routes.register} className={cx('register')}>
+                                            Đăng ký
+                                        </Link>
+                                        <Link to={config.routes.login}>Đăng nhập</Link>
                                     </div>
-                                </Menu>
+                                )}
                             </div>
                         </div>
                     </div>

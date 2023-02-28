@@ -5,38 +5,61 @@
     right: 0;
     bottom: 0;
     height: 90px;
-    background-color: var(--background-color);
     display: flex;
+    background-color: var(--background-color);
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
+    transition: height 0.3s ease-out;
 }
 
-@keyframes fadeIn {
-    from {
-        top: 400px;
-        bottom: -400px;
-    }
-    to {
-        top: 60px;
-        bottom: 0;
-    }
+.show {
+    display: none;
 }
-.page_lyrics {
-    position: fixed;
-    z-index: 10;
+
+.wrapper.small,
+.page_lyrics.small {
+    display: none;
+}
+
+.responsive {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100px;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.responsive-icon {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.button-close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    &:hover {
+        background-color: var(--white-color);
+    }
+    border: 1px solid var(--background-color);
+    border-radius: 4px;
+    margin: 0 4px;
+    cursor: pointer;
+}
+
+.wrapper.page_lyrics {
     background-color: var(--background-color);
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
-    padding: 12px 16px;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    top: 60px;
-    animation-name: fadeIn;
-    animation-duration: 0.8s;
+    height: calc(100% - 60px);
 }
 
 .info {
@@ -127,29 +150,15 @@
     margin: 0 4px;
     &:hover {
         background-color: rgb(241, 239, 246);
+        border-color: var(--primary-color);
+        .button-icon-play {
+            color: var(--primary-color);
+        }
+        .button-icon-pause {
+            color: var(--primary-color);
+        }
     }
-}
-
-.button-icon-play {
-}
-
-.range {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.range span {
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--text-color);
-    padding: 0 6px;
-    line-height: 2rem;
-}
-
-.input {
-    width: 70%;
+    cursor: pointer;
 }
 
 .more {
@@ -167,6 +176,7 @@
     align-items: center;
     border-radius: 99px;
     margin: 0 4px;
+    cursor: pointer;
     &:hover {
         background-color: rgb(241, 239, 246);
     }
@@ -196,6 +206,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 99px;
+    cursor: pointer;
     &:hover {
         background-color: rgb(241, 239, 246);
     }
@@ -257,4 +268,45 @@
     flex: 2;
     padding: 24px;
     overflow: auto;
+}
+
+// small audio
+.small-audio {
+    position: fixed;
+    z-index: 10;
+    right: 0;
+    bottom: 0;
+    height: 60px;
+    width: 160px;
+    background-color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border: 1px solid var(--primary-color);
+    border-radius: 99px;
+    margin: 12px 8px;
+}
+
+.small-audio-content,
+.responsive-small {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.range {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.progressBar {
+    width: 400px;
+}
+
+.range span {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.6rem;
+    padding: 0 4px;
 }

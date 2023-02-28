@@ -1,16 +1,12 @@
-.custom-editor {
-    padding: 24px 200px;
+.wrapper {
+    margin-top: 12px;
 }
 
-.DraftEditor-root {
-    min-height: 200px;
-    border: solid 1px #bbb;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    cursor: text;
-    padding: 16px;
-    border-radius: 2px;
-    margin-bottom: 2em;
-    box-shadow: inset 0px 1px 8px -3px #ababab;
-    background: #fefefe;
+.banner {
+}
+
+.banner-img {
+    width: 80%;
+    height: 540px;
+    object-fit: cover;
 }
