@@ -1,11 +1,11 @@
-import axios from "axios";
+import axiosJWT from '~/api/setAxios';
 
 const setAuthToken = (token) => {
-    if(token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    if (token) {
+        axiosJWT.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
-        delete axios.defaults.headers.common['Authorization']
+        delete axiosJWT.defaults.headers.common['Authorization'];
     }
-}
+};
 
-export default setAuthToken
+export default setAuthToken;

@@ -5,29 +5,43 @@ import { faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
-function SongConcept({ title, data }) {
+function SongConcept({ title, data, details }) {
     const navigate = useNavigate();
     const handleOnclick = (id) => {
         navigate(`/music/album/${id}`);
     };
+
+    let list = null;
+    if (data.items) {
+        list = data.items;
+    } else {
+        list = data;
+    }
     return (
         <div className={cx('content')}>
-            <div className={cx('content-header')}>
-                <p>{title}</p>
-                <div className={cx('content-header-all')}>
-                    <p>Tất cả</p>
-                    <FontAwesomeIcon icon={faChevronRight} />
+            {!details && (
+                <div className={cx('content-header')}>
+                    <p>{title}</p>
+                    <div className={cx('content-header-all')}>
+                        <p>Tất cả</p>
+                        <FontAwesomeIcon icon={faChevronRight} />
+                    </div>
                 </div>
-            </div>
+            )}
             <div className={cx('content-song')}>
                 <div className="grid wide">
                     <div className={cx(['row', 'sm-gutter'])}>
-                        {data &&
-                            data.items.map((item, index) => (
-                                <div className="col l-3" key={index}>
+                        {list &&
+                            Array.isArray(list) &&
+                            list.map((item, index) => (
+                                <div className="col l-2-4" key={index}>
                                     <div className={cx('song-list')} onClick={() => handleOnclick(item.encodeId)}>
                                         <div className={cx('song-img')}>
-                                            <img alt="" src={item.thumbnailM} className={cx('img-content')}></img>
+                                            <img
+                                                alt=""
+                                                src={item.thumbnailM || item.thumbnail}
+                                                className={cx('img-content')}
+                                            ></img>
                                             <div className={cx('overlay')}>
                                                 <div className={cx('overplay-wrapper')}>
                                                     <FontAwesomeIcon className={cx('overlay-icon')} icon={faPlay} />

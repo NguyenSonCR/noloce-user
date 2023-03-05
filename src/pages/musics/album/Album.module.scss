@@ -1,37 +1,66 @@
+.wrapper {
+    margin-top: 16px;
+}
+
 // content
+
 .content {
-    margin-top: 24px;
+    max-height: 80vh;
+    overflow: auto;
 }
 
 .content-header {
+    list-style: none;
+    padding: 0;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
 }
 
-.content-header p {
-    font-weight: 400;
-    font-size: 2rem;
-    padding: 4px 12px;
+.content-header-item {
+    padding: 0px 4px;
     color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.6rem;
+    flex: 1;
+    text-align: justify;
 }
 
-.content-header-all {
+.content-header-item span {
+    color: var(--primary-color);
+}
+
+.content-header-item.active {
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.content-header-item:nth-child(2) {
+}
+
+.content-body__title {
     display: flex;
-    justify-content: center;
     align-items: center;
-    &:hover {
-        color: var(--primary-color);
-    }
-    cursor: pointer;
+    justify-content: space-between;
+    padding: 0 8px;
 }
 
-.content-header-all p {
-    padding: 4px 6px;
-    &:hover {
-        color: var(--primary-color);
-    }
+.content-body__item {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.6rem;
+    flex: 1;
+    padding: 8px 0;
+}
+
+.album {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.album__item {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.6rem;
 }
 
 .content-song {
@@ -41,9 +70,10 @@
 .song-img {
     position: relative;
     width: 100%;
-    height: 180px;
+    height: 260px;
     border-radius: 4px;
     &:hover {
+        cursor: pointer;
         .overlay {
             display: flex;
         }
@@ -63,8 +93,8 @@
     }
     100% {
         width: 110%;
-        height: 190px;
-        top: -5px;
+        height: 110%;
+        top: -5%;
         left: -5%;
     }
 }
@@ -105,9 +135,10 @@
 
 .song-name {
     font-weight: 400;
-    font-size: 1.6rem;
-    padding: 4px 0px;
+    font-size: 1.8rem;
+    padding: 8px 0px;
     color: var(--text-color);
+    text-align: center;
 }
 
 .song-author {
@@ -115,4 +146,9 @@
     font-size: 1.4rem;
     line-height: 1.6rem;
     color: var(--text-color);
+    padding: 0 2px;
+}
+
+.list-author {
+    text-align: center;
 }

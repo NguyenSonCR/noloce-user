@@ -6,16 +6,19 @@ import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadSong, play, pause } from '~/slices/songSlice';
+import { loadSong, play, pause, setSongLyric } from '~/slices/songSlice';
 import { TfiMusicAlt } from 'react-icons/tfi';
 import musicApi from '~/api/music/musicApi';
 import React from 'react';
+import { addToast } from '~/slices/toastSlice';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
 function SongItem({ songList }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
+    const toastState = useSelector((state) => state.toast);
     const [choose, setChoose] = useState(false);
 
     // function
@@ -35,14 +38,51 @@ function SongItem({ songList }) {
         }
     };
 
+    const convertTimeToNumber = (string) => {
+        const minutes = string.slice(1, 2);
+        const seconds = string.slice(3, 9);
+        const value = Math.round(Number(minutes) * 60 * 1000 + Math.round(Number(seconds) * 1000));
+        return value;
+    };
+
     const handleSelectSong = async (item) => {
         try {
             const response = await musicApi.getSong(item.encodeId);
-            if (response.success) {
+            const responseLyric = await musicApi.getLyricSong(item.encodeId);
+
+            if (responseLyric.success) {
+                const lyric = await axios.get(responseLyric.lyric.file, {
+                    headers: {
+                        'content-type': 'application/octet-stream',
+                    },
+                });
+                const array = lyric.data.split('\n');
+                console.log(array);
+                const array1 = array.map((line) => {
+                    return {
+                        startTime: convertTimeToNumber(line.slice(1, 9)),
+                        words: line.slice(10, line.length),
+                    };
+                });
+                console.log(array1);
+                dispatch(setSongLyric(array1));
+            }
+
+            if (response.success && responseLyric.success) {
                 dispatch(
                     loadSong({
                         ...item,
                         link: response.data['128'],
+                        thumbnailM: response.info.thumbnailM,
+                    }),
+                );
+                // dispatch(setSongLyric(responseLyric.lyric.sentences));
+            } else {
+                dispatch(
+                    addToast({
+                        id: toastState.toastList.length + 1,
+                        content: response.message,
+                        type: 'success',
                     }),
                 );
             }

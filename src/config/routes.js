@@ -9,6 +9,7 @@ const routes = {
     searchMusic: '/music/search',
     myMusic: '/music/mymusic',
     genresMusic: '/music/genres',
+    genresDetail: '/music/genres/:id',
     top100: '/music/top100',
     albumMusic: '/music/album/:id',
 

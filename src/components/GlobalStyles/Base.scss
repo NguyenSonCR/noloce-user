@@ -1,5 +1,6 @@
 :root {
     --primary-color: #4d2ea8;
+    --primary-bold: #aa60e3;
     --delete-color: #ff0000;
     --white-color: #fff;
     --black-color: #000;
@@ -70,5 +71,15 @@ html *::-webkit-scrollbar-track {
     to {
         right: -300px;
         opacity: 0;
+    }
+}
+
+@keyframes loading {
+    0% {
+        background-position: right;
+    }
+
+    100% {
+        background-position: left;
     }
 }

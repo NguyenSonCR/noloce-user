@@ -7,6 +7,7 @@ import Search from '../Search';
 import Menu from '~/components/Popper/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faSignOut, faStore } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 function Header() {
@@ -25,10 +26,11 @@ function Header() {
             icon: <FontAwesomeIcon icon={faSignOut} />,
             title: 'Đăng xuất',
             separate: true,
+            code: 'logout',
         },
     ];
 
-    const user = false;
+    const userState = useSelector((state) => state.auth);
 
     return (
         <div className={cx('wrapper')}>
@@ -49,11 +51,11 @@ function Header() {
                             </div>
                             <div className={cx('action')}>
                                 <div className={cx('notify')}></div>
-                                {user ? (
+                                {userState.isAuthenticated ? (
                                     <Menu items={userMenu}>
                                         <div className={cx('user')}>
                                             <img src={images.avatar} alt="user" className={cx('user-img')}></img>
-                                            <span className={cx('user-name')}>Sơn nguyễn</span>
+                                            <span className={cx('user-name')}>{userState.user.username}</span>
                                         </div>
                                     </Menu>
                                 ) : (

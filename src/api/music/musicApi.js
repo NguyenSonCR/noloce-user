@@ -22,6 +22,20 @@ const musicApi = {
         const url = '/music';
         return axiosJWT.get(url);
     },
+
+    getLyricSong: (id) => {
+        const url = `/music/song/lyric/${id}`;
+        return axiosJWT.get(url);
+    },
+
+    getGenres: () => {
+        const url = `/music/genres`;
+        return axiosJWT.get(url);
+    },
+    getGenreDetail: (id) => {
+        const url = `/music/genres/${id}`;
+        return axiosJWT.get(url);
+    },
 };
 
 export default musicApi;

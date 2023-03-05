@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     song: null,
+    songLyric: [],
     isPlay: false,
     volume: 0.5,
     muted: false,
@@ -13,6 +14,9 @@ const initialState = {
     searchResult: null,
     playlist: false,
     homeMusic: null,
+    genres: null,
+    genresDetail: null,
+    lyricPage: false,
 };
 
 export const songSlice = createSlice({
@@ -20,11 +24,14 @@ export const songSlice = createSlice({
     initialState,
     reducers: {
         loadSong: (state, action) => {
-            return {
-                ...state,
-                song: action.payload,
-                mounted: true,
-            };
+            state.song = action.payload;
+            state.mounted = true;
+        },
+        setSongLyric: (state, action) => {
+            state.songLyric = action.payload;
+        },
+        setLyricPage: (state, action) => {
+            state.lyricPage = action.payload;
         },
         play: (state) => {
             state.isPlay = true;
@@ -52,13 +59,13 @@ export const songSlice = createSlice({
             state.mounted = false;
         },
 
-        getTop100: (state, action) => {
+        setTop100: (state, action) => {
             state.top100 = action.payload;
         },
-        getAlbum: (state, action) => {
+        setAlbum: (state, action) => {
             state.album = action.payload;
         },
-        getSearchResult: (state, action) => {
+        setSearchResult: (state, action) => {
             state.searchResult = action.payload;
         },
         setPlaylist: (state, action) => {
@@ -67,6 +74,12 @@ export const songSlice = createSlice({
 
         setHomeMusic: (state, action) => {
             state.homeMusic = action.payload;
+        },
+        setGenres: (state, action) => {
+            state.genres = action.payload;
+        },
+        setGenresDetail: (state, action) => {
+            state.genresDetail = action.payload;
         },
     },
 });
@@ -81,11 +94,15 @@ export const {
     loop,
     random,
     mounted,
-    getTop100,
-    getAlbum,
-    getSearchResult,
+    setTop100,
+    setAlbum,
+    setSearchResult,
     setPlaylist,
     setHomeMusic,
+    setSongLyric,
+    setGenres,
+    setGenresDetail,
+    setLyricPage,
 } = songSlice.actions;
 
 export default songSlice.reducer;

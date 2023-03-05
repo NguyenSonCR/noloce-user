@@ -41,12 +41,12 @@ const axiosJWT = axios.create({
 });
 
 axiosJWT.interceptors.request.use(async (config) => {
-    // Handle token here ...
     return config;
 });
 
 axiosJWT.interceptors.response.use(
     (response) => {
+        console.log(response);
         if (response && response.data) {
             return response.data;
         }

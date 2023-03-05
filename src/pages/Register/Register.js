@@ -3,13 +3,20 @@ import styles from './Register.module.scss';
 import config from '~/config';
 import { useState } from 'react';
 import images from '~/assets/img';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '~/components/Button';
 import { validation, setOnFocus } from '~/utils/validation';
+import authApi from '~/api/auth/auth';
+import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
+import setAuthToken from '~/utils/setAuthToken';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuth } from '~/slices/authSlice';
+import routes from '~/config/routes';
+import { addToast } from '~/slices/toastSlice';
 
 const cx = classNames.bind(styles);
 
-function Login() {
+function Register() {
     const width = window.innerWidth > 0 ? window.innerWidth : window.screen.width;
 
     const [formValue, setFormValue] = useState({
@@ -99,8 +106,43 @@ function Login() {
         validation(event.target.name, event.target.value, setFormValid, formValid, password);
     };
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const toastState = useSelector((state) => state.toast);
+
     const register = async (event) => {
         event.preventDefault();
+        try {
+            const response = await authApi.register(formValue);
+            if (response.success) {
+                if (response.success) {
+                    localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.accessToken);
+                    setAuthToken(response.accessToken);
+                    const res = await authApi.loadUser();
+                    if (res.success) {
+                        dispatch(setAuth(res.user));
+                        navigate(routes.home);
+                        dispatch(
+                            addToast({
+                                id: toastState.toastList.length + 1,
+                                content: response.message,
+                                type: 'success',
+                            }),
+                        );
+                    }
+                }
+            } else {
+                dispatch(
+                    addToast({
+                        id: toastState.toastList.length + 1,
+                        content: response.message,
+                        type: 'error',
+                    }),
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
     return (
         <div className={cx('wrapper', ['grid', 'wide'])}>
@@ -246,4 +288,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;

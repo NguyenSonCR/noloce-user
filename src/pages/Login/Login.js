@@ -6,6 +6,14 @@ import { RxEyeClosed, RxEyeOpen } from 'react-icons/rx';
 import images from '~/assets/img';
 import { Link } from 'react-router-dom';
 import Button from '~/components/Button';
+import authApi from '~/api/auth/auth';
+import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
+import setAuthToken from '~/utils/setAuthToken';
+import { setAuth } from '~/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import routes from '~/config/routes';
+import { addToast } from '~/slices/toastSlice';
 
 const cx = classNames.bind(styles);
 function Login() {
@@ -122,7 +130,42 @@ function Login() {
         }
     };
 
-    const login = async (event) => {};
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const toastState = useSelector((state) => state.toast);
+    const login = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await authApi.login(formValue);
+            console.log(response);
+            if (response.success) {
+                localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.accessToken);
+                setAuthToken(response.accessToken);
+                const res = await authApi.loadUser();
+                if (res.success) {
+                    dispatch(setAuth(res.user));
+                    navigate(routes.home);
+                    dispatch(
+                        addToast({
+                            id: toastState.toastList.length + 1,
+                            content: response.message,
+                            type: 'success',
+                        }),
+                    );
+                }
+            } else {
+                dispatch(
+                    addToast({
+                        id: toastState.toastList.length + 1,
+                        content: response.message,
+                        type: 'error',
+                    }),
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className={cx('wrapper', ['grid', 'wide'])}>

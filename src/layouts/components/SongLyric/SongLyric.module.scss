@@ -1,0 +1,22 @@
+.wrapper {
+    height: 480px;
+    overflow: auto;
+}
+
+.line-text {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--text-color);
+    line-height: 3.4rem;
+}
+
+.active {
+    color: var(--primary-bold);
+}
+
+.wrapper {
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--text-color);
+    line-height: 3.4rem;
+}

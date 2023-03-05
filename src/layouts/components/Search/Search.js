@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import musicApi from '~/api/music/musicApi';
 import { useDispatch } from 'react-redux';
-import { getSearchResult } from '~/slices/songSlice';
+import { setSearchResult } from '~/slices/songSlice';
 
 const cx = classNames.bind(styles);
 
@@ -25,7 +25,7 @@ function Search() {
         if (event.key === 'Enter' && query.length > 0) {
             musicApi.searchSong(query).then((response) => {
                 if (response.success) {
-                    dispatch(getSearchResult(response.result));
+                    dispatch(setSearchResult(response.result));
                     navigate(`/music/search`);
                 }
             });
@@ -36,7 +36,7 @@ function Search() {
         if (query.length > 0) {
             musicApi.searchSong(query).then((response) => {
                 if (response.success) {
-                    dispatch(getSearchResult(response.data));
+                    dispatch(setSearchResult(response.data));
                     navigate(`/music/search`);
                 }
             });

@@ -6,17 +6,24 @@ import { Wrapper as PopperWrapper } from '~/components/Popper';
 import MenuItem from './MenuItem';
 import Header from './Header';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '~/slices/authSlice';
+import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
 
 const cx = classNames.bind(styles);
-
 const defaultFn = () => {};
 
 function Menu({ children, items = [], visible, offset = [], hideOnClick = false, onChange = defaultFn }) {
     const [history, setHistory] = useState([{ data: items }]);
-
+    const dispatch = useDispatch();
     useEffect(() => {
         setHistory([{ data: items }]);
     }, [items]);
+
+    const handleLogout = () => {
+        localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
+        dispatch(logoutUser());
+    };
 
     const current = history[history.length - 1];
 
@@ -33,7 +40,9 @@ function Menu({ children, items = [], visible, offset = [], hideOnClick = false,
                             if (isParent) {
                                 setHistory((prev) => [...prev, item.children]);
                             } else {
-                                onChange(item);
+                                if (item.code === 'logout') {
+                                    handleLogout();
+                                }
                             }
                         }}
                     />

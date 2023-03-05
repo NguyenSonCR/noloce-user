@@ -35,11 +35,11 @@ function Playlist() {
                             <p>Tiếp theo</p>
                             <p>
                                 Từ playlist
-                                <span className={cx('text-album')}> {songState.album.title}</span>
+                                <span className={cx('text-album')}> {songState.album && songState.album.title}</span>
                             </p>
                         </div>
                         <div className={cx('container')}>
-                            <PlaylistItem songList={songState.album.song.items} />
+                            {songState.album && <PlaylistItem songList={songState.album.song.items} />}
                         </div>
                     </div>
                 </div>

@@ -9,22 +9,15 @@ import { loadSong, play, pause } from '~/slices/songSlice';
 import { TfiMusicAlt } from 'react-icons/tfi';
 import musicApi from '~/api/music/musicApi';
 import React from 'react';
+import { addToast } from '~/slices/toastSlice';
 
 const cx = classNames.bind(styles);
 
 function PlaylistItem({ songList }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
+    const toastState = useSelector((state) => state.toast);
     const [choose, setChoose] = useState(false);
-
-    // function
-    // const calculateTime = (secs) => {
-    //     const minutes = Math.floor(secs / 60);
-    //     const returnedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
-    //     const seconds = Math.floor(secs % 60);
-    //     const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-    //     return `${returnedMinutes}:${returnedSeconds}`;
-    // };
 
     const handleChoose = () => {
         if (choose) {
@@ -34,7 +27,9 @@ function PlaylistItem({ songList }) {
         }
     };
 
+    useEffect(() => {}, [songState.item]);
     const handleSelectSong = async (item) => {
+        dispatch(loadSong(item));
         try {
             const response = await musicApi.getSong(item.encodeId);
             if (response.success) {
@@ -42,6 +37,14 @@ function PlaylistItem({ songList }) {
                     loadSong({
                         ...item,
                         link: response.data['128'],
+                    }),
+                );
+            } else {
+                dispatch(
+                    addToast({
+                        id: toastState.toastList.length + 1,
+                        content: response.message,
+                        type: 'success',
                     }),
                 );
             }
@@ -127,20 +130,6 @@ function PlaylistItem({ songList }) {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className={cx('album')}>
-                            <div className={cx('action')}>
-                                <Tippy content="Thêm vào thư viện">
-                                    <div className={cx('action-wrapper')}>
-                                        <FontAwesomeIcon className={cx('action-item')} icon={faHeart} />
-                                    </div>
-                                </Tippy>
-                                <Tippy content="Khác">
-                                    <div className={cx('action-wrapper')}>
-                                        <FontAwesomeIcon className={cx('action-item')} icon={faEllipsis} />
-                                    </div>
-                                </Tippy>
-                            </div>
-                        </div> */}
                     </div>
                 ))}
         </div>

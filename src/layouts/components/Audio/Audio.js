@@ -7,12 +7,25 @@ import Tippy from '@tippyjs/react';
 import { ReactComponent as CloseIcon } from '~/assets/icon/close.svg';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { play, pause, volume, muted, loop, random, mounted, loadSong, setPlaylist } from '~/slices/songSlice';
+import {
+    play,
+    pause,
+    volume,
+    muted,
+    loop,
+    random,
+    mounted,
+    loadSong,
+    setPlaylist,
+    setSongLyric,
+    setLyricPage,
+} from '~/slices/songSlice';
 import images from '~/assets/img';
 import { TbMicrophone2 } from 'react-icons/tb';
 import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs';
 import { RxTrackNext, RxTrackPrevious, RxPause, RxPlay, RxShuffle, RxLoop, RxListBullet } from 'react-icons/rx';
 import musicApi from '~/api/music/musicApi';
+import SongLyric from '~/layouts/components/SongLyric';
 
 const cx = classNames.bind(styles);
 function AudioSong() {
@@ -22,7 +35,7 @@ function AudioSong() {
 
     // state
     const [small, setSmall] = useState(false);
-    const [pageLyrics, setPageLyrics] = useState(false);
+    const pageLyrics = songState.lyricPage;
     const [currentTime, setCurrentTime] = useState(0);
     const [seeking, setSeeking] = useState(false);
     // references
@@ -64,7 +77,7 @@ function AudioSong() {
             progressRef.current = requestAnimationFrame(whileSeeking);
         }
         // eslint-disable-next-line
-    }, [songState.song.encodeId]);
+    }, [songState.song]);
 
     // function
     const calculateTime = (secs) => {
@@ -76,12 +89,12 @@ function AudioSong() {
     };
 
     const whilePlaying = () => {
-        setCurrentTime(progressBar.current.value / step);
+        setCurrentTime(progressBar?.current?.value / step);
         animationRef.current = requestAnimationFrame(whilePlaying);
     };
 
     const whileSeeking = () => {
-        progressBar.current.value = audioPlayer.current.currentTime * step;
+        progressBar.current.value = audioPlayer?.current?.currentTime * step;
         progressRef.current = requestAnimationFrame(whileSeeking);
     };
 
@@ -153,6 +166,7 @@ function AudioSong() {
         try {
             const randomId = Math.floor(Math.random() * songState.album.song.items.length);
             const response = await musicApi.getSong(songState.album.song.items[randomId].encodeId);
+            const responseLyric = await musicApi.getLyricSong(songState.album.song.items[randomId].encodeId);
             if (response.success) {
                 dispatch(
                     loadSong({
@@ -161,12 +175,13 @@ function AudioSong() {
                     }),
                 );
             }
+            if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
         } catch (error) {
             console.log(error);
         }
     };
 
-    const index = songState.album.song.items.findIndex((song) => song.encodeId === songState.song.encodeId);
+    const index = songState?.album?.song.items.findIndex((song) => song.encodeId === songState.song.encodeId);
 
     const handleNextSong = async () => {
         if (songState.random) {
@@ -175,6 +190,7 @@ function AudioSong() {
             try {
                 if (index === songState.album.song.items.length - 1) {
                     const response = await musicApi.getSong(songState.album.song.items[0].encodeId);
+                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[0].encodeId);
                     if (response.success) {
                         dispatch(
                             loadSong({
@@ -183,9 +199,11 @@ function AudioSong() {
                             }),
                         );
                     }
+                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
                 } else {
                     const songId = index + 1;
                     const response = await musicApi.getSong(songState.album.song.items[songId].encodeId);
+                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[songId].encodeId);
                     if (response.success) {
                         dispatch(
                             loadSong({
@@ -194,6 +212,7 @@ function AudioSong() {
                             }),
                         );
                     }
+                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
                 }
             } catch (error) {
                 console.log(error);
@@ -209,6 +228,7 @@ function AudioSong() {
                 if (index === 0) {
                     const songId = songState.album.song.items.length - 1;
                     const response = await musicApi.getSong(songState.album.song.items[songId].encodeId);
+                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[songId].encodeId);
                     if (response.success) {
                         dispatch(
                             loadSong({
@@ -217,9 +237,11 @@ function AudioSong() {
                             }),
                         );
                     }
+                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
                 } else {
                     const songId = index - 1;
                     const response = await musicApi.getSong(songState.album.song.items[songId].encodeId);
+                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[songId].encodeId);
                     if (response.success) {
                         dispatch(
                             loadSong({
@@ -228,6 +250,7 @@ function AudioSong() {
                             }),
                         );
                     }
+                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
                 }
             } catch (error) {
                 console.log(error);
@@ -293,7 +316,7 @@ function AudioSong() {
                 )}
                 {!pageLyrics && (
                     <div className={cx('info')}>
-                        <img alt="" className={cx('info-img')} src={songState.song && songState.song.thumbnail}></img>
+                        <img alt="" className={cx('info-img')} src={songState.song && songState.song.thumbnailM}></img>
                         <div className={cx('info-song')}>
                             <p>{songState.song && songState.song.title}</p>
                             <p>{songState.song && songState.song.artistNames}</p>
@@ -313,36 +336,16 @@ function AudioSong() {
                             <div className={cx('lyrics-title')}>
                                 <p>Lời bài hát</p>
                             </div>
-                            <div className={cx('lyrics-icon')} onClick={() => setPageLyrics(false)}>
+                            <div className={cx('lyrics-icon')} onClick={() => dispatch(setLyricPage(false))}>
                                 <div className={cx('button-list')}>
                                     <FontAwesomeIcon icon={faChevronDown} />
                                 </div>
                             </div>
                         </div>
                         <div className={cx('lyrics-content')}>
-                            <img className={cx('lyrics-content-img')} src={songState.song.thumbnail} alt=""></img>
+                            <img className={cx('lyrics-content-img')} src={songState.song.thumbnailM} alt=""></img>
                             <div className={cx('lyrics-content-text')}>
-                                <p>
-                                    Chiều một mình trên phố năm xưa Lạc bước giữa đêm đông người. Rồi một ngày anh bỗng
-                                    đi qua Sưởi ấm con tim lẻ loi. Nụ cười và ánh mắt đam mê Trái tim đôi ta không rời.
-                                    Con thuyền không còn xa bến Con thuyền không còn theo sóng mãi xa mù khơi. Lòng ngập
-                                    ngừng nói tiếng yêu anh Tình yêu ấy thiết tha chân thành. Còn gì́ bằng sánh bước bên
-                                    nhau Cùng ngắm ánh trăng và ngàn sao. Cuộc tình ngọt ngào anh đã trao em Làm trái
-                                    tim em đổi thay Niềm hạnh phúc em đang có anh Khiến em ngỡ ngàng. Phố xa đêm đông
-                                    người đêm tình yêu dưới trăng Thấp thoáng bao đôi nhân tình đang đùa vui đắm say.
-                                    Cành hồng trao tay đến tay, Rộn ràng nghe tim ngất ngây. T́ình này trao anh thề mãi
-                                    không bao giờ phai. Ước chi trăng đừng tàn soi tình yêu chúng ta Những ánh sao băng
-                                    qua trời xin lặng im lung linh Th́ì thầm em nói với anh một lời Anh có biết được trái
-                                    tim em yêu ḿình anh. Lòng ngập ngừng nói tiếng yêu anh Tình yêu ấy thiết tha chân
-                                    thành. Còn gì́ bằng sánh bước bên nhau Cùng ngắm ánh trăng và ngàn sao. Cuộc tình
-                                    ngọt ngào anh đã trao em Làm trái tim em đổi thay Niềm hạnh phúc em đang có anh
-                                    Khiến em ngỡ ngàng. Phố xa đêm đông người đêm tình yêu dưới trăng Thấp thoáng bao
-                                    đôi nhân tình đang đùa vui đắm say. Cành hồng trao tay đến tay, Rộn ràng nghe tim
-                                    ngất ngây. T́ình này trao anh thề mãi không bao giờ phai. Ước chi trăng đừng tàn soi
-                                    tình yêu chúng ta Những ánh sao băng qua trời xin lặng im lung linh Th́ì thầm em nói
-                                    với anh một lời Anh có biết được trái tim em yêu ḿình anh. Anh có biết được trái
-                                    tim..... em yêu ..... anh.
-                                </p>
+                                <SongLyric audioPlayer={audioPlayer} />
                             </div>
                         </div>
                     </div>
@@ -392,7 +395,7 @@ function AudioSong() {
                 </div>
                 {!pageLyrics && (
                     <div className={cx('more')}>
-                        <div className={cx('more-wrapper')} onClick={() => setPageLyrics(true)}>
+                        <div className={cx('more-wrapper')} onClick={() => dispatch(setLyricPage(true))}>
                             <TbMicrophone2 className={cx('more-icon')} />
                         </div>
 

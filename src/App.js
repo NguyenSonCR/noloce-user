@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import { DefaultLayout } from '~/layouts';
@@ -6,6 +6,7 @@ import { DefaultLayout } from '~/layouts';
 import { useSelector } from 'react-redux';
 import Audio from '~/layouts/components/Audio';
 import Playlist from '~/pages/musics/playlist/Playlist';
+import Toast from './layouts/components/Toast';
 
 function App() {
     const songState = useSelector((state) => state.song);
@@ -36,6 +37,7 @@ function App() {
                 </Routes>
                 {songState.song && <Audio />}
                 {<Playlist />}
+                <Toast />
             </div>
         </Router>
     );
