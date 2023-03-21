@@ -12,6 +12,9 @@ const routes = {
     genresDetail: '/music/genres/:id',
     top100: '/music/top100',
     albumMusic: '/music/album/:id',
+    artist: '/music/artist/:slug',
+    newRelease: '/music/newrelease',
+    myPlaylist: '/music/mymusic/playlist/:slug',
 
     // cinema
     cinema: '/cinema',

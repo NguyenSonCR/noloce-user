@@ -68,3 +68,23 @@
         rgba(217, 210, 249, 0.6)
     );
 }
+
+.single-item {
+    width: 100%;
+    height: 60px;
+    border-radius: 8px;
+    margin: 8px 0;
+    border: 1px solid var(--border-color);
+    background-size: 250% 250%;
+    background-position: left;
+    background-image: linear-gradient(
+        60deg,
+        rgba(217, 210, 249, 0.6),
+        rgba(217, 210, 249, 0.6),
+        rgba(217, 210, 249, 0.6),
+        rgba(255, 255, 255, 0.1),
+        rgba(217, 210, 249, 0.6),
+        rgba(217, 210, 249, 0.6),
+        rgba(217, 210, 249, 0.6)
+    );
+}

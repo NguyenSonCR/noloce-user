@@ -7,7 +7,11 @@ import Search from '../Search';
 import Menu from '~/components/Popper/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faSignOut, faStore } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import authApi from '~/api/auth/auth';
+import { setAuth } from '~/slices/authSlice';
+import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
 
 const cx = classNames.bind(styles);
 function Header() {
@@ -29,6 +33,23 @@ function Header() {
             code: 'logout',
         },
     ];
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        authApi
+            .loadUser()
+            .then((data) => {
+                if (data.success) {
+                    dispatch(setAuth({ user: data.user, isAuthenticated: true }));
+                }
+            })
+            .catch((error) => {
+                localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
+                dispatch(setAuth({ user: null, isAuthenticated: false }));
+                console.log(error);
+            });
+        // eslint-disable-next-line
+    }, []);
 
     const userState = useSelector((state) => state.auth);
 

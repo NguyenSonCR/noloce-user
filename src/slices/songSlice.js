@@ -2,7 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     song: null,
-    songLyric: [],
+    link: {
+        link: null,
+        songId: null,
+    },
+    songLyric: {
+        lyric: null,
+        songId: null,
+        noLyric: null,
+    },
     isPlay: false,
     volume: 0.5,
     muted: false,
@@ -11,12 +19,17 @@ const initialState = {
     mounted: false,
     top100: null,
     album: null,
+    albumPlaying: null,
     searchResult: null,
     playlist: false,
     homeMusic: null,
     genres: null,
     genresDetail: null,
     lyricPage: false,
+    vipSong: false,
+    myPlaylist: [],
+    singleMyPlaylist: null,
+    popup: false,
 };
 
 export const songSlice = createSlice({
@@ -27,8 +40,18 @@ export const songSlice = createSlice({
             state.song = action.payload;
             state.mounted = true;
         },
+        setLink: (state, action) => {
+            state.link = {
+                link: action.payload.link,
+                songId: action.payload.songId,
+            };
+        },
+
         setSongLyric: (state, action) => {
-            state.songLyric = action.payload;
+            state.songLyric = {
+                lyric: action.payload.lyric,
+                songId: action.payload.songId,
+            };
         },
         setLyricPage: (state, action) => {
             state.lyricPage = action.payload;
@@ -65,6 +88,10 @@ export const songSlice = createSlice({
         setAlbum: (state, action) => {
             state.album = action.payload;
         },
+
+        setAlbumPlaying: (state, action) => {
+            state.albumPlaying = action.payload;
+        },
         setSearchResult: (state, action) => {
             state.searchResult = action.payload;
         },
@@ -81,11 +108,64 @@ export const songSlice = createSlice({
         setGenresDetail: (state, action) => {
             state.genresDetail = action.payload;
         },
+        setVipSong: (state, action) => {
+            state.vipSong = action.payload;
+        },
+
+        setMyPlaylist: (state, action) => {
+            state.myPlaylist = action.payload;
+        },
+
+        setSingleMyPlaylist: (state, action) => {
+            state.singleMyPlaylist = action.payload;
+        },
+
+        addMyPlaylist: (state, action) => {
+            state.myPlaylist = state.myPlaylist.concat(action.payload);
+        },
+
+        addSongPlaylist: (state, action) => {
+            state.myPlaylist = state.myPlaylist.map((item) => {
+                if (item._id === action.payload.playlistId) {
+                    return {
+                        ...item,
+                        song: item.song.concat(action.payload.song),
+                    };
+                } else {
+                    return item;
+                }
+            });
+        },
+
+        deleteSongMyPlaylist: (state, action) => {
+            state.singleMyPlaylist = {
+                ...state.singleMyPlaylist,
+                song: state.singleMyPlaylist.song.filter((item) => item.encodeId !== action.payload.song.encodeId),
+            };
+            state.myPlaylist = state.myPlaylist.map((item) => {
+                if (item.slug === action.payload.slug) {
+                    return {
+                        ...item,
+                        song: item.song.filter((item) => item.encodeId !== action.payload.song.encodeId),
+                    };
+                } else {
+                    return item;
+                }
+            });
+        },
+
+        setPopup: (state, action) => {
+            state.popup = action.payload;
+        },
+        deletePlaylist: (state, action) => {
+            state.myPlaylist = state.myPlaylist.filter((item) => item.slug !== action.payload);
+        },
     },
 });
 
 export const {
     play,
+    setLink,
     pause,
     loadSong,
     duration,
@@ -96,6 +176,7 @@ export const {
     mounted,
     setTop100,
     setAlbum,
+    setAlbumPlaying,
     setSearchResult,
     setPlaylist,
     setHomeMusic,
@@ -103,6 +184,14 @@ export const {
     setGenres,
     setGenresDetail,
     setLyricPage,
+    setVipSong,
+    setMyPlaylist,
+    addMyPlaylist,
+    setPopup,
+    deletePlaylist,
+    addSongPlaylist,
+    setSingleMyPlaylist,
+    deleteSongMyPlaylist,
 } = songSlice.actions;
 
 export default songSlice.reducer;

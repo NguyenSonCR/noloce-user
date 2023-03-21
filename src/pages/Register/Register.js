@@ -8,7 +8,7 @@ import Button from '~/components/Button';
 import { validation, setOnFocus } from '~/utils/validation';
 import authApi from '~/api/auth/auth';
 import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
-import setAuthToken from '~/utils/setAuthToken';
+import setAuthToken from '~/api/setAuthToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuth } from '~/slices/authSlice';
 import routes from '~/config/routes';

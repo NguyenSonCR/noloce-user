@@ -1,8 +1,9 @@
 import classNames from 'classnames/bind';
 import styles from './Playlist.module.scss';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import PlaylistItem from './playlistItem/PlaylistItem';
+import PlaylistItem from './PlaylistItem/PlaylistItem';
+import { setPlaylist } from '~/slices/songSlice';
 
 const cx = classNames.bind(styles);
 function Playlist() {
@@ -18,28 +19,37 @@ function Playlist() {
     const handleonAnimationEnd = () => {
         if (!songState.playlist) setRender(false);
     };
+    const dispatch = useDispatch();
 
     return (
         <div>
             {shouldRender && (
                 <div
-                    className={cx('wrapper')}
-                    style={{ animation: `${songState.playlist ? 'fadeIn' : 'fadeOut'} 0.6s ease-in forwards` }}
-                    onAnimationEnd={handleonAnimationEnd}
+                    className={cx('model')}
+                    onClick={() => {
+                        dispatch(setPlaylist(false));
+                    }}
                 >
-                    <div className={cx('header')}>
-                        <p className={cx('title')}>Danh sách đang phát</p>
-                    </div>
-                    <div className={cx('content')}>
-                        <div className={cx('content-header')}>
-                            <p>Tiếp theo</p>
-                            <p>
-                                Từ playlist
-                                <span className={cx('text-album')}> {songState.album && songState.album.title}</span>
-                            </p>
+                    <div
+                        className={cx('wrapper')}
+                        style={{ animation: `${songState.playlist ? 'fadeIn' : 'fadeOut'} 0.6s ease-in forwards` }}
+                        onAnimationEnd={handleonAnimationEnd}
+                    >
+                        <div className={cx('header')}>
+                            <p className={cx('title')}>Danh sách đang phát</p>
                         </div>
-                        <div className={cx('container')}>
-                            {songState.album && <PlaylistItem songList={songState.album.song.items} />}
+                        <div className={cx('content')} onClick={(event) => event.stopPropagation()}>
+                            <div className={cx('content-header')}>
+                                <p className={cx('content-header-text')}>
+                                    Từ Playlist
+                                    <span className={cx('text-album')}>
+                                        {songState.albumPlaying && songState.albumPlaying.title}
+                                    </span>
+                                </p>
+                            </div>
+                            <div className={cx('container')}>
+                                {songState.albumPlaying && <PlaylistItem songList={songState.albumPlaying.playlist} />}
+                            </div>
                         </div>
                     </div>
                 </div>

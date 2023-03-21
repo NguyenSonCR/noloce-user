@@ -1,16 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { setLyricPage } from '~/slices/songSlice';
 function Home() {
     const dispatch = useDispatch();
-    const authState = useSelector((state) => state.auth);
-
-    console.log(authState);
     useEffect(() => {
         dispatch(setLyricPage(false));
+        // eslint-disable-next-line
     }, []);
 
-    return <div>Home page</div>;
+    return <div>Home</div>;
 }
 
 export default Home;

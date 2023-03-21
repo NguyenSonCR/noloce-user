@@ -2,10 +2,10 @@ import styles from './SongConcept.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
-function SongConcept({ title, data, details }) {
+function SongConcept({ title, data, details, all, link }) {
     const navigate = useNavigate();
     const handleOnclick = (id) => {
         navigate(`/music/album/${id}`);
@@ -22,10 +22,14 @@ function SongConcept({ title, data, details }) {
             {!details && (
                 <div className={cx('content-header')}>
                     <p>{title}</p>
-                    <div className={cx('content-header-all')}>
-                        <p>Tất cả</p>
-                        <FontAwesomeIcon icon={faChevronRight} />
-                    </div>
+                    {all === false ? (
+                        <div></div>
+                    ) : (
+                        <Link to={link} className={cx('content-header-all')}>
+                            <p>Tất cả</p>
+                            <FontAwesomeIcon icon={faChevronRight} />
+                        </Link>
+                    )}
                 </div>
             )}
             <div className={cx('content-song')}>

@@ -1,5 +1,6 @@
+import setAuthToken from '../setAuthToken';
 import axiosJWT from '../setAxios';
-
+import { LOCAL_STORAGE_TOKEN_NAME } from '../constants';
 const authApi = {
     login: (formData) => {
         const url = '/users/login';
@@ -10,6 +11,9 @@ const authApi = {
         return axiosJWT.post(url, formData);
     },
     loadUser: () => {
+        if (localStorage[LOCAL_STORAGE_TOKEN_NAME]) {
+            setAuthToken(localStorage[LOCAL_STORAGE_TOKEN_NAME]);
+        }
         const url = '/users';
         return axiosJWT.get(url);
     },

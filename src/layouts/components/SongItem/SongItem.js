@@ -1,24 +1,44 @@
 import styles from './SongItem.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrophone, faHeart, faEllipsis, faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import { TbMicrophone2 } from 'react-icons/tb';
 import { useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadSong, play, pause, setSongLyric } from '~/slices/songSlice';
+import {
+    loadSong,
+    play,
+    pause,
+    setSongLyric,
+    setLink,
+    setAlbumPlaying,
+    setVipSong,
+    setLyricPage,
+    setPopup,
+    addSongPlaylist,
+    deleteSongMyPlaylist,
+} from '~/slices/songSlice';
+import { addSongLibrary, removeSongLibrary } from '~/slices/authSlice';
 import { TfiMusicAlt } from 'react-icons/tfi';
+import { AiOutlineHeart, AiFillHeart, AiOutlineDelete } from 'react-icons/ai';
 import musicApi from '~/api/music/musicApi';
 import React from 'react';
-import { addToast } from '~/slices/toastSlice';
 import axios from 'axios';
+import { addToast } from '~/slices/toastSlice';
+import { Wrapper as PopperWrapper } from '~/components/Popper';
+import { AiOutlinePlusCircle } from 'react-icons/ai';
+import { TfiComment } from 'react-icons/tfi';
+import { RiShareForwardLine } from 'react-icons/ri';
+import { BsDownload } from 'react-icons/bs';
 
 const cx = classNames.bind(styles);
 
-function SongItem({ songList }) {
+function SongItem({ songList, title, myPlaylist }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
-    const toastState = useSelector((state) => state.toast);
+    const authState = useSelector((state) => state.auth);
     const [choose, setChoose] = useState(false);
 
     // function
@@ -45,52 +65,81 @@ function SongItem({ songList }) {
         return value;
     };
 
-    const handleSelectSong = async (item) => {
+    const toastState = useSelector((state) => state.toast);
+
+    const handleSelectSong = (item) => {
+        dispatch(setAlbumPlaying({ playlist: songList, title }));
+        dispatch(play());
+        dispatch(loadSong(item));
+        const linkPromise = musicApi.getSong(item.encodeId);
+        const fileLyricPromise = musicApi.getLyricSong(item.encodeId);
+
+        Promise.all([linkPromise, fileLyricPromise])
+            .then((response) => {
+                if (response[0].success) {
+                    dispatch(
+                        setLink({
+                            link: response[0].data['128'],
+                            songId: response[0].info.encodeId,
+                        }),
+                    );
+                    dispatch(setVipSong(false));
+                } else {
+                    dispatch(
+                        addToast({
+                            id: toastState.toastList.length + 1,
+                            content: response[0].message,
+                            type: 'warning',
+                        }),
+                    );
+                    dispatch(setVipSong(true));
+                }
+                if (response[1].lyric.file && response[0].success) {
+                    const lyricPromise = axios.get(response[1].lyric.file, {
+                        headers: {
+                            'content-type': 'application/octet-stream',
+                        },
+                    });
+
+                    lyricPromise
+                        .then((lyric) => {
+                            const array = lyric.data.split('\n');
+                            const array1 = array.map((line) => {
+                                return {
+                                    startTime: convertTimeToNumber(line.slice(1, 9)),
+                                    words: line.slice(10, line.length),
+                                };
+                            });
+                            dispatch(
+                                setSongLyric({ lyric: array1, songId: response[0].info.encodeId, noLyric: false }),
+                            );
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    dispatch(
+                        setSongLyric({
+                            lyric: null,
+                            songId: null,
+                            noLyric: true,
+                        }),
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const handlePlayWithLyric = async (item) => {
         try {
-            const response = await musicApi.getSong(item.encodeId);
-            const responseLyric = await musicApi.getLyricSong(item.encodeId);
-
-            if (responseLyric.success) {
-                const lyric = await axios.get(responseLyric.lyric.file, {
-                    headers: {
-                        'content-type': 'application/octet-stream',
-                    },
-                });
-                const array = lyric.data.split('\n');
-                console.log(array);
-                const array1 = array.map((line) => {
-                    return {
-                        startTime: convertTimeToNumber(line.slice(1, 9)),
-                        words: line.slice(10, line.length),
-                    };
-                });
-                console.log(array1);
-                dispatch(setSongLyric(array1));
-            }
-
-            if (response.success && responseLyric.success) {
-                dispatch(
-                    loadSong({
-                        ...item,
-                        link: response.data['128'],
-                        thumbnailM: response.info.thumbnailM,
-                    }),
-                );
-                // dispatch(setSongLyric(responseLyric.lyric.sentences));
-            } else {
-                dispatch(
-                    addToast({
-                        id: toastState.toastList.length + 1,
-                        content: response.message,
-                        type: 'success',
-                    }),
-                );
-            }
+            await handleSelectSong(item);
+            dispatch(setLyricPage(true));
         } catch (error) {
             console.log(error);
         }
     };
-
     // scroll
 
     const refs = songList.reduce((song, value) => {
@@ -112,8 +161,130 @@ function SongItem({ songList }) {
         // eslint-disable-next-line
     }, [songState?.song?.encodeId]);
 
+    const handleAddLibrary = async (item) => {
+        dispatch(addSongLibrary(item));
+        dispatch(
+            addToast({
+                id: toastState.toastList.length + 1,
+                content: 'Đã thêm bài hát vào thư viện',
+                type: 'success',
+            }),
+        );
+        try {
+            await musicApi.addSongLibrary(item);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleRemoveLibrary = async (item) => {
+        dispatch(removeSongLibrary(item.encodeId));
+        dispatch(
+            addToast({
+                id: toastState.toastList.length + 1,
+                content: 'Đã xóa bài hát khỏi thư viện',
+                type: 'success',
+            }),
+        );
+        try {
+            await musicApi.removeSongLibrary({ id: item.encodeId });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleAddSongPlaylist = async ({ song, playlistId }) => {
+        try {
+            const response = await musicApi.addSongPlaylist({ song, playlistId });
+            if (response.success) {
+                dispatch(addSongPlaylist({ song, playlistId }));
+                dispatch(
+                    addToast({
+                        id: toastState.toastList.length + 1,
+                        content: response.message,
+                        type: 'success',
+                    }),
+                );
+            } else {
+                dispatch(
+                    addToast({
+                        id: toastState.toastList.length + 1,
+                        content: response.message,
+                        type: 'error',
+                    }),
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteSongPlaylist = async (data) => {
+        try {
+            const response = await musicApi.deleteSongMyPlaylist(data);
+            if (response.success) {
+                dispatch(deleteSongMyPlaylist(data));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    // popper
+    const renderItems = (item) => {
+        return (
+            <div className={cx('menu-body')}>
+                <div className={cx('menu-item')}>
+                    <AiOutlinePlusCircle className={cx('menu-item-icon')} />
+                    <div className={cx('menu-item-text')}>Thêm vào Playlist</div>
+                    <div className={cx('playlist-wraper')}>
+                        <PopperWrapper className={cx('playlist-content')}>
+                            <div className={cx('playlist-title')}>
+                                <AiOutlinePlusCircle className={cx('playlist-title-icon')} />
+                                <div className={cx('playlist-title-text')}>Tạo playlist mới</div>
+                            </div>
+                            {songState?.myPlaylist?.length > 0 &&
+                                songState.myPlaylist.map((playlist, index) => (
+                                    <div
+                                        className={cx('playlist-item')}
+                                        key={index}
+                                        onClick={() => handleAddSongPlaylist({ song: item, playlistId: playlist._id })}
+                                    >
+                                        {playlist.name}
+                                    </div>
+                                ))}
+                        </PopperWrapper>
+                    </div>
+                </div>
+                <div className={cx('menu-item')}>
+                    <TfiComment className={cx('menu-item-icon')} />
+                    <div className={cx('menu-item-text')}>Bình luận</div>
+                </div>
+                <div className={cx('menu-item')}>
+                    <BsDownload className={cx('menu-item-icon')} />
+                    <div className={cx('menu-item-text')}>Tải xuống</div>
+                </div>
+                <div className={cx('menu-item')}>
+                    <RiShareForwardLine className={cx('menu-item-icon')} />
+                    <div className={cx('menu-item-text')}>Chia sẻ</div>
+                </div>
+                {myPlaylist && (
+                    <div
+                        className={cx('menu-item')}
+                        onClick={() => handleDeleteSongPlaylist({ song: item, slug: songState.singleMyPlaylist.slug })}
+                    >
+                        <AiOutlineDelete className={cx('menu-item-icon')} />
+                        <div className={cx('menu-item-text')}>Xóa bài hát khỏi playlist</div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const [id, setId] = useState(null);
+
     return (
-        <div>
+        <div className={cx('content')}>
             {songList &&
                 songList.map((item, index) => (
                     <div
@@ -122,9 +293,6 @@ function SongItem({ songList }) {
                             'wrapper',
                             songState.song && songState.song.encodeId === item.encodeId && 'active',
                         )}
-                        onClick={() => {
-                            handleSelectSong(item);
-                        }}
                         ref={refs[item.encodeId]}
                     >
                         <div className={cx('song')}>
@@ -172,21 +340,44 @@ function SongItem({ songList }) {
                             <p> {item.album && item.album.title}</p>
                             <div className={cx('action')}>
                                 <Tippy content="Phát cùng lời bài hát">
-                                    <div className={cx('action-wrapper')}>
-                                        <FontAwesomeIcon className={cx('action-item')} icon={faMicrophone} />
+                                    <div className={cx('action-wrapper')} onClick={() => handlePlayWithLyric(item)}>
+                                        <TbMicrophone2 className={cx('icon-lyric')} />
                                     </div>
                                 </Tippy>
-                                <Tippy content="Thêm vào thư viện">
-                                    <div className={cx('action-wrapper')}>
-                                        <FontAwesomeIcon className={cx('action-item')} icon={faHeart} />
-                                    </div>
-                                </Tippy>
+                                {authState?.user?.music.library.find((song) => song.encodeId === item.encodeId) ? (
+                                    <Tippy content="Xóa bài hát khỏi thư viện">
+                                        <div className={cx('action-wrapper')} onClick={() => handleRemoveLibrary(item)}>
+                                            <AiFillHeart className={cx('icon-heart')} />
+                                        </div>
+                                    </Tippy>
+                                ) : (
+                                    <Tippy content="Thêm vào thư viện">
+                                        <div className={cx('action-wrapper')} onClick={() => handleAddLibrary(item)}>
+                                            <AiOutlineHeart className={cx('icon-heart')} />
+                                        </div>
+                                    </Tippy>
+                                )}
+
                                 <Tippy content="Khác">
                                     <div className={cx('action-wrapper')}>
-                                        <FontAwesomeIcon className={cx('action-item')} icon={faEllipsis} />
+                                        <FontAwesomeIcon
+                                            className={cx('action-item')}
+                                            icon={faEllipsis}
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                const value = !songState.popup;
+                                                dispatch(setPopup(value));
+                                                setId(item.encodeId);
+                                            }}
+                                        />
                                     </div>
                                 </Tippy>
                             </div>
+                            {songState && songState.popup && id === item.encodeId && (
+                                <div className={cx('menu-list')}>
+                                    <PopperWrapper className={cx('menu-popper')}>{renderItems(item)}</PopperWrapper>
+                                </div>
+                            )}
                             <p className={cx('duration')}>{calculateTime(item.duration)}</p>
                         </div>
                     </div>

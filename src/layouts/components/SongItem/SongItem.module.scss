@@ -96,12 +96,26 @@
     font-size: 1.6rem;
     font-weight: 400;
     color: var(--text-color);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    &:hover {
+        cursor: default;
+    }
 }
 
 .author {
     font-size: 1.4rem;
     font-weight: 300;
     color: var(--text-color);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    &:hover {
+        cursor: default;
+    }
 }
 
 .album {
@@ -114,6 +128,16 @@
     color: var(--text-color);
 }
 
+.album p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    &:hover {
+        cursor: default;
+    }
+}
+
 .action {
     display: none;
     justify-content: center;
@@ -121,6 +145,7 @@
 }
 
 .action-wrapper {
+    position: relative;
     width: 40px;
     height: 40px;
     display: flex;
@@ -153,6 +178,116 @@
     padding: 0 8px;
 }
 
+.icon-heart {
+    font-size: 1.6rem;
+    font-weight: 400;
+    width: 36px;
+    height: 36px;
+    color: var(--primary-color);
+    padding: 0 8px;
+}
+
+.icon-lyric {
+    font-size: 1.6rem;
+    font-weight: 400;
+    width: 32px;
+    height: 32px;
+    color: var(--primary-color);
+    padding: 0 8px;
+}
+
 .duration {
     display: block;
+}
+
+// popper
+.menu-popper {
+    background-color: var(--background-color);
+}
+.album {
+    position: relative;
+}
+.menu-list {
+    width: 200px;
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    z-index: 10;
+}
+
+.menu-item {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 8px 12px;
+    &:hover {
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.7);
+
+        .menu-item-text {
+            color: var(--primary-color);
+        }
+        .playlist-wraper {
+            display: flex;
+        }
+    }
+}
+.menu-item-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.menu-item-text {
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: var(--text-color);
+    padding: 4px 6px;
+    cursor: pointer;
+}
+
+.playlist-wraper {
+    position: absolute;
+    width: 150px;
+    top: 0;
+    left: -150px;
+    display: none;
+    z-index: 10;
+}
+
+.playlist-content {
+    background-color: var(--background-color);
+}
+
+.playlist-item {
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: var(--text-color);
+    padding: 4px 6px;
+    &:hover {
+        background-color: var(--white-color);
+        cursor: pointer;
+    }
+}
+
+.playlist-title {
+    font-weight: 300;
+    font-size: 1.3rem;
+    color: var(--text-color);
+    padding: 4px 6px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+        background-color: var(--white-color);
+    }
+}
+
+.playlist-title-icon {
+    margin-right: 4px;
+}
+
+.playlist-title-text {
+    cursor: pointer;
 }

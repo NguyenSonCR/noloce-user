@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
-function SongLyric({ audioPlayer }) {
+function SongLyric({ currentTime, loading }) {
     const [active, setActive] = useState(null);
     const songState = useSelector((state) => state.song);
     const [touch, setTouch] = useState(false);
@@ -19,7 +19,7 @@ function SongLyric({ audioPlayer }) {
     };
 
     useEffect(() => {
-        if (songState.songLyric && !touch && active !== null) {
+        if (songState.songLyric.lyric && !touch && active !== null) {
             handleClickScroll(active);
         } else {
             handleClickScroll(0);
@@ -28,28 +28,51 @@ function SongLyric({ audioPlayer }) {
     }, [active]);
 
     useEffect(() => {
-        if (songState.songLyric) {
+        if (songState.songLyric.lyric) {
             let array = [];
-            songState.songLyric.forEach((line) => {
-                if (audioPlayer.current.currentTime * 1000 >= line.startTime - 100) {
+            songState.songLyric.lyric.forEach((line) => {
+                if (currentTime * 1000 >= line.startTime - 100) {
                     array = [...array, true];
                 } else {
                     array = [...array, false];
                 }
             });
             const index = array.lastIndexOf(true);
-            console.log(index);
             setActive(index);
         }
 
         // eslint-disable-next-line
-    }, [audioPlayer?.current?.currentTime]);
+    }, [currentTime]);
+
+    const [lyricArray, setLyricArray] = useState(null);
+
+    useEffect(() => {
+        if (songState.songLyric.lyric && songState?.songLyric?.songId === songState.song.encodeId) {
+            setLyricArray(songState.songLyric.lyric);
+        }
+        // eslint-disable-next-line
+    }, [songState?.songLyric?.lyric]);
 
     return (
         <div className={cx('wrapper')} onMouseDown={() => setTouch(true)} onMouseUp={() => setTouch(false)}>
-            {
-                songState?.songLyric?.length > 0 &&
-                    songState.songLyric.map((line, index) => (
+            {loading ? (
+                <div className={cx('loading')}>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                    <div className={cx('item')} style={{ animation: 'loading 2s infinite' }}></div>
+                </div>
+            ) : lyricArray ? (
+                <div className={cx('lyric')}>
+                    {lyricArray?.map((line, index) => (
                         <p
                             key={index}
                             ref={(element) => {
@@ -59,11 +82,13 @@ function SongLyric({ audioPlayer }) {
                         >
                             {line.words}
                         </p>
-                    ))
-                // <div className={cx('no-lyrics')}>
-                //     Lời bài hát đang được cập nhật (chưa thực hiện đọc data từ file IRC)
-                // </div>
-            }
+                    ))}
+                </div>
+            ) : (
+                <div className={cx('no-lyric')}>
+                    <p>Mình đang cập nhật lời bài hát này nhé...</p>
+                </div>
+            )}
         </div>
     );
 }

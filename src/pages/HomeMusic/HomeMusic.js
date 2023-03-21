@@ -6,36 +6,46 @@ import SongConcept from '~/layouts/components/SongConcept';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import musicApi from '~/api/music/musicApi';
-import { setHomeMusic, setTop100, loadSong } from '~/slices/songSlice';
+import { setHomeMusic, loadSong } from '~/slices/songSlice';
 import { useNavigate } from 'react-router-dom';
 import Loading from '~/layouts/components/Loading';
 import NewSongConcept from '~/layouts/components/NewSongConcept';
 import NewSongRelease from '~/layouts/components/NewSongRelease';
+import config from '~/config';
 
 const cx = classNames.bind(styles);
 function HomeMusic() {
     const songState = useSelector((state) => state.song);
     const dispatch = useDispatch();
     useEffect(() => {
-        musicApi.getTop100Zing().then((response) => {
-            if (response.success) {
-                dispatch(setTop100(response.data));
-            }
-        });
-        musicApi.getHome().then((response) => {
-            if (response.success) {
-                dispatch(setHomeMusic(response.homeData.items));
-                setSongSlider(response.homeData.items[0].items.slice(0, 3));
-                setArray([
-                    ...response.homeData.items[0].items,
-                    response.homeData.items[0].items[0],
-                    response.homeData.items[0].items[1],
-                ]);
-            }
-        });
+        if (!songState.homeMusic) {
+            musicApi.getHome().then((response) => {
+                if (response.success) {
+                    dispatch(setHomeMusic(response.homeData.items));
+                    setSongSlider(response.homeData.items[0].items.slice(0, 3));
+                    setArray([
+                        ...response.homeData.items[0].items,
+                        response.homeData.items[0].items[0],
+                        response.homeData.items[0].items[1],
+                    ]);
+                }
+            });
+        }
+
         // eslint-disable-next-line
     }, []);
 
+    useEffect(() => {
+        if (songState.homeMusic) {
+            setArray([
+                ...songState.homeMusic[0].items,
+                songState.homeMusic[0].items[0],
+                songState.homeMusic[0].items[1],
+            ]);
+            setSongSlider(songState.homeMusic[0].items.slice(0, 3));
+        }
+        // eslint-disable-next-line
+    }, []);
     // slider
     const [array, setArray] = useState();
     const [index, setIndex] = useState(0);
@@ -126,12 +136,20 @@ function HomeMusic() {
                         } else if (concept.sectionType === 'RTChart') {
                             return (value = <div key={index}></div>);
                         } else if (concept.sectionType === 'newReleaseChart') {
-                            return (value = <NewSongRelease concept={concept} key={index} />);
+                            return (value = (
+                                <NewSongRelease concept={concept} key={index} link={config.routes.newRelease} />
+                            ));
                         } else if (concept.sectionType === 'new-release' && concept.sectionId !== 'hSlider') {
-                            return (value = <NewSongConcept key={index} />);
+                            return (value = <NewSongConcept key={index} link={config.routes.newRelease} />);
                         } else if (concept.items && concept.sectionId !== 'hSlider') {
                             const title = concept.title || '';
-                            return (value = <SongConcept key={index} title={title} data={concept} />);
+                            if (concept.title === 'Top 100') {
+                                return (value = (
+                                    <SongConcept key={index} title={title} data={concept} link={config.routes.top100} />
+                                ));
+                            }
+
+                            return (value = <SongConcept key={index} title={title} data={concept} all={false} />);
                         }
                         return value;
                     })

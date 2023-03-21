@@ -20,7 +20,6 @@ function Tranding() {
         <div className={cx('wrapper')}>
             <div className={cx(['row'])}>
                 {data?.results?.map((item, index) => {
-                    console.log(item);
                     const url = item.poster_path ? homeWebState.url.poster + item.poster_path : images.fallback;
                     return (
                         <div

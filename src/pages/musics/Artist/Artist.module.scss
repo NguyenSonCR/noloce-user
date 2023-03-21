@@ -1,0 +1,99 @@
+.song {
+    height: 400px;
+    overflow: auto;
+}
+
+tab3-list {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.title {
+    padding: 8px 12px;
+}
+
+.tab2-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+@keyframes hover {
+    0% {
+        left: 0;
+        width: 100%;
+        top: 0;
+    }
+    100% {
+        left: -2%;
+        width: 104%;
+        top: -2%;
+    }
+}
+
+.album-img {
+    width: 140px;
+    height: 140px;
+    &:hover {
+        cursor: pointer;
+        .item-img {
+            animation: hover 0.3s linear forwards;
+        }
+    }
+    overflow: hidden;
+    border-radius: 50%;
+    position: relative;
+}
+
+.item-img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.item-name {
+    text-align: center;
+}
+
+// about
+.about {
+    margin-top: 12px;
+}
+
+.about-title {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 2rem;
+    color: var(--text-color);
+    padding: 8px 12px;
+}
+
+.about-img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.about-info {
+    margin: 0;
+    list-style: none;
+}
+
+.about-info li {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 2rem;
+    color: var(--text-color);
+    padding: 8px 0;
+}
+
+.descreption {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text-color);
+    padding: 8px 0;
+    text-align: justify;
+}

@@ -71,17 +71,17 @@ function Navigation() {
                     },
                     {
                         title: 'Website giới thiệu',
-                        code: 'economic',
+                        code: 'preview',
                         to: config.routes.economic,
                     },
                     {
                         title: 'Website âm nhạc',
-                        code: 'economic',
+                        code: 'music',
                         to: config.routes.economic,
                     },
                     {
                         title: 'Website nhà hàng',
-                        code: 'economic',
+                        code: 'restaurant',
                         to: config.routes.economic,
                     },
                 ],

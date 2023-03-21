@@ -13,9 +13,11 @@ function Genres() {
     const genres = useSelector((state) => state.song.genres);
     const dispatch = useDispatch();
     useEffect(() => {
-        musicApi.getGenres().then((res) => {
-            dispatch(setGenres(res.genres));
-        });
+        if (!genres) {
+            musicApi.getGenres().then((res) => {
+                dispatch(setGenres(res.genres));
+            });
+        }
         // eslint-disable-next-line
     }, []);
 

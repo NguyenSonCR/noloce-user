@@ -4,10 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import PlaylistItem from '~/pages/musics/playlist/playlistItem';
+import PlaylistItem from '~/pages/musics/playlist/PlaylistItem';
+import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
-function NewSongConcept() {
+function NewSongConcept({ link }) {
     const songState = useSelector((state) => state.song);
     const [songs, setSongs] = useState(songState?.homeMusic?.find((item) => item.title === 'Mới phát hành').items.all);
     const [active, setActive] = useState(1);
@@ -40,21 +41,21 @@ function NewSongConcept() {
                             Quốc tế
                         </li>
                     </ul>
-                    <div className={cx('header-all')}>
+                    <Link to={link} className={cx('header-all')}>
                         <p>Tất cả</p>
                         <FontAwesomeIcon icon={faChevronRight} />
-                    </div>
+                    </Link>
                 </div>
             </div>
             <div className={cx(['row', 'sm-gutter'], 'container')}>
                 <div className={cx(['col', 'l-4'])}>
-                    <PlaylistItem songList={songs.slice(0, 4)} />
+                    <PlaylistItem songList={songs.slice(0, 4)} playlist={songs} scroll={true} />
                 </div>
                 <div className={cx(['col', 'l-4'])}>
-                    <PlaylistItem songList={songs.slice(4, 8)} />
+                    <PlaylistItem songList={songs.slice(4, 8)} playlist={songs} scroll={true} />
                 </div>
                 <div className={cx(['col', 'l-4'])}>
-                    <PlaylistItem songList={songs.slice(8, 12)} />
+                    <PlaylistItem songList={songs.slice(8, 12)} playlist={songs} scroll={true} />
                 </div>
             </div>
         </div>

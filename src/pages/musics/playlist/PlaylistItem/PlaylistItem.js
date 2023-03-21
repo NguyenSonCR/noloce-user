@@ -5,18 +5,17 @@ import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useState } from 'react';
 import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadSong, play, pause } from '~/slices/songSlice';
+import { loadSong, play, pause, setLink, setSongLyric, setAlbumPlaying } from '~/slices/songSlice';
 import { TfiMusicAlt } from 'react-icons/tfi';
 import musicApi from '~/api/music/musicApi';
 import React from 'react';
-import { addToast } from '~/slices/toastSlice';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-function PlaylistItem({ songList }) {
+function PlaylistItem({ songList, playlist, scroll }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
-    const toastState = useSelector((state) => state.toast);
     const [choose, setChoose] = useState(false);
 
     const handleChoose = () => {
@@ -27,35 +26,55 @@ function PlaylistItem({ songList }) {
         }
     };
 
-    useEffect(() => {}, [songState.item]);
-    const handleSelectSong = async (item) => {
+    const convertTimeToNumber = (string) => {
+        const minutes = string.slice(1, 2);
+        const seconds = string.slice(3, 9);
+        const value = Math.round(Number(minutes) * 60 * 1000 + Math.round(Number(seconds) * 1000));
+        return value;
+    };
+
+    const handleSelectSong = (item) => {
+        if (playlist) dispatch(setAlbumPlaying(playlist));
+        dispatch(play());
         dispatch(loadSong(item));
-        try {
-            const response = await musicApi.getSong(item.encodeId);
-            if (response.success) {
+        const linkPromise = musicApi.getSong(item.encodeId);
+        const fileLyricPromise = musicApi.getLyricSong(item.encodeId);
+
+        Promise.all([linkPromise, fileLyricPromise])
+            .then((response) => {
                 dispatch(
-                    loadSong({
-                        ...item,
-                        link: response.data['128'],
+                    setLink({
+                        link: response[0].data['128'],
+                        songId: response[0].info.encodeId,
                     }),
                 );
-            } else {
-                dispatch(
-                    addToast({
-                        id: toastState.toastList.length + 1,
-                        content: response.message,
-                        type: 'success',
-                    }),
-                );
-            }
-        } catch (error) {
-            console.log(error);
-        }
+                const lyricPromise = axios.get(response[1].lyric.file, {
+                    headers: {
+                        'content-type': 'application/octet-stream',
+                    },
+                });
+
+                lyricPromise
+                    .then((lyric) => {
+                        const array = lyric.data.split('\n');
+                        const array1 = array.map((line) => {
+                            return {
+                                startTime: convertTimeToNumber(line.slice(1, 9)),
+                                words: line.slice(10, line.length),
+                            };
+                        });
+                        dispatch(setSongLyric({ lyric: array1, songId: response[0].info.encodeId }));
+                    })
+                    .catch((error) => console.log(error));
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     // scroll
 
-    const refs = songList.reduce((song, value) => {
+    const refs = songList?.reduce((song, value) => {
         song[value.encodeId] = React.createRef();
         return song;
     }, {});
@@ -69,7 +88,7 @@ function PlaylistItem({ songList }) {
 
     useEffect(() => {
         if (songState.song) {
-            handleClickScroll(songState.song.encodeId);
+            if (!scroll) handleClickScroll(songState.song.encodeId);
         }
         // eslint-disable-next-line
     }, [songState?.song?.encodeId]);
@@ -77,6 +96,7 @@ function PlaylistItem({ songList }) {
     return (
         <div>
             {songList &&
+                songList.length > 0 &&
                 songList.map((item, index) => (
                     <div
                         key={index}

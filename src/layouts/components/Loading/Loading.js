@@ -2,7 +2,14 @@ import styles from './Loading.module.scss';
 import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
-function Loading() {
+function Loading({ single }) {
+    if (single) {
+        return (
+            <div className={cx('single')}>
+                <div className={cx('single-item')} style={{ animation: 'loading 2s infinite' }}></div>
+            </div>
+        );
+    }
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>

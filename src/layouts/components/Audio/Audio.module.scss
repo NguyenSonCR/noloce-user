@@ -83,6 +83,16 @@
     line-height: 2rem;
 }
 
+.info-song p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    &:hover {
+        cursor: default;
+    }
+}
+
 .info-icon {
     width: 40px;
     height: 40px;
@@ -161,6 +171,19 @@
     cursor: pointer;
 }
 
+.button-icon-load {
+    animation: rotate 1.5s linear infinite;
+    color: var(--primary-color);
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 .more {
     display: flex;
     justify-content: flex-end;
@@ -259,6 +282,7 @@
 }
 
 .lyrics-content-img {
+    width: 400px;
     flex: 1;
     padding: 24px;
 }
@@ -308,4 +332,9 @@
     font-weight: 400;
     font-size: 1.6rem;
     padding: 0 4px;
+    user-select: none; /* standard syntax */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
 }

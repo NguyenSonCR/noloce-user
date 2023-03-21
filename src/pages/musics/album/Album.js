@@ -3,30 +3,120 @@ import classNames from 'classnames/bind';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import SongItem from '~/layouts/components/SongItem';
 import { setAlbum } from '~/slices/songSlice';
 import musicApi from '~/api/music/musicApi';
-import Loading from '~/layouts/components/Loading';
 
 const cx = classNames.bind(styles);
 
 function Album() {
-    const { id } = useParams();
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
+    const { id } = useParams();
+    let condition;
+    if (id === songState?.album?.encodeId) {
+        condition = false;
+    } else {
+        condition = true;
+    }
+    const [loading, setLoading] = useState(condition);
+
     useEffect(() => {
-        musicApi.getAlbumZing(id).then((response) => {
-            dispatch(setAlbum(response.data));
-        });
+        if (loading) {
+            musicApi.getAlbumZing(id).then((response) => {
+                dispatch(setAlbum(response.data));
+                setLoading(false);
+            });
+        }
+
         // eslint-disable-next-line
-    }, []);
+    }, [songState?.album?.encodeId]);
 
     let body = null;
-    if (songState.album) {
+    if (loading) {
+        body = (
+            <div className={cx('loading', ['row'])}>
+                <div className={cx(['col', 'l-4'])}>
+                    <div className={cx('center')}>
+                        <div className={cx('loading-img')} style={{ animation: 'loading 2s infinite' }}></div>
+                        <p className={cx('single-loading')} style={{ animation: 'loading 2s infinite' }}></p>
+                        <p className={cx('single-loading')} style={{ animation: 'loading 2s infinite' }}></p>
+                    </div>
+                </div>
+                <div className={cx(['col', 'l-8'])}>
+                    <p className={cx('single-loading')} style={{ animation: 'loading 2s infinite' }}></p>
+                    <p className={cx('single-loading')} style={{ animation: 'loading 2s infinite' }}></p>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                    <div className={cx('loading-song')}>
+                        <div className={cx('loading-song-img')}></div>
+                        <div className={cx('loading-song-content')}>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                            <p className={cx('single-loading-song')} style={{ animation: 'loading 2s infinite' }}></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    } else {
         body = (
             <div className={cx('wrapper', ['row'])}>
                 <div className={cx(['col', 'l-4'])}>
@@ -72,18 +162,11 @@ function Album() {
                                 <p className={cx('album__item')}>Thời gian</p>
                             </div>
                         </div>
-                        <SongItem songList={songState.album.song.items} />
+                        <div className={cx('content-body-song')}>
+                            <SongItem songList={songState.album.song.items} title={songState.album.title} />
+                        </div>
                     </ul>
                 </div>
-            </div>
-        );
-    } else {
-        body = (
-            <div>
-                <Loading />
-                <Loading />
-                <Loading />
-                <Loading />
             </div>
         );
     }

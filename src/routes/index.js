@@ -14,8 +14,11 @@ import CinemaSearch from '~/pages/CinemaSearch';
 import Details from '~/pages/Cinema/details';
 import Top100 from '~/pages/musics/top100/Top100';
 import Album from '~/pages/musics/album/Album';
-import SearchMusic from '~/pages/musics/search/SearchMusic';
+import SearchMusic from '~/pages/musics/Search/SearchMusic';
 import GenreDetail from '~/pages/musics/genres/genreDetail';
+import Artist from '~/pages/musics/Artist';
+import NewRelease from '~/pages/musics/NewRelease';
+import MyPlaylist from '~/pages/musics/MyPlaylist';
 
 const publicRoutes = [
     // general
@@ -26,9 +29,11 @@ const publicRoutes = [
     // music
     { path: config.routes.music, component: HomeMusic },
     { path: config.routes.searchMusic, component: SearchMusic },
-    { path: config.routes.myMusic, component: MyMusic },
     { path: config.routes.genresMusic, component: GenresMusic },
     { path: config.routes.genresDetail, component: GenreDetail },
+    { path: config.routes.artist, component: Artist },
+    { path: config.routes.newRelease, component: NewRelease },
+    { path: config.routes.myPlaylist, component: MyPlaylist },
 
     { path: config.routes.top100, component: Top100 },
     { path: config.routes.albumMusic, component: Album },
@@ -43,5 +48,5 @@ const publicRoutes = [
     { path: config.routes.economic, component: Economic },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [{ path: config.routes.myMusic, component: MyMusic }];
 export { publicRoutes, privateRoutes };

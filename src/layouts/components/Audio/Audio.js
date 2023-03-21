@@ -19,18 +19,25 @@ import {
     setPlaylist,
     setSongLyric,
     setLyricPage,
+    setLink,
+    setVipSong,
 } from '~/slices/songSlice';
 import images from '~/assets/img';
 import { TbMicrophone2 } from 'react-icons/tb';
 import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs';
 import { RxTrackNext, RxTrackPrevious, RxPause, RxPlay, RxShuffle, RxLoop, RxListBullet } from 'react-icons/rx';
+import { FaSpinner } from 'react-icons/fa';
 import musicApi from '~/api/music/musicApi';
 import SongLyric from '~/layouts/components/SongLyric';
+import { addToast } from '~/slices/toastSlice';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 function AudioSong() {
     // get store redux
     const songState = useSelector((state) => state.song);
+    const toastState = useSelector((state) => state.toast);
+
     const dispatch = useDispatch();
 
     // state
@@ -38,43 +45,98 @@ function AudioSong() {
     const pageLyrics = songState.lyricPage;
     const [currentTime, setCurrentTime] = useState(0);
     const [seeking, setSeeking] = useState(false);
+    const [loading, setLoading] = useState(false);
     // references
     const audioPlayer = useRef(); // reference our audio component
     const progressBar = useRef(); // reference our progress bar
     const animationRef = useRef(); // reference the animation currenttime
     const progressRef = useRef(); // reference the animation progress
 
+    // setting step
+    const step = 1;
+
     // useEffect
     // play and pause
     useEffect(() => {
-        if (songState.isPlay) {
-            audioPlayer.current.play();
-            animationRef.current = requestAnimationFrame(whilePlaying);
-            progressRef.current = requestAnimationFrame(whileSeeking);
-        } else {
+        if (songState.link.link === null) return;
+        if (songState.isPlay === false) {
             audioPlayer.current.pause();
-            cancelAnimationFrame(animationRef.current);
             cancelAnimationFrame(progressRef.current);
+            cancelAnimationFrame(animationRef.current);
+            return;
+        }
+        if (songState.isPlay) {
+            const playPromise = audioPlayer.current.play();
+            if (playPromise !== undefined) {
+                playPromise
+                    .then((_) => {
+                        animationRef.current = requestAnimationFrame(whilePlaying);
+                        progressRef.current = requestAnimationFrame(whileSeeking);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
         }
         // eslint-disable-next-line
     }, [songState.isPlay]);
 
-    // setting step
-    const step = 1;
-
+    // console.log(audioPlayer?.current?.paused);
     // change song
     useEffect(() => {
-        progressBar.current.max = songState.song.duration * step;
-        if (songState.isPlay) {
+        if (songState.link.link === null || songState.song.encodeId !== songState.link.songId) return;
+        if (songState.song.encodeId === songState.link.songId)
+            if (songState.isPlay && audioPlayer?.current?.paused === false) {
+                audioPlayer.current.pause();
+                if (songState.song.encodeId === songState.link.songId) {
+                    audioPlayer.current = new Audio(songState.link.link);
+                    setLoading(false);
+                    const playPromise = audioPlayer.current.play();
+                    if (playPromise !== undefined) {
+                        playPromise
+                            .then((_) => {
+                                animationRef.current = requestAnimationFrame(whilePlaying);
+                                progressRef.current = requestAnimationFrame(whileSeeking);
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    }
+                }
+            } else if (songState.isPlay && audioPlayer?.current?.paused === true) {
+                if (songState.song.encodeId === songState.link.songId) {
+                    audioPlayer.current = new Audio(songState.link.link);
+                    setLoading(false);
+                    const playPromise = audioPlayer.current.play();
+                    if (playPromise !== undefined) {
+                        playPromise
+                            .then((_) => {
+                                animationRef.current = requestAnimationFrame(whilePlaying);
+                                progressRef.current = requestAnimationFrame(whileSeeking);
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    }
+                }
+            } else if (songState.isPlay === false) {
+                audioPlayer.current = new Audio(songState.link.link);
+                setLoading(false);
+            }
+        // eslint-disable-next-line
+    }, [songState.link]);
+
+    // set current time and progress
+    useEffect(() => {
+        if (audioPlayer?.current?.paused === false) {
+            progressBar.current.max = songState.song.duration * step;
+            setLoading(true);
             audioPlayer.current.pause();
-            audioPlayer.current = new Audio(songState.song.link);
-            audioPlayer.current.play();
-            animationRef.current = requestAnimationFrame(whilePlaying);
-            progressRef.current = requestAnimationFrame(whileSeeking);
+            audioPlayer.current.currentTime = 0;
         } else {
-            audioPlayer.current = new Audio(songState.song.link);
-            animationRef.current = requestAnimationFrame(whilePlaying);
-            progressRef.current = requestAnimationFrame(whileSeeking);
+            progressBar.current.max = songState.song.duration * step;
+            audioPlayer.current.currentTime = 0;
+            setLoading(true);
         }
         // eslint-disable-next-line
     }, [songState.song]);
@@ -120,7 +182,14 @@ function AudioSong() {
         } else {
             audioPlayer.current.volume = songState.volume;
         }
+        // eslint-disable-next-line
     }, [songState.isPlay, songState.volume, songState.muted]);
+
+    useEffect(() => {
+        if (songState.vipSong) {
+            handleNextSong();
+        }
+    }, [songState.vipSong, toastState.toastList]);
 
     // handle duration and progress
 
@@ -159,60 +228,102 @@ function AudioSong() {
 
     const handleClose = () => {
         dispatch(pause());
+        dispatch(setPlaylist(false));
         dispatch(mounted());
+    };
+
+    const convertTimeToNumber = (string) => {
+        const minutes = string.slice(1, 2);
+        const seconds = string.slice(3, 9);
+        const value = Math.round(Number(minutes) * 60 * 1000 + Math.round(Number(seconds) * 1000));
+        return value;
+    };
+
+    const handleAsyncFunctionSong = (songId) => {
+        const linkPromise = musicApi.getSong(songState.albumPlaying.playlist[songId].encodeId);
+        const fileLyricPromise = musicApi.getLyricSong(songState.albumPlaying.playlist[songId].encodeId);
+
+        Promise.all([linkPromise, fileLyricPromise])
+            .then((response) => {
+                if (response[0].success) {
+                    dispatch(
+                        setLink({
+                            link: response[0].data['128'],
+                            songId: response[0].info.encodeId,
+                        }),
+                    );
+                    dispatch(setVipSong(false));
+                } else {
+                    dispatch(
+                        addToast({
+                            id: toastState.toastList.length + 1,
+                            content: response[0].message,
+                            type: 'warning',
+                        }),
+                    );
+                    dispatch(setVipSong(true));
+                }
+                if (response[1].lyric.file && response[0].success) {
+                    const lyricPromise = axios.get(response[1].lyric.file, {
+                        headers: {
+                            'content-type': 'application/octet-stream',
+                        },
+                    });
+
+                    lyricPromise
+                        .then((lyric) => {
+                            const array = lyric.data.split('\n');
+                            const array1 = array.map((line) => {
+                                return {
+                                    startTime: convertTimeToNumber(line.slice(1, 9)),
+                                    words: line.slice(10, line.length),
+                                };
+                            });
+                            dispatch(
+                                setSongLyric({ lyric: array1, songId: response[0].info.encodeId, noLyric: false }),
+                            );
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    dispatch(
+                        setSongLyric({
+                            lyric: null,
+                            songId: null,
+                            noLyric: true,
+                        }),
+                    );
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     const handleShuffleSong = async () => {
         try {
-            const randomId = Math.floor(Math.random() * songState.album.song.items.length);
-            const response = await musicApi.getSong(songState.album.song.items[randomId].encodeId);
-            const responseLyric = await musicApi.getLyricSong(songState.album.song.items[randomId].encodeId);
-            if (response.success) {
-                dispatch(
-                    loadSong({
-                        ...songState.album.song.items[randomId],
-                        link: response.data['128'],
-                    }),
-                );
-            }
-            if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
+            const randomId = Math.floor(Math.random() * songState.albumPlaying.playlist.length);
+            dispatch(loadSong(songState.albumPlaying.playlist[randomId]));
+            handleAsyncFunctionSong(randomId);
         } catch (error) {
             console.log(error);
         }
     };
 
-    const index = songState?.album?.song.items.findIndex((song) => song.encodeId === songState.song.encodeId);
-
+    const index = songState?.albumPlaying.playlist?.findIndex((song) => song.encodeId === songState.song.encodeId);
     const handleNextSong = async () => {
         if (songState.random) {
             handleShuffleSong();
         } else {
             try {
-                if (index === songState.album.song.items.length - 1) {
-                    const response = await musicApi.getSong(songState.album.song.items[0].encodeId);
-                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[0].encodeId);
-                    if (response.success) {
-                        dispatch(
-                            loadSong({
-                                ...songState.album.song.items[0],
-                                link: response.data['128'],
-                            }),
-                        );
-                    }
-                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
+                if (index === songState.albumPlaying.playlist.length - 1) {
+                    dispatch(loadSong(songState.albumPlaying.playlist[0]));
+                    handleAsyncFunctionSong(0);
                 } else {
                     const songId = index + 1;
-                    const response = await musicApi.getSong(songState.album.song.items[songId].encodeId);
-                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[songId].encodeId);
-                    if (response.success) {
-                        dispatch(
-                            loadSong({
-                                ...songState.album.song.items[songId],
-                                link: response.data['128'],
-                            }),
-                        );
-                    }
-                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
+                    dispatch(loadSong(songState.albumPlaying.playlist[songId]));
+                    handleAsyncFunctionSong(songId);
                 }
             } catch (error) {
                 console.log(error);
@@ -226,31 +337,13 @@ function AudioSong() {
         } else {
             try {
                 if (index === 0) {
-                    const songId = songState.album.song.items.length - 1;
-                    const response = await musicApi.getSong(songState.album.song.items[songId].encodeId);
-                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[songId].encodeId);
-                    if (response.success) {
-                        dispatch(
-                            loadSong({
-                                ...songState.album.song.items[songId],
-                                link: response.data['128'],
-                            }),
-                        );
-                    }
-                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
+                    const songId = songState.albumPlaying.playlist.length - 1;
+                    dispatch(loadSong(songState.albumPlaying.playlist[songId]));
+                    handleAsyncFunctionSong(songId);
                 } else {
                     const songId = index - 1;
-                    const response = await musicApi.getSong(songState.album.song.items[songId].encodeId);
-                    const responseLyric = await musicApi.getLyricSong(songState.album.song.items[songId].encodeId);
-                    if (response.success) {
-                        dispatch(
-                            loadSong({
-                                ...songState.album.song.items[songId],
-                                link: response.data['128'],
-                            }),
-                        );
-                    }
-                    if (responseLyric.success) dispatch(setSongLyric(responseLyric.lyric.sentences));
+                    dispatch(loadSong(songState.albumPlaying.playlist[songId]));
+                    handleAsyncFunctionSong(songId);
                 }
             } catch (error) {
                 console.log(error);
@@ -265,8 +358,9 @@ function AudioSong() {
 
     const timeSong = Math.round(currentTime);
 
-    useEffect(() => {
-        if (timeSong !== 0 && timeSong === songState.song.duration && songState.song) {
+    // next song
+    const handleOnEnded = () => {
+        if (songState.song && timeSong !== 0 && timeSong === songState.song.duration) {
             if (songState.loop) {
                 handleLoopSong();
             } else if (songState.random) {
@@ -274,6 +368,12 @@ function AudioSong() {
             } else {
                 handleNextSong();
             }
+        }
+    };
+
+    useEffect(() => {
+        if (songState.song && timeSong !== 0 && timeSong === songState.song.duration) {
+            handleOnEnded();
         }
         // eslint-disable-next-line
     }, [timeSong]);
@@ -289,8 +389,10 @@ function AudioSong() {
 
     return (
         <div className={cx(!songState.mounted && 'show')}>
-            {songState.song && <audio src={songState.song.link} ref={audioPlayer} preload={'metadata'}></audio>}
             <div className={cx('wrapper', pageLyrics && 'page_lyrics', small && 'small')}>
+                {songState.song && (
+                    <audio id="audio" src={songState.link} ref={audioPlayer} preload={'metadata'}></audio>
+                )}
                 {!pageLyrics && (
                     <div className={cx('responsive')}>
                         <div
@@ -343,9 +445,13 @@ function AudioSong() {
                             </div>
                         </div>
                         <div className={cx('lyrics-content')}>
-                            <img className={cx('lyrics-content-img')} src={songState.song.thumbnailM} alt=""></img>
+                            <img
+                                className={cx('lyrics-content-img')}
+                                src={songState.song.thumbnailM.replace('w240_r1x1_jpeg', 'w480_r1x1_webp')}
+                                alt=""
+                            ></img>
                             <div className={cx('lyrics-content-text')}>
-                                <SongLyric audioPlayer={audioPlayer} />
+                                <SongLyric currentTime={audioPlayer.current.currentTime} loading={loading} />
                             </div>
                         </div>
                     </div>
@@ -361,7 +467,12 @@ function AudioSong() {
                         <div className={cx('button-list')} onClick={handlePreSong}>
                             <RxTrackPrevious className={cx('button-icon')} />
                         </div>
-                        {!songState.isPlay ? (
+
+                        {loading === true ? (
+                            <div className={cx('button-list-play')} onClick={() => dispatch(play())}>
+                                <FaSpinner className={cx('button-icon-load')} />
+                            </div>
+                        ) : songState.isPlay === false ? (
                             <div className={cx('button-list-play')} onClick={() => dispatch(play())}>
                                 <RxPlay className={cx('button-icon-play')} />
                             </div>
@@ -370,7 +481,14 @@ function AudioSong() {
                                 <RxPause className={cx('button-icon-pause')} />
                             </div>
                         )}
-                        <div className={cx('button-list')} onClick={handleNextSong}>
+
+                        <div
+                            className={cx('button-list')}
+                            onClick={(event) => {
+                                event.preventDefault();
+                                handleNextSong();
+                            }}
+                        >
                             <RxTrackNext className={cx('button-icon')} />
                         </div>
                         <Tippy content="Lặp lại bài hát">
@@ -395,7 +513,13 @@ function AudioSong() {
                 </div>
                 {!pageLyrics && (
                     <div className={cx('more')}>
-                        <div className={cx('more-wrapper')} onClick={() => dispatch(setLyricPage(true))}>
+                        <div
+                            className={cx('more-wrapper')}
+                            onClick={() => {
+                                dispatch(setPlaylist(false));
+                                dispatch(setLyricPage(true));
+                            }}
+                        >
                             <TbMicrophone2 className={cx('more-icon')} />
                         </div>
 
@@ -445,7 +569,13 @@ function AudioSong() {
                             </div>
                         )}
                         <div className={cx('responsive-small')}>
-                            <div className={cx('button-close')} onClick={() => setSmall(false)}>
+                            <div
+                                className={cx('button-close')}
+                                onClick={() => {
+                                    dispatch(setPlaylist(false));
+                                    setSmall(false);
+                                }}
+                            >
                                 <img className={cx('responsive-icon')} src={images.enlarge} alt=""></img>
                             </div>
                             <div className={cx('button-close')} onClick={handleClose}>
