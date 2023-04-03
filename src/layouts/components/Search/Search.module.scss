@@ -18,7 +18,12 @@
     }
 }
 
+.mobile .wrapper {
+    width: 200px;
+}
+
 .input {
+    width: 100%;
     padding: 4px 8px;
     flex: 1;
     outline: none;
@@ -74,6 +79,10 @@
 // search result
 .search-result {
     width: 360px;
+}
+
+.mobile .search-result {
+    width: 240px;
 }
 
 .search-result-body {

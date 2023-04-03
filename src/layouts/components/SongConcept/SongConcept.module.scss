@@ -3,6 +3,10 @@
     margin-bottom: 24px;
 }
 
+.mobile {
+    padding: 0 4px;
+}
+
 .content-header {
     display: flex;
     justify-content: space-between;
@@ -56,6 +60,10 @@
         }
     }
     overflow: hidden;
+}
+
+.mobile .song-img {
+    height: 200px;
 }
 
 @keyframes hover {

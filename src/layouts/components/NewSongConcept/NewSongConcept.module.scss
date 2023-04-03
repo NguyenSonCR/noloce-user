@@ -10,6 +10,22 @@
     margin-bottom: 8px;
 }
 
+.header-title-text {
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    padding: 0 4px;
+}
+
+.mobile .header-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--text-color);
+}
+
 .header-action {
     display: flex;
     align-items: center;

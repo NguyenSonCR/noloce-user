@@ -128,7 +128,7 @@ function MyMusic() {
                         </div>
                     </div>
                     <div className={cx('content-songs')}>
-                        {authState?.user?.music?.library && <SongItem songList={authState.user.music.library} />}
+                        {authState?.user?.library && <SongItem songList={authState.user.library} />}
                     </div>
                 </ul>
             </div>

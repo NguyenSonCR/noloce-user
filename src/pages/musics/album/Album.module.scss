@@ -60,6 +60,11 @@
     display: flex;
 }
 
+.mobile .song-list {
+    display: flex;
+    flex-direction: column;
+}
+
 .song-img {
     position: relative;
     width: 100%;
@@ -75,6 +80,11 @@
         }
     }
     overflow: hidden;
+}
+
+.mobile .song-img {
+    width: 260px;
+    align-self: center;
 }
 
 @keyframes hover {
@@ -166,6 +176,18 @@
         rgba(217, 210, 249, 0.6)
     );
 }
+.mobile-loading {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-loading .single-loading {
+    width: 70%;
+}
+
 .single-loading {
     margin: 8px;
     width: 90%;

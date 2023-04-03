@@ -12,10 +12,13 @@ import { setSearchResult } from '~/slices/songSlice';
 import { useDebounce } from '~/hooks';
 import PlaylistItem from '~/pages/musics/playlist/PlaylistItem';
 import config from '~/config';
+import useViewport from '~/hooks/useViewport';
 
 const cx = classNames.bind(styles);
 
 function Search({ visible }) {
+    const viewPort = useViewport();
+    const isMobile = viewPort.width < 740;
     const songState = useSelector((state) => state.song);
     const searchResult = songState?.searchResult;
     const [query, setQuery] = useState('');
@@ -98,110 +101,225 @@ function Search({ visible }) {
         setQuery('');
     };
 
-    return (
-        <Tippy
-            delay={[0, 300]}
-            visible={visible ? visible : show}
-            interactive
-            render={(attrs) => (
-                <div className={cx('search-result')} tabIndex="-1" {...attrs}>
-                    <Wrapper className={cx('search-result-popper')}>
-                        <div
-                            className={cx('search-result-body')}
-                            onMouseDown={(e) => e.preventDefault()}
-                            onClick={(event) => {
-                                event.stopPropagation();
-                                inputRef.current.blur();
-                            }}
-                        >
-                            <div className={cx('search-result-header')}>
-                                <FontAwesomeIcon
-                                    icon={faMagnifyingGlass}
-                                    className={cx('result-icon')}
-                                ></FontAwesomeIcon>
-                                <p className={cx('result-text')}>Gợi ý kết quả</p>
-                            </div>
-                            <div className={cx('result-content')}>
-                                {searchResult && (
-                                    <div className={cx('list')}>
-                                        {searchResult.artists && (
-                                            <Link
-                                                to={`/music/artist/${searchResult.artists[0].alias}`}
-                                                className={cx('artist')}
-                                            >
-                                                <img
-                                                    className={cx('artist-img')}
-                                                    src={searchResult.artists[0].thumbnailM}
-                                                    alt=""
-                                                ></img>
-                                                <div className={cx('text')}>
-                                                    <p>{searchResult.artists[0].name}</p>
-                                                    <p>Nghệ sĩ</p>
-                                                </div>
-                                            </Link>
-                                        )}
-                                        {searchResult.playlists && (
-                                            <Link
-                                                to={`/music/album/${searchResult.playlists[0].encodeId}`}
-                                                className={cx('playlist')}
-                                            >
-                                                <img
-                                                    alt=""
-                                                    className={cx('playlist-img')}
-                                                    src={searchResult.playlists[0].thumbnail}
-                                                ></img>
-
-                                                <div className={cx('text')}>
-                                                    <p>{searchResult.playlists[0].title}</p>
-                                                    <p>Allbum</p>
-                                                </div>
-                                            </Link>
-                                        )}
-
-                                        <PlaylistItem
-                                            playlist={searchResult.songs}
-                                            songList={searchResult.songs.slice(0, 3)}
-                                        />
+    let body = null;
+    if (isMobile) {
+        body = (
+            <div className={cx('mobile')}>
+                <Tippy
+                    delay={[0, 300]}
+                    visible={visible ? visible : show}
+                    interactive
+                    render={(attrs) => (
+                        <div className={cx('search-result')} tabIndex="-1" {...attrs}>
+                            <Wrapper className={cx('search-result-popper')}>
+                                <div
+                                    className={cx('search-result-body')}
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        inputRef.current.blur();
+                                    }}
+                                >
+                                    <div className={cx('search-result-header')}>
+                                        <FontAwesomeIcon
+                                            icon={faMagnifyingGlass}
+                                            className={cx('result-icon')}
+                                        ></FontAwesomeIcon>
+                                        <p className={cx('result-text')}>Gợi ý kết quả</p>
                                     </div>
-                                )}
-                            </div>
-                            <div className={cx('footer')}>
-                                <Link to={config.routes.searchMusic} className={cx('footer-link')}>
-                                    Xem tất cả
-                                </Link>
-                            </div>
+                                    <div className={cx('result-content')}>
+                                        {searchResult && (
+                                            <div className={cx('list')}>
+                                                {searchResult.artists && (
+                                                    <Link
+                                                        to={`/music/artist/${searchResult.artists[0].alias}`}
+                                                        className={cx('artist')}
+                                                    >
+                                                        <img
+                                                            className={cx('artist-img')}
+                                                            src={searchResult.artists[0].thumbnailM}
+                                                            alt=""
+                                                        ></img>
+                                                        <div className={cx('text')}>
+                                                            <p>{searchResult.artists[0].name}</p>
+                                                            <p>Nghệ sĩ</p>
+                                                        </div>
+                                                    </Link>
+                                                )}
+                                                {searchResult.playlists && (
+                                                    <Link
+                                                        to={`/music/album/${searchResult.playlists[0].encodeId}`}
+                                                        className={cx('playlist')}
+                                                    >
+                                                        <img
+                                                            alt=""
+                                                            className={cx('playlist-img')}
+                                                            src={searchResult.playlists[0].thumbnail}
+                                                        ></img>
+
+                                                        <div className={cx('text')}>
+                                                            <p>{searchResult.playlists[0].title}</p>
+                                                            <p>Allbum</p>
+                                                        </div>
+                                                    </Link>
+                                                )}
+
+                                                <PlaylistItem
+                                                    playlist={searchResult.songs}
+                                                    songList={searchResult.songs.slice(0, 3)}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={cx('footer')}>
+                                        <Link to={config.routes.searchMusic} className={cx('footer-link')}>
+                                            Xem tất cả
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Wrapper>
                         </div>
-                    </Wrapper>
-                </div>
-            )}
-        >
-            <div className={cx('wrapper')}>
-                <input
-                    ref={inputRef}
-                    className={cx('input')}
-                    placeholder="Tìm kiếm "
-                    spellCheck={false}
-                    onChange={handleOnChange}
-                    onKeyUp={handleEnter}
-                    value={query}
-                    onBlur={() => {
-                        setShow(false);
-                    }}
-                    onFocus={() => {
-                        if (searchResult) setShow(true);
-                    }}
-                ></input>
+                    )}
+                >
+                    <div className={cx('wrapper')}>
+                        <input
+                            ref={inputRef}
+                            className={cx('input')}
+                            placeholder="Tìm kiếm "
+                            spellCheck={false}
+                            onChange={handleOnChange}
+                            onKeyUp={handleEnter}
+                            value={query}
+                            onBlur={() => {
+                                setShow(false);
+                            }}
+                            onFocus={() => {
+                                if (searchResult) setShow(true);
+                            }}
+                        ></input>
 
-                {!loading && <FontAwesomeIcon icon={faCircleXmark} className={cx('clear')} onClick={handleClear} />}
+                        {!loading && (
+                            <FontAwesomeIcon icon={faCircleXmark} className={cx('clear')} onClick={handleClear} />
+                        )}
 
-                {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
-                <div className={cx('split')}></div>
-                <div className={cx('search-btn')} onClick={handleClickSearch}>
-                    <FontAwesomeIcon icon={faMagnifyingGlass} className={cx('search-btn-icon')} />
-                </div>
+                        {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
+                        <div className={cx('split')}></div>
+                        <div className={cx('search-btn')} onClick={handleClickSearch}>
+                            <FontAwesomeIcon icon={faMagnifyingGlass} className={cx('search-btn-icon')} />
+                        </div>
+                    </div>
+                </Tippy>
             </div>
-        </Tippy>
-    );
+        );
+    }
+
+    if (!isMobile) {
+        body = (
+            <Tippy
+                delay={[0, 300]}
+                visible={visible ? visible : show}
+                interactive
+                render={(attrs) => (
+                    <div className={cx('search-result')} tabIndex="-1" {...attrs}>
+                        <Wrapper className={cx('search-result-popper')}>
+                            <div
+                                className={cx('search-result-body')}
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    inputRef.current.blur();
+                                }}
+                            >
+                                <div className={cx('search-result-header')}>
+                                    <FontAwesomeIcon
+                                        icon={faMagnifyingGlass}
+                                        className={cx('result-icon')}
+                                    ></FontAwesomeIcon>
+                                    <p className={cx('result-text')}>Gợi ý kết quả</p>
+                                </div>
+                                <div className={cx('result-content')}>
+                                    {searchResult && (
+                                        <div className={cx('list')}>
+                                            {searchResult.artists && (
+                                                <Link
+                                                    to={`/music/artist/${searchResult.artists[0].alias}`}
+                                                    className={cx('artist')}
+                                                >
+                                                    <img
+                                                        className={cx('artist-img')}
+                                                        src={searchResult.artists[0].thumbnailM}
+                                                        alt=""
+                                                    ></img>
+                                                    <div className={cx('text')}>
+                                                        <p>{searchResult.artists[0].name}</p>
+                                                        <p>Nghệ sĩ</p>
+                                                    </div>
+                                                </Link>
+                                            )}
+                                            {searchResult.playlists && (
+                                                <Link
+                                                    to={`/music/album/${searchResult.playlists[0].encodeId}`}
+                                                    className={cx('playlist')}
+                                                >
+                                                    <img
+                                                        alt=""
+                                                        className={cx('playlist-img')}
+                                                        src={searchResult.playlists[0].thumbnail}
+                                                    ></img>
+
+                                                    <div className={cx('text')}>
+                                                        <p>{searchResult.playlists[0].title}</p>
+                                                        <p>Allbum</p>
+                                                    </div>
+                                                </Link>
+                                            )}
+
+                                            <PlaylistItem
+                                                playlist={searchResult.songs}
+                                                songList={searchResult.songs.slice(0, 3)}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className={cx('footer')}>
+                                    <Link to={config.routes.searchMusic} className={cx('footer-link')}>
+                                        Xem tất cả
+                                    </Link>
+                                </div>
+                            </div>
+                        </Wrapper>
+                    </div>
+                )}
+            >
+                <div className={cx('wrapper')}>
+                    <input
+                        ref={inputRef}
+                        className={cx('input')}
+                        placeholder="Tìm kiếm "
+                        spellCheck={false}
+                        onChange={handleOnChange}
+                        onKeyUp={handleEnter}
+                        value={query}
+                        onBlur={() => {
+                            setShow(false);
+                        }}
+                        onFocus={() => {
+                            if (searchResult) setShow(true);
+                        }}
+                    ></input>
+
+                    {!loading && <FontAwesomeIcon icon={faCircleXmark} className={cx('clear')} onClick={handleClear} />}
+
+                    {loading && <FontAwesomeIcon className={cx('loading')} icon={faSpinner} />}
+                    <div className={cx('split')}></div>
+                    <div className={cx('search-btn')} onClick={handleClickSearch}>
+                        <FontAwesomeIcon icon={faMagnifyingGlass} className={cx('search-btn-icon')} />
+                    </div>
+                </div>
+            </Tippy>
+        );
+    }
+    return body;
 }
 
 export default Search;

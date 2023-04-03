@@ -8,12 +8,18 @@ import Audio from '~/layouts/components/Audio';
 import Playlist from '~/pages/musics/playlist/Playlist';
 import Toast from './layouts/components/Toast';
 import ProtectedRoute from '~/routing/ProtectedRoute';
+import useViewport from './hooks/useViewport';
+import AudioMobile from './layouts/components/AudioMobile';
 
 function App() {
     const songState = useSelector((state) => state.song);
+    const viewPort = useViewport();
+    const isMobile = viewPort.width < 740;
+    var container = document.querySelector('#container');
+
     return (
         <Router>
-            <div className="App">
+            <div className="app" id="container">
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         let Layout = DefaultLayout;
@@ -58,7 +64,9 @@ function App() {
                         );
                     })}
                 </Routes>
-                {songState.song && <Audio />}
+
+                {songState.song && !isMobile && <Audio container={container} />}
+                {songState.song && isMobile && <AudioMobile container={container} />}
                 {<Playlist />}
                 <Toast />
             </div>

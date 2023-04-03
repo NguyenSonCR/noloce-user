@@ -26,6 +26,7 @@ const ProtectedRoute = ({ children }) => {
                     dispatch(setAuth({ user: null, isAuthenticated: false }));
                 });
         }
+        // eslint-disable-next-line
     }, [authState.isLoading]);
 
     if (authState.isLoading)

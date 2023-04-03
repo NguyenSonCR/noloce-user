@@ -12,10 +12,15 @@ import Loading from '~/layouts/components/Loading';
 import NewSongConcept from '~/layouts/components/NewSongConcept';
 import NewSongRelease from '~/layouts/components/NewSongRelease';
 import config from '~/config';
+import useViewport from '~/hooks/useViewport';
 
 const cx = classNames.bind(styles);
 function HomeMusic() {
     const songState = useSelector((state) => state.song);
+
+    const viewPort = useViewport();
+    const isMobile = viewPort.width < 740;
+
     const dispatch = useDispatch();
     useEffect(() => {
         if (!songState.homeMusic) {
@@ -31,7 +36,6 @@ function HomeMusic() {
                 }
             });
         }
-
         // eslint-disable-next-line
     }, []);
 
@@ -76,94 +80,182 @@ function HomeMusic() {
     const handleChooseSlide = async (item) => {
         if (item.type === 4) {
             navigate(`/music/album/${item.encodeId}`);
-        } else if (item.type === 1) {
-            try {
-                const response = await musicApi.getSong(item.encodeId);
-                if (response.success) {
-                    dispatch(
-                        loadSong({
-                            ...response.info,
-                            link: response.data['128'],
-                        }),
-                    );
-                }
-            } catch (error) {
-                console.log(error);
-            }
         }
+        // else if (item.type === 1) {
+        //     console.log(item);
+        //     try {
+        //         const response = await musicApi.getSong(item.encodeId);
+        //         if (response.success) {
+        //             dispatch(setAlbumPlaying({ playlist: [...item]}));
+        //             dispatch(
+        //                 loadSong({
+        //                     ...response.info,
+        //                     link: response.data['128'],
+        //                 }),
+        //             );
+        //         }
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // }
     };
 
-    return (
-        <div className={cx('wrapper')}>
-            {songSlider ? (
-                <div className={cx(['row', 'sm-gutter'], 'slider')}>
-                    <div className={cx('button')} onClick={handlePreSlider}>
-                        <FontAwesomeIcon className={cx('icon')} icon={faChevronLeft} />
-                    </div>
-                    {songSlider.map((item, index) => (
-                        <div key={index} className={cx(['col', 'l-4'])} onClick={() => handleChooseSlide(item)}>
-                            <img className={cx('img')} src={item.banner} alt=""></img>
-                        </div>
-                    ))}
+    let body = null;
+    if (isMobile) {
+        body = (
+            <div className={cx('mobile')}>
+                <div className={cx('wrapper')}>
+                    {songSlider ? (
+                        <div className={cx(['row', 'sm-gutter'], 'slider')}>
+                            <div className={cx('button')} onClick={handlePreSlider}>
+                                <FontAwesomeIcon className={cx('icon')} icon={faChevronLeft} />
+                            </div>
+                            {songSlider.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className={cx(['col', 'l-4', 'm-6', 'c-12'])}
+                                    onClick={() => handleChooseSlide(item)}
+                                >
+                                    <img className={cx('img')} src={item.banner} alt=""></img>
+                                </div>
+                            ))}
 
-                    <div className={cx('button-right')} onClick={handleNextSlider}>
-                        <FontAwesomeIcon className={cx('icon')} icon={faChevronRight} />
-                    </div>
-                </div>
-            ) : (
-                <div className={cx('slider')}>
-                    <div className={cx(['row', 'sm-gutter', 'slider-loading'])}>
-                        <div className={cx(['col', 'l-4'])}>
-                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            <div className={cx('button-right')} onClick={handleNextSlider}>
+                                <FontAwesomeIcon className={cx('icon')} icon={faChevronRight} />
+                            </div>
                         </div>
-                        <div className={cx(['col', 'l-4'])}>
-                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                    ) : (
+                        <div className={cx(['row'])}>
+                            <div className={cx(['col', 'l-4', 'm-6', 'c-12'])}>
+                                <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            </div>
                         </div>
-                        <div className={cx(['col', 'l-4'])}>
-                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
-                        </div>
-                    </div>
-                </div>
-            )}
-            <div>
-                {songState.homeMusic ? (
-                    songState.homeMusic.map((concept, index) => {
-                        let value = null;
-                        if (concept.sectionType === 'weekChart' || concept.sectionType === 'livestream') {
-                            return (value = <div key={index}></div>);
-                        } else if (concept.sectionType === 'artistSpotlight') {
-                            return (value = <div key={index}></div>);
-                        } else if (concept.sectionType === 'RTChart') {
-                            return (value = <div key={index}></div>);
-                        } else if (concept.sectionType === 'newReleaseChart') {
-                            return (value = (
-                                <NewSongRelease concept={concept} key={index} link={config.routes.newRelease} />
-                            ));
-                        } else if (concept.sectionType === 'new-release' && concept.sectionId !== 'hSlider') {
-                            return (value = <NewSongConcept key={index} link={config.routes.newRelease} />);
-                        } else if (concept.items && concept.sectionId !== 'hSlider') {
-                            const title = concept.title || '';
-                            if (concept.title === 'Top 100') {
-                                return (value = (
-                                    <SongConcept key={index} title={title} data={concept} link={config.routes.top100} />
-                                ));
-                            }
-
-                            return (value = <SongConcept key={index} title={title} data={concept} all={false} />);
-                        }
-                        return value;
-                    })
-                ) : (
+                    )}
                     <div>
-                        <Loading />
-                        <Loading />
-                        <Loading />
-                        <Loading />
+                        {songState.homeMusic ? (
+                            songState.homeMusic.map((concept, index) => {
+                                let value = null;
+                                if (concept.sectionType === 'weekChart' || concept.sectionType === 'livestream') {
+                                    return (value = <div key={index}></div>);
+                                } else if (concept.sectionType === 'artistSpotlight') {
+                                    return (value = <div key={index}></div>);
+                                } else if (concept.sectionType === 'RTChart') {
+                                    return (value = <div key={index}></div>);
+                                } else if (concept.sectionType === 'newReleaseChart') {
+                                    return (value = (
+                                        <NewSongRelease concept={concept} key={index} link={config.routes.newRelease} />
+                                    ));
+                                } else if (concept.sectionType === 'new-release' && concept.sectionId !== 'hSlider') {
+                                    return (value = <NewSongConcept key={index} link={config.routes.newRelease} />);
+                                } else if (concept.items && concept.sectionId !== 'hSlider') {
+                                    const title = concept.title || '';
+                                    if (concept.title === 'Top 100') {
+                                        return (value = (
+                                            <SongConcept
+                                                key={index}
+                                                title={title}
+                                                data={concept}
+                                                link={config.routes.top100}
+                                            />
+                                        ));
+                                    }
+
+                                    return (value = (
+                                        <SongConcept key={index} title={title} data={concept} all={false} />
+                                    ));
+                                }
+                                return value;
+                            })
+                        ) : (
+                            <div className={cx('content-loading')}>
+                                <Loading />
+                                <Loading />
+                                <Loading />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isMobile) {
+        body = (
+            <div className={cx('wrapper')}>
+                {songSlider ? (
+                    <div className={cx(['row', 'sm-gutter'], 'slider')}>
+                        <div className={cx('button')} onClick={handlePreSlider}>
+                            <FontAwesomeIcon className={cx('icon')} icon={faChevronLeft} />
+                        </div>
+                        {songSlider.map((item, index) => (
+                            <div key={index} className={cx(['col', 'l-4'])} onClick={() => handleChooseSlide(item)}>
+                                <img className={cx('img')} src={item.banner} alt=""></img>
+                            </div>
+                        ))}
+
+                        <div className={cx('button-right')} onClick={handleNextSlider}>
+                            <FontAwesomeIcon className={cx('icon')} icon={faChevronRight} />
+                        </div>
+                    </div>
+                ) : (
+                    <div className={cx(['row', 'sm-gutter'])}>
+                        <div className={cx(['col', 'l-4'])}>
+                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                        </div>
+                        <div className={cx(['col', 'l-4'])}>
+                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                        </div>
+                        <div className={cx(['col', 'l-4'])}>
+                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                        </div>
                     </div>
                 )}
+                <div>
+                    {songState.homeMusic ? (
+                        songState.homeMusic.map((concept, index) => {
+                            let value = null;
+                            if (concept.sectionType === 'weekChart' || concept.sectionType === 'livestream') {
+                                return (value = <div key={index}></div>);
+                            } else if (concept.sectionType === 'artistSpotlight') {
+                                return (value = <div key={index}></div>);
+                            } else if (concept.sectionType === 'RTChart') {
+                                return (value = <div key={index}></div>);
+                            } else if (concept.sectionType === 'newReleaseChart') {
+                                return (value = (
+                                    <NewSongRelease concept={concept} key={index} link={config.routes.newRelease} />
+                                ));
+                            } else if (concept.sectionType === 'new-release' && concept.sectionId !== 'hSlider') {
+                                return (value = <NewSongConcept key={index} link={config.routes.newRelease} />);
+                            } else if (concept.items && concept.sectionId !== 'hSlider') {
+                                const title = concept.title || '';
+                                if (concept.title === 'Top 100') {
+                                    return (value = (
+                                        <SongConcept
+                                            key={index}
+                                            title={title}
+                                            data={concept}
+                                            link={config.routes.top100}
+                                        />
+                                    ));
+                                }
+
+                                return (value = <SongConcept key={index} title={title} data={concept} all={false} />);
+                            }
+                            return value;
+                        })
+                    ) : (
+                        <div>
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return body;
 }
 
 export default HomeMusic;

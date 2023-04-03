@@ -12,9 +12,12 @@ import { useEffect } from 'react';
 import authApi from '~/api/auth/auth';
 import { setAuth } from '~/slices/authSlice';
 import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
+import useViewport from '~/hooks/useViewport';
 
 const cx = classNames.bind(styles);
 function Header() {
+    const viewPort = useViewport();
+    const isMobile = viewPort.width < 740;
     const userMenu = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
@@ -53,47 +56,98 @@ function Header() {
 
     const userState = useSelector((state) => state.auth);
 
-    return (
-        <div className={cx('wrapper')}>
-            <div className={cx(['grid', 'wide'])}>
-                <div className={cx(['row'])}>
-                    <div className={cx(['col', 'l-12'])}>
-                        <div className={cx('header')}>
-                            <div className={cx('logo')}>
-                                <Link className={cx('logo-link')} to={config.routes.home}>
-                                    <img src={images.logo} alt="logo" className={cx('logo-img')}></img>
-                                </Link>
-                                <Link to={config.routes.home} className={cx('logo-text')}>
-                                    Noloce
-                                </Link>
-                            </div>
-                            <div className={cx('search')}>
-                                <Search />
-                            </div>
-                            <div className={cx('action')}>
-                                <div className={cx('notify')}></div>
-                                {userState.isAuthenticated ? (
-                                    <Menu items={userMenu}>
-                                        <div className={cx('user')}>
-                                            <img src={images.avatar} alt="user" className={cx('user-img')}></img>
-                                            <span className={cx('user-name')}>{userState.user.username}</span>
-                                        </div>
-                                    </Menu>
-                                ) : (
-                                    <div className={cx('authentication')}>
-                                        <Link to={config.routes.register} className={cx('register')}>
-                                            Đăng ký
+    let body = null;
+    if (isMobile) {
+        body = (
+            <div className={cx('mobile')}>
+                <div className={cx('wrapper')}>
+                    <div className={cx(['grid', 'wide'])}>
+                        <div className={cx(['row'])}>
+                            <div className={cx(['col', 'l-12', 'm-12', 'c-12'])}>
+                                <div className={cx('header')}>
+                                    <div className={cx('logo')}>
+                                        <Link className={cx('logo-link')} to={config.routes.home}>
+                                            <img src={images.logo} alt="logo" className={cx('logo-img')}></img>
                                         </Link>
-                                        <Link to={config.routes.login}>Đăng nhập</Link>
                                     </div>
-                                )}
+                                    <div className={cx('search')}>
+                                        <Search />
+                                    </div>
+                                    <div className={cx('action')}>
+                                        <div className={cx('notify')}></div>
+                                        {userState.isAuthenticated ? (
+                                            <Menu items={userMenu}>
+                                                <div className={cx('user')}>
+                                                    <img
+                                                        src={images.avatar}
+                                                        alt="user"
+                                                        className={cx('user-img')}
+                                                    ></img>
+                                                    <span className={cx('user-name')}>{userState.user.username}</span>
+                                                </div>
+                                            </Menu>
+                                        ) : (
+                                            <div className={cx('authentication')}>
+                                                <Link className={cx('mobile-login')} to={config.routes.login}>
+                                                    Đăng nhập
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+
+    if (!isMobile) {
+        body = (
+            <div className={cx('wrapper')}>
+                <div className={cx(['grid', 'wide'])}>
+                    <div className={cx(['row'])}>
+                        <div className={cx(['col', 'l-12'])}>
+                            <div className={cx('header')}>
+                                <div className={cx('logo')}>
+                                    <Link className={cx('logo-link')} to={config.routes.home}>
+                                        <img src={images.logo} alt="logo" className={cx('logo-img')}></img>
+                                    </Link>
+                                    <Link to={config.routes.home} className={cx('logo-text')}>
+                                        Noloce
+                                    </Link>
+                                </div>
+                                <div className={cx('search')}>
+                                    <Search />
+                                </div>
+                                <div className={cx('action')}>
+                                    <div className={cx('notify')}></div>
+                                    {userState.isAuthenticated ? (
+                                        <Menu items={userMenu}>
+                                            <div className={cx('user')}>
+                                                <img src={images.avatar} alt="user" className={cx('user-img')}></img>
+                                                <span className={cx('user-name')}>{userState.user.username}</span>
+                                            </div>
+                                        </Menu>
+                                    ) : (
+                                        <div className={cx('authentication-web')}>
+                                            <Link to={config.routes.register} className={cx('register')}>
+                                                Đăng ký
+                                            </Link>
+                                            <Link to={config.routes.login}>Đăng nhập</Link>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return body;
 }
 
 export default Header;

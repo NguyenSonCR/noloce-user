@@ -22,6 +22,16 @@
     padding: 4px 12px;
 }
 
+.mobile .header-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    padding: 4px;
+}
+
 .content-header-all {
     display: flex;
     justify-content: center;

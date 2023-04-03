@@ -13,7 +13,7 @@ import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-function PlaylistItem({ songList, playlist, scroll }) {
+function PlaylistItem({ songList, playlist, title, scroll }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
     const [choose, setChoose] = useState(false);
@@ -34,7 +34,12 @@ function PlaylistItem({ songList, playlist, scroll }) {
     };
 
     const handleSelectSong = (item) => {
-        if (playlist) dispatch(setAlbumPlaying(playlist));
+        if (playlist) {
+            dispatch(setAlbumPlaying({ playlist: playlist, title }));
+        } else {
+            dispatch(setAlbumPlaying({ playlist: songList, title }));
+        }
+
         dispatch(play());
         dispatch(loadSong(item));
         const linkPromise = musicApi.getSong(item.encodeId);
@@ -94,7 +99,7 @@ function PlaylistItem({ songList, playlist, scroll }) {
     }, [songState?.song?.encodeId]);
 
     return (
-        <div>
+        <div className={cx('body')}>
             {songList &&
                 songList.length > 0 &&
                 songList.map((item, index) => (

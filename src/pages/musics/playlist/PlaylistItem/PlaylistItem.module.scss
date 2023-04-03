@@ -29,6 +29,10 @@
     }
 }
 
+.body {
+    overflow: auto;
+}
+
 .wrapper.active {
     background-color: rgb(174, 157, 250);
 }

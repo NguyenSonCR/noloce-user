@@ -21,7 +21,7 @@ export const authSlice = createSlice({
             state.isLoading = false;
         },
         addSongLibrary: (state, action) => {
-            const newLibrary = [...state.user.music.library, action.payload];
+            const newLibrary = [...state.user.library, action.payload];
             state.user = {
                 ...state.user,
                 music: {
@@ -31,7 +31,7 @@ export const authSlice = createSlice({
             };
         },
         removeSongLibrary: (state, action) => {
-            const newLibrary = state.user.music.library.filter((item) => item.encodeId !== action.payload);
+            const newLibrary = state.user.library.filter((item) => item.encodeId !== action.payload);
             state.user = {
                 ...state.user,
                 music: {

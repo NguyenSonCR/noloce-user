@@ -48,7 +48,12 @@ function Playlist() {
                                 </p>
                             </div>
                             <div className={cx('container')}>
-                                {songState.albumPlaying && <PlaylistItem songList={songState.albumPlaying.playlist} />}
+                                {songState.albumPlaying && (
+                                    <PlaylistItem
+                                        songList={songState.albumPlaying.playlist}
+                                        title={songState.albumPlaying.title}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>

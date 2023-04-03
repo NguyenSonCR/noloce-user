@@ -1,4 +1,3 @@
-import Home from '~/pages/Home';
 import HomeMusic from '~/pages/HomeMusic';
 import Cinema from '~/pages/Cinema';
 import Search from '~/pages/Search';
@@ -22,7 +21,7 @@ import MyPlaylist from '~/pages/musics/MyPlaylist';
 
 const publicRoutes = [
     // general
-    { path: config.routes.home, component: Home },
+    { path: config.routes.home, component: HomeMusic },
     { path: config.routes.register, component: Register, layout: null },
     { path: config.routes.login, component: Login, layout: null },
     { path: config.routes.search, component: Search, layout: HeaderOnly },

@@ -2,12 +2,20 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    margin-bottom: 8px;
 }
 
 .wrapper {
     margin-top: 48px;
 }
 
+.mobile .header-title {
+    width: 250px;
+}
+
+.mobile .loading-item {
+    margin-bottom: 18px;
+}
 .header-title {
     width: 300px;
     height: 32px;
@@ -25,10 +33,6 @@
         rgba(217, 210, 249, 0.6),
         rgba(217, 210, 249, 0.6)
     );
-}
-
-.body {
-    margin-top: 32px;
 }
 
 .item-loading {

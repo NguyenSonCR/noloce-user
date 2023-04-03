@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import styles from './Audio.module.scss';
+import styles from './AudioMobile.module.scss';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faEllipsis, faChevronDown } from '@fortawesome/free-solid-svg-icons';
@@ -10,27 +10,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     play,
     pause,
-    volume,
-    muted,
     loop,
     random,
     mounted,
     loadSong,
     setPlaylist,
     setSongLyric,
-    setLyricPage,
     setLink,
     setVipSong,
 } from '~/slices/songSlice';
 import images from '~/assets/img';
-import { TbMicrophone2 } from 'react-icons/tb';
-import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs';
-import { RxTrackNext, RxTrackPrevious, RxPause, RxPlay, RxShuffle, RxLoop, RxListBullet } from 'react-icons/rx';
+import { RxTrackNext, RxTrackPrevious, RxPause, RxPlay, RxShuffle, RxLoop } from 'react-icons/rx';
 import { FaSpinner } from 'react-icons/fa';
 import musicApi from '~/api/music/musicApi';
 import SongLyric from '~/layouts/components/SongLyric';
 import { addToast } from '~/slices/toastSlice';
 import axios from 'axios';
+import PlaylistItem from '~/pages/musics/playlist/PlaylistItem';
 
 const cx = classNames.bind(styles);
 function AudioSong({ container }) {
@@ -41,8 +37,7 @@ function AudioSong({ container }) {
     const dispatch = useDispatch();
 
     // state
-    const [small, setSmall] = useState(false);
-    const pageLyrics = songState.lyricPage;
+    const [small, setSmall] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
     const [seeking, setSeeking] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -51,9 +46,36 @@ function AudioSong({ container }) {
     const progressBar = useRef(); // reference our progress bar
     const animationRef = useRef(); // reference the animation currenttime
     const progressRef = useRef(); // reference the animation progress
+    const imgRef = useRef();
+    const imgAnimate = useRef;
 
     // setting step
     const step = 1;
+
+    const [tab, setTab] = useState(2);
+
+    // rotate cd
+
+    useEffect(() => {
+        if (imgRef.current) {
+            imgAnimate.current = imgRef.current.animate(
+                [
+                    {
+                        transform: 'rotate(0)',
+                    },
+                    {
+                        transform: 'rotate(359deg)',
+                    },
+                ],
+                {
+                    duration: 30000,
+                    iterations: Infinity,
+                },
+            );
+        }
+        if (imgAnimate.current) imgAnimate.current.pause();
+        // eslint-disable-next-line
+    }, [imgRef.current, songState.song]);
 
     // useEffect
     // play and pause
@@ -63,6 +85,7 @@ function AudioSong({ container }) {
             audioPlayer.current.pause();
             cancelAnimationFrame(progressRef.current);
             cancelAnimationFrame(animationRef.current);
+            if (imgAnimate.current) imgAnimate.current.pause();
             return;
         }
         if (songState.isPlay) {
@@ -72,6 +95,7 @@ function AudioSong({ container }) {
                     .then((_) => {
                         animationRef.current = requestAnimationFrame(whilePlaying);
                         progressRef.current = requestAnimationFrame(whileSeeking);
+                        if (imgAnimate.current) imgAnimate.current.play();
                     })
                     .catch((error) => {
                         console.log(error);
@@ -96,6 +120,7 @@ function AudioSong({ container }) {
                             .then((_) => {
                                 animationRef.current = requestAnimationFrame(whilePlaying);
                                 progressRef.current = requestAnimationFrame(whileSeeking);
+                                if (imgAnimate.current) imgAnimate.current.play();
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -112,6 +137,7 @@ function AudioSong({ container }) {
                             .then((_) => {
                                 animationRef.current = requestAnimationFrame(whilePlaying);
                                 progressRef.current = requestAnimationFrame(whileSeeking);
+                                if (imgAnimate.current) imgAnimate.current.play();
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -190,16 +216,6 @@ function AudioSong({ container }) {
         }
         // eslint-disable-next-line
     }, [songState.vipSong, toastState.toastList]);
-
-    // handle duration and progress
-
-    const handleMuted = () => {
-        dispatch(muted(true));
-    };
-
-    const handleChangeVolume = (event) => {
-        dispatch(volume(event.target.value / 100));
-    };
 
     // loop
     useEffect(() => {
@@ -372,22 +388,11 @@ function AudioSong({ container }) {
         audioPlayer.current.onended = () => {
             handleOnEnded();
         };
-
         // eslint-disable-next-line
     }, [currentTime]);
 
-    // playlist
-    const onChangePlaylist = () => {
-        if (songState.playlist) {
-            dispatch(setPlaylist(false));
-        } else {
-            dispatch(setPlaylist(true));
-        }
-    };
-
     // drag
     const smallAudioRef = useRef();
-
     var active = false;
     var currentX;
     var currentY;
@@ -402,7 +407,6 @@ function AudioSong({ container }) {
     }, [small]);
 
     container?.addEventListener('touchstart', dragStart);
-    container?.addEventListener('touchend', dragEnd);
     container?.addEventListener('touchend', dragEnd);
     container?.addEventListener('touchmove', drag);
 
@@ -453,181 +457,143 @@ function AudioSong({ container }) {
         el.style.transform = 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)';
     }
 
+    if (small) {
+        document.body.classList.remove('model');
+    } else {
+        document.body.classList.add('model');
+    }
+
     return (
         <div className={cx(!songState.mounted && 'show')}>
-            <div className={cx('wrapper', pageLyrics && 'page_lyrics', small && 'small')}>
-                {songState.song && (
-                    <audio
-                        id="audio"
-                        src={songState.link}
-                        ref={audioPlayer}
-                        preload={'metadata'}
-                        onEnded={() => {
-                            console.log('end song');
-                        }}
-                    ></audio>
-                )}
-                {!pageLyrics && (
-                    <div className={cx('responsive')}>
+            <div className={cx('wrapper', small && 'small')}>
+                <audio id="audio" src={songState.link} ref={audioPlayer} preload={'metadata'}></audio>
+                <div className={cx('body')}>
+                    <div className={cx('header')}>
+                        <div className={cx('header-tab')}>
+                            <p className={cx('header-item', tab === 1 && 'active')} onClick={() => setTab(1)}>
+                                Playlist
+                            </p>
+                            <p className={cx('header-item', tab === 2 && 'active')} onClick={() => setTab(2)}>
+                                Bài hát
+                            </p>
+                            <p className={cx('header-item', tab === 3 && 'active')} onClick={() => setTab(3)}>
+                                Lời bài hát
+                            </p>
+                        </div>
                         <div
-                            className={cx('button-close')}
+                            className={cx('header-icon')}
                             onClick={() => {
-                                if (songState.playlist) {
-                                    dispatch(setPlaylist(false));
-                                }
                                 setSmall(true);
                             }}
                         >
-                            <img alt="" className={cx('responsive-icon')} src={images.shrink}></img>
-                        </div>
-                        <div className={cx('button-close')}>
-                            <CloseIcon
-                                className={cx('responsive-icon')}
-                                onClick={() => {
-                                    handleClose();
-                                }}
-                            />
+                            <FontAwesomeIcon icon={faChevronDown} />
                         </div>
                     </div>
-                )}
-                {!pageLyrics && (
-                    <div className={cx('info')}>
-                        <img alt="" className={cx('info-img')} src={songState.song && songState.song.thumbnailM}></img>
-                        <div className={cx('info-song')}>
-                            <p>{songState.song && songState.song.title}</p>
-                            <p>{songState.song && songState.song.artistNames}</p>
-                        </div>
-                        <div className={cx('info-icon')}>
-                            <FontAwesomeIcon icon={faHeart} />
-                        </div>
-                        <div className={cx('info-icon')}>
-                            <FontAwesomeIcon icon={faEllipsis} />
-                        </div>
-                    </div>
-                )}
-                {pageLyrics && (
-                    <div className={cx('lyrics')}>
-                        <div className={cx('lyrics-header')}>
-                            <div className={cx('lyrics-logo')}></div>
-                            <div className={cx('lyrics-title')}>
-                                <p>Lời bài hát</p>
-                            </div>
-                            <div className={cx('lyrics-icon')} onClick={() => dispatch(setLyricPage(false))}>
-                                <div className={cx('button-list')}>
-                                    <FontAwesomeIcon icon={faChevronDown} />
+                    <img
+                        ref={imgRef}
+                        className={cx('song-img', tab === 2 && 'active')}
+                        src={songState.song.thumbnailM.replace('w240_r1x1_jpeg', 'w480_r1x1_webp')}
+                        alt=""
+                    ></img>
+
+                    {tab === 2 ? (
+                        <div className={cx('song')}>
+                            <div className={cx('song-info')}>
+                                <div className={cx('info-icon')}>
+                                    <FontAwesomeIcon icon={faEllipsis} />
+                                </div>
+                                <div className={cx('info-song')}>
+                                    <p>{songState.song && songState.song.title}</p>
+                                    <p>{songState.song && songState.song.artistNames}</p>
+                                </div>
+                                <div className={cx('info-icon')}>
+                                    <FontAwesomeIcon icon={faHeart} />
                                 </div>
                             </div>
                         </div>
-                        <div className={cx('lyrics-content')}>
-                            <img
-                                className={cx('lyrics-content-img')}
-                                src={songState.song.thumbnailM.replace('w240_r1x1_jpeg', 'w480_r1x1_webp')}
-                                alt=""
-                            ></img>
-                            <div className={cx('lyrics-content-text')}>
-                                <SongLyric currentTime={audioPlayer.current.currentTime} loading={loading} />
+                    ) : tab === 1 ? (
+                        <div className={cx('playlist')}>
+                            <div className={cx('playlist-header')}>
+                                <p>
+                                    Đang phát từ playlist:{' '}
+                                    <span className={cx('text-album')}>
+                                        {songState.albumPlaying && songState.albumPlaying.title}
+                                    </span>
+                                </p>
+                            </div>
+                            <div className={cx('playlist-body')}>
+                                {songState.albumPlaying && <PlaylistItem songList={songState.albumPlaying.playlist} />}
                             </div>
                         </div>
-                    </div>
-                )}
-
-                <div className={cx(!pageLyrics && 'action', pageLyrics && 'page_lyrics-action')}>
-                    <div className={cx('button')}>
-                        <Tippy content="Bật phát ngẫu nhiên">
-                            <div className={cx('button-list', songState.random && 'active')} onClick={handleRandom}>
-                                <RxShuffle className={cx('button-icon')} />
-                            </div>
-                        </Tippy>
-                        <div className={cx('button-list')} onClick={handlePreSong}>
-                            <RxTrackPrevious className={cx('button-icon')} />
+                    ) : (
+                        <div className={cx('lyric')}>
+                            <SongLyric currentTime={audioPlayer.current.currentTime} loading={loading} />
                         </div>
+                    )}
 
-                        {loading === true ? (
-                            <div className={cx('button-list-play')} onClick={() => dispatch(play())}>
-                                <FaSpinner className={cx('button-icon-load')} />
-                            </div>
-                        ) : songState.isPlay === false ? (
-                            <div className={cx('button-list-play')} onClick={() => dispatch(play())}>
-                                <RxPlay className={cx('button-icon-play')} />
-                            </div>
-                        ) : (
-                            <div className={cx('button-list-pause')} onClick={() => dispatch(pause())}>
-                                <RxPause className={cx('button-icon-pause')} />
-                            </div>
-                        )}
-
-                        <div
-                            className={cx('button-list')}
-                            onClick={(event) => {
-                                event.preventDefault();
-                                handleNextSong();
-                            }}
-                        >
-                            <RxTrackNext className={cx('button-icon')} />
+                    <div className={cx('footer')}>
+                        <div className={cx('range')}>
+                            <span>{calculateTime(currentTime)}</span>
+                            <input
+                                ref={progressBar}
+                                className={cx('progressBar')}
+                                type={'range'}
+                                defaultValue={0}
+                                onChange={changeRange}
+                                onMouseDown={() => setSeeking(true)}
+                                onMouseUp={() => setSeeking(false)}
+                            ></input>
+                            <span>{songState.song && calculateTime(songState.song.duration)}</span>
                         </div>
-                        <Tippy content="Lặp lại bài hát">
-                            <div className={cx('button-list', songState.loop && 'active')} onClick={handleRepeat}>
-                                <RxLoop className={cx('button-icon')} />
+                        <div className={cx('action', 'large')}>
+                            <div className={cx('button')}>
+                                <Tippy content="Bật phát ngẫu nhiên">
+                                    <div
+                                        className={cx('button-list', songState.random && 'active')}
+                                        onClick={handleRandom}
+                                    >
+                                        <RxShuffle className={cx('button-icon')} />
+                                    </div>
+                                </Tippy>
+                                <div className={cx('button-list')} onClick={handlePreSong}>
+                                    <RxTrackPrevious className={cx('button-icon')} />
+                                </div>
+
+                                {loading === true ? (
+                                    <div className={cx('button-list-play')} onClick={() => dispatch(play())}>
+                                        <FaSpinner className={cx('button-icon-load')} />
+                                    </div>
+                                ) : songState.isPlay === false ? (
+                                    <div className={cx('button-list-play')} onClick={() => dispatch(play())}>
+                                        <RxPlay className={cx('button-icon-play')} />
+                                    </div>
+                                ) : (
+                                    <div className={cx('button-list-pause')} onClick={() => dispatch(pause())}>
+                                        <RxPause className={cx('button-icon-pause')} />
+                                    </div>
+                                )}
+
+                                <div
+                                    className={cx('button-list')}
+                                    onClick={(event) => {
+                                        event.preventDefault();
+                                        handleNextSong();
+                                    }}
+                                >
+                                    <RxTrackNext className={cx('button-icon')} />
+                                </div>
+                                <Tippy content="Lặp lại bài hát">
+                                    <div
+                                        className={cx('button-list', songState.loop && 'active')}
+                                        onClick={handleRepeat}
+                                    >
+                                        <RxLoop className={cx('button-icon')} />
+                                    </div>
+                                </Tippy>
                             </div>
-                        </Tippy>
-                    </div>
-                    <div className={cx('range')}>
-                        <span>{calculateTime(currentTime)}</span>
-                        <input
-                            ref={progressBar}
-                            className={cx('progressBar')}
-                            type={'range'}
-                            defaultValue={0}
-                            onChange={changeRange}
-                            onMouseDown={() => setSeeking(true)}
-                            onMouseUp={() => setSeeking(false)}
-                        ></input>
-                        <span>{songState.song && calculateTime(songState.song.duration)}</span>
+                        </div>
                     </div>
                 </div>
-                {!pageLyrics && (
-                    <div className={cx('more')}>
-                        <div
-                            className={cx('more-wrapper')}
-                            onClick={() => {
-                                dispatch(setPlaylist(false));
-                                dispatch(setLyricPage(true));
-                            }}
-                        >
-                            <TbMicrophone2 className={cx('more-icon')} />
-                        </div>
-
-                        {songState.muted === true || songState.volume === 0 ? (
-                            <div
-                                className={cx('more-wrapper')}
-                                onClick={() => {
-                                    dispatch(muted(false));
-                                }}
-                            >
-                                <BsVolumeMute className={cx('more-icon')} />
-                            </div>
-                        ) : (
-                            <div className={cx('more-wrapper')} onClick={handleMuted}>
-                                <BsVolumeUp className={cx('more-icon')} />
-                            </div>
-                        )}
-                        <div className={cx('more-volume')}>
-                            <input
-                                type={'range'}
-                                className={cx('volume')}
-                                min={0}
-                                max={100}
-                                step={1}
-                                onChange={handleChangeVolume}
-                                value={songState.volume * 100}
-                            ></input>
-                        </div>
-                        <div className={cx('split')}></div>
-                        <div className={cx('more-list')} onClick={onChangePlaylist}>
-                            <RxListBullet className={cx('more-icon')} />
-                        </div>
-                    </div>
-                )}
             </div>
 
             {small && (
