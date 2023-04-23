@@ -1,0 +1,49 @@
+.header {
+    padding: 24px;
+}
+
+.header-title {
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.header-text {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 36px;
+}
+
+.content-img {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 12px;
+}
+
+.content-img img {
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.descreption {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 24px;
+}
+
+.descreption p {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text-color);
+    text-align: justify;
+}

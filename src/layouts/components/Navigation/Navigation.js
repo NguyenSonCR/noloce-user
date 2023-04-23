@@ -65,24 +65,22 @@ function Navigation() {
                 title: 'Website',
                 data: [
                     {
-                        title: 'Website bán hàng',
-                        code: 'economic',
-                        to: config.routes.economic,
+                        title: 'Giới thiệu',
+                        code: 'about',
                     },
                     {
-                        title: 'Website giới thiệu',
-                        code: 'preview',
-                        to: config.routes.economic,
+                        title: 'Quy trình',
+                        code: '',
+                        to: config.routes.procedure,
                     },
                     {
-                        title: 'Website âm nhạc',
-                        code: 'music',
-                        to: config.routes.economic,
+                        title: 'Bảng giá',
+                        code: 'price',
                     },
+
                     {
-                        title: 'Website nhà hàng',
-                        code: 'restaurant',
-                        to: config.routes.economic,
+                        title: 'Demo',
+                        code: 'demo',
                     },
                 ],
             },

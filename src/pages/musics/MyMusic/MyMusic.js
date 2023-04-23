@@ -108,7 +108,9 @@ function MyMusic() {
                     </div>
                 </div>
                 <div className={cx('playlist-content')}>
-                    {songState?.myPlaylist.length > 0 ? (
+                    {songState?.myPlaylist.length === 0 ? (
+                        <div>Không có playlist nào</div>
+                    ) : songState.myPlaylist.length > 0 ? (
                         <PlayList showAlbum={showAlbum} setShowAlbum={setShowAlbum} playlist={songState.myPlaylist} />
                     ) : (
                         <Loading />

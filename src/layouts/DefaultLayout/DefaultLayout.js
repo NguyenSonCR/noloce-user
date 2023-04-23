@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setPopup } from '~/slices/songSlice';
 import useViewport from '~/hooks/useViewport';
 import NaviMobi from '~/layouts/components/NaviMobi';
+import Footer from '~/layouts/components/Footer';
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
@@ -40,15 +41,16 @@ function DefaultLayout({ children }) {
                 <div className={cx('container')}>
                     <div className={cx(['grid', 'wide'])}>
                         <div className={cx(['row'])}>
-                            <div className={cx('col', 'l-2')}>
+                            <div className={cx('col', 'l-2', 'm-2')}>
                                 <Sidebar />
                             </div>
-                            <div className={cx('col', 'l-10')}>
+                            <div className={cx('col', 'l-10', 'm-10')}>
                                 <div className={cx('content')}>{children}</div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <Footer />
             </div>
         );
     }

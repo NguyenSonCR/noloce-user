@@ -54,29 +54,6 @@ function AudioSong({ container }) {
 
     const [tab, setTab] = useState(2);
 
-    // rotate cd
-
-    useEffect(() => {
-        if (imgRef.current) {
-            imgAnimate.current = imgRef.current.animate(
-                [
-                    {
-                        transform: 'rotate(0)',
-                    },
-                    {
-                        transform: 'rotate(359deg)',
-                    },
-                ],
-                {
-                    duration: 30000,
-                    iterations: Infinity,
-                },
-            );
-        }
-        if (imgAnimate.current) imgAnimate.current.pause();
-        // eslint-disable-next-line
-    }, [imgRef.current, songState.song]);
-
     // useEffect
     // play and pause
     useEffect(() => {
@@ -96,6 +73,9 @@ function AudioSong({ container }) {
                         animationRef.current = requestAnimationFrame(whilePlaying);
                         progressRef.current = requestAnimationFrame(whileSeeking);
                         if (imgAnimate.current) imgAnimate.current.play();
+                        audioPlayer.current.onended = () => {
+                            handleOnEnded();
+                        };
                     })
                     .catch((error) => {
                         console.log(error);
@@ -121,6 +101,9 @@ function AudioSong({ container }) {
                                 animationRef.current = requestAnimationFrame(whilePlaying);
                                 progressRef.current = requestAnimationFrame(whileSeeking);
                                 if (imgAnimate.current) imgAnimate.current.play();
+                                audioPlayer.current.onended = () => {
+                                    handleOnEnded();
+                                };
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -138,6 +121,9 @@ function AudioSong({ container }) {
                                 animationRef.current = requestAnimationFrame(whilePlaying);
                                 progressRef.current = requestAnimationFrame(whileSeeking);
                                 if (imgAnimate.current) imgAnimate.current.play();
+                                audioPlayer.current.onended = () => {
+                                    handleOnEnded();
+                                };
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -384,13 +370,6 @@ function AudioSong({ container }) {
         }
     };
 
-    useEffect(() => {
-        audioPlayer.current.onended = () => {
-            handleOnEnded();
-        };
-        // eslint-disable-next-line
-    }, [currentTime]);
-
     // drag
     const smallAudioRef = useRef();
     var active = false;
@@ -456,6 +435,28 @@ function AudioSong({ container }) {
     function setTranslate(xPos, yPos, el) {
         el.style.transform = 'translate3d(' + xPos + 'px, ' + yPos + 'px, 0)';
     }
+
+    // rotate cd
+    useEffect(() => {
+        if (imgRef.current) {
+            imgAnimate.current = imgRef.current.animate(
+                [
+                    {
+                        transform: 'rotate(0)',
+                    },
+                    {
+                        transform: 'rotate(359deg)',
+                    },
+                ],
+                {
+                    duration: 30000,
+                    iterations: Infinity,
+                },
+            );
+        }
+        if (imgAnimate.current) imgAnimate.current.pause();
+        // eslint-disable-next-line
+    }, [imgRef.current, songState.song]);
 
     if (small) {
         document.body.classList.remove('model');

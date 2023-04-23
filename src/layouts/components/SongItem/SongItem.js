@@ -344,7 +344,7 @@ function SongItem({ songList, title, myPlaylist }) {
                                         <TbMicrophone2 className={cx('icon-lyric')} />
                                     </div>
                                 </Tippy>
-                                {authState?.user?.library.find((song) => song.encodeId === item.encodeId) ? (
+                                {authState?.user?.library?.find((song) => song.encodeId === item.encodeId) ? (
                                     <Tippy content="Xóa bài hát khỏi thư viện">
                                         <div className={cx('action-wrapper')} onClick={() => handleRemoveLibrary(item)}>
                                             <AiFillHeart className={cx('icon-heart')} />

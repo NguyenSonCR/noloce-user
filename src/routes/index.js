@@ -5,7 +5,7 @@ import config from '~/config';
 import { HeaderOnly } from '~/layouts';
 import MyMusic from '~/pages/musics/MyMusic';
 import GenresMusic from '~/pages/musics/genres';
-import Website from '~/pages/Website';
+import Website from '~/pages/websites/Website';
 import Economic from '~/pages/Economic';
 import Register from '~/pages/Register';
 import Login from '~/pages/Login';
@@ -18,6 +18,7 @@ import GenreDetail from '~/pages/musics/genres/genreDetail';
 import Artist from '~/pages/musics/Artist';
 import NewRelease from '~/pages/musics/NewRelease';
 import MyPlaylist from '~/pages/musics/MyPlaylist';
+import Procedure from '~/pages/websites/Procedure';
 
 const publicRoutes = [
     // general
@@ -45,6 +46,7 @@ const publicRoutes = [
     // website
     { path: config.routes.website, component: Website },
     { path: config.routes.economic, component: Economic },
+    { path: config.routes.procedure, component: Procedure },
 ];
 
 const privateRoutes = [{ path: config.routes.myMusic, component: MyMusic }];

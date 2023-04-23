@@ -30,7 +30,7 @@ function GenresConcept({ title, data, genres }) {
                         {data &&
                             Array.isArray(data) &&
                             data.map((item, index) => (
-                                <div className="col l-2-4" key={index}>
+                                <div className="col l-2-4 c-6" key={index}>
                                     <div className={cx('song-list')} onClick={() => handleOnclick(item.encodeId)}>
                                         <div className={cx('song-img')}>
                                             <img

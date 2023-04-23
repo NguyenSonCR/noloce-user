@@ -17,5 +17,7 @@ const images = {
     enlarge: require('~/assets/img/enlarge.png'),
     rhythm: require('~/assets/img/rhythm.png'),
     fallback: require('~/assets/img/fallback.png'),
+    data: require('~/assets/img/data.jpg'),
+    web: require('~/assets/img/website.jpg'),
 };
 export default images;

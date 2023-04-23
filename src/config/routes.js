@@ -24,5 +24,6 @@ const routes = {
     // website
     website: '/website',
     economic: '/website/economic',
+    procedure: '/website/procedure',
 };
 export default routes;

@@ -82,10 +82,12 @@ html *::-webkit-scrollbar-track {
 @keyframes loading {
     0% {
         background-position: right;
+        opacity: 0.9;
     }
 
     100% {
         background-position: left;
+        opacity: 0.5;
     }
 }
 
@@ -99,4 +101,27 @@ html *::-webkit-scrollbar-track {
     50% {
         transform: scale(1.5);
     }
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

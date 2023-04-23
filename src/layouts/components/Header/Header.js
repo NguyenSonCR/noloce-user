@@ -49,7 +49,6 @@ function Header() {
             .catch((error) => {
                 localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
                 dispatch(setAuth({ user: null, isAuthenticated: false }));
-                console.log(error);
             });
         // eslint-disable-next-line
     }, []);

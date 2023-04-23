@@ -72,6 +72,9 @@ function AudioSong({ container }) {
                     .then((_) => {
                         animationRef.current = requestAnimationFrame(whilePlaying);
                         progressRef.current = requestAnimationFrame(whileSeeking);
+                        audioPlayer.current.onended = () => {
+                            handleOnEnded();
+                        };
                     })
                     .catch((error) => {
                         console.log(error);
@@ -96,6 +99,9 @@ function AudioSong({ container }) {
                             .then((_) => {
                                 animationRef.current = requestAnimationFrame(whilePlaying);
                                 progressRef.current = requestAnimationFrame(whileSeeking);
+                                audioPlayer.current.onended = () => {
+                                    handleOnEnded();
+                                };
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -112,6 +118,9 @@ function AudioSong({ container }) {
                             .then((_) => {
                                 animationRef.current = requestAnimationFrame(whilePlaying);
                                 progressRef.current = requestAnimationFrame(whileSeeking);
+                                audioPlayer.current.onended = () => {
+                                    handleOnEnded();
+                                };
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -367,14 +376,6 @@ function AudioSong({ container }) {
             handleNextSong();
         }
     };
-
-    useEffect(() => {
-        audioPlayer.current.onended = () => {
-            handleOnEnded();
-        };
-
-        // eslint-disable-next-line
-    }, [currentTime]);
 
     // playlist
     const onChangePlaylist = () => {
