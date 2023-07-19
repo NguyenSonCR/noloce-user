@@ -37,14 +37,20 @@
     padding: 4px;
     font-weight: 400;
     font-size: 1.6rem;
-    color: var(--text-color);
+    color: var(--primary-color);
+    &:hover {
+        color: var(--primary-color-hover);
+    }
 }
 
 .logo-text-title {
     padding: 4px 0;
     font-weight: 400;
     font-size: 1.6rem;
-    color: var(--text-color);
+    color: var(--primary-color);
+    &:hover {
+        color: var(--primary-color-hover);
+    }
 }
 //input
 

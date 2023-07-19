@@ -402,14 +402,28 @@ function AudioSong({ container }) {
         yOffset.current = 0;
     }, [small]);
 
-    container?.addEventListener('touchstart', dragStart);
-    container?.addEventListener('touchend', dragEnd);
-    container?.addEventListener('touchend', dragEnd);
-    container?.addEventListener('touchmove', drag);
+    container?.addEventListener('touchstart', dragStart, {
+        passive: false,
+    });
+    container?.addEventListener('touchend', dragEnd, {
+        passive: false,
+    });
+    container?.addEventListener('touchend', dragEnd, {
+        passive: false,
+    });
+    container?.addEventListener('touchmove', drag, {
+        passive: false,
+    });
 
-    container?.addEventListener('mousedown', dragStart);
-    container?.addEventListener('mouseup', dragEnd);
-    container?.addEventListener('mousemove', drag);
+    container?.addEventListener('mousedown', dragStart, {
+        passive: false,
+    });
+    container?.addEventListener('mouseup', dragEnd, {
+        passive: false,
+    });
+    container?.addEventListener('mousemove', drag, {
+        passive: false,
+    });
 
     function dragStart(e) {
         if (e.type === 'touchstart') {
@@ -494,9 +508,40 @@ function AudioSong({ container }) {
                 {!pageLyrics && (
                     <div className={cx('info')}>
                         <img alt="" className={cx('info-img')} src={songState.song && songState.song.thumbnailM}></img>
+
                         <div className={cx('info-song')}>
-                            <p>{songState.song && songState.song.title}</p>
-                            <p>{songState.song && songState.song.artistNames}</p>
+                            {songState.song.title.length > 13 ? (
+                                <div className={cx('info-song__marquee')}>
+                                    <span
+                                        className={cx('info-song__marquee-text')}
+                                        style={
+                                            songState.isPlay
+                                                ? {
+                                                      animation: `marquee ${songState.song.title.length}s linear 2s infinite`,
+                                                  }
+                                                : {}
+                                        }
+                                    >
+                                        {songState.song && songState.song.title}
+                                    </span>
+                                    <span
+                                        className={cx('info-song__marquee-text')}
+                                        style={
+                                            songState.isPlay
+                                                ? {
+                                                      animation: `marquee ${songState.song.title.length}s linear 2s infinite`,
+                                                  }
+                                                : {}
+                                        }
+                                    >
+                                        {songState.song && songState.song.title}
+                                    </span>
+                                </div>
+                            ) : (
+                                <p className={cx('info-song__text')}>{songState.song && songState.song.title}</p>
+                            )}
+
+                            <p className={cx('info-song__text')}>{songState.song && songState.song.artistNames}</p>
                         </div>
                         <div className={cx('info-icon')}>
                             <FontAwesomeIcon icon={faHeart} />
@@ -575,6 +620,7 @@ function AudioSong({ container }) {
                     <div className={cx('range')}>
                         <span>{calculateTime(currentTime)}</span>
                         <input
+                            name="range"
                             ref={progressBar}
                             className={cx('progressBar')}
                             type={'range'}

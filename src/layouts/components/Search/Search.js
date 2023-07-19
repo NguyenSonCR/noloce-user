@@ -183,6 +183,7 @@ function Search({ visible }) {
                 >
                     <div className={cx('wrapper')}>
                         <input
+                            name="search"
                             ref={inputRef}
                             className={cx('input')}
                             placeholder="Tìm kiếm "
@@ -293,6 +294,7 @@ function Search({ visible }) {
             >
                 <div className={cx('wrapper')}>
                     <input
+                        name="search"
                         ref={inputRef}
                         className={cx('input')}
                         placeholder="Tìm kiếm "

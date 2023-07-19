@@ -5,6 +5,7 @@ import styles from './Button.module.scss';
 const cx = classNames.bind(styles);
 
 function Button({
+    target,
     to,
     href,
     fill,
@@ -28,11 +29,13 @@ function Button({
         onClick,
         ...passProps,
     };
+
     if (to) {
         props.to = to;
         Comp = Link;
     } else if (href) {
         props.href = href;
+        props.target = '_blank';
         Comp = 'a';
     }
 
@@ -52,7 +55,7 @@ function Button({
         [className]: className,
     });
     return (
-        <Comp className={cx(classes)} {...props}>
+        <Comp className={cx(classes, 'text')} {...props}>
             {leftIcon && <span className={cx('icon-left')}>{leftIcon}</span>}
             {children}
             {rightIcon && <span className={cx('icon')}>{rightIcon}</span>}

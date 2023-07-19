@@ -11,9 +11,8 @@ import { logoutUser } from '~/slices/authSlice';
 import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
 
 const cx = classNames.bind(styles);
-const defaultFn = () => {};
 
-function Menu({ children, items = [], visible, offset = [], hideOnClick = false, onChange = defaultFn }) {
+function Menu({ children, items = [], visible, offset = [], hideOnClick = false }) {
     const [history, setHistory] = useState([{ data: items }]);
     const dispatch = useDispatch();
     useEffect(() => {

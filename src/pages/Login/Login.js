@@ -167,7 +167,7 @@ function Login() {
     };
 
     return (
-        <div className={cx('wrapper', ['grid', 'wide'])}>
+        <div className={cx('wrapper', ['grid'])}>
             <div className={cx('header')}>
                 <div className={cx('inner')}>
                     <div className={cx('logo-wrapper')}>
@@ -180,7 +180,7 @@ function Login() {
                             </Link>
                         </div>
                         <Link to={config.routes.register} className={cx('logo-text')}>
-                            Đăng ký
+                            Đăng nhập
                         </Link>
                     </div>
                 </div>
@@ -190,7 +190,7 @@ function Login() {
                     <div className={cx('title')}>
                         <h3 className={cx('title-text')}> Chào mừng bạn đến với Noloce </h3>
                     </div>
-                    <form className={cx('form-content')} onSubmit={login}>
+                    <form className={cx('form-content')} onSubmit={login} name="form-login">
                         <div className={cx('form-group')}>
                             <input
                                 value={username}
@@ -236,7 +236,7 @@ function Login() {
                                 Quay lại
                             </Button>
                             {usernameValid && passwordValid ? (
-                                <Button type="submit" fill primary>
+                                <Button type="submit" primary>
                                     Đăng nhập
                                 </Button>
                             ) : (

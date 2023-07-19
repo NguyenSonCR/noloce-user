@@ -6,15 +6,12 @@ import { useEffect } from 'react';
 import { setGenres } from '~/slices/songSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '~/layouts/components/Loading';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Genres() {
     const genres = useSelector((state) => state.song.genres);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     useEffect(() => {
         if (!genres) {
             musicApi.getGenres().then((res) => {
@@ -26,15 +23,6 @@ function Genres() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('back')}>
-                <IoIosArrowRoundBack
-                    className={cx('back-btn')}
-                    onClick={() => {
-                        navigate(-1);
-                    }}
-                />
-                <p className={cx('text')}>Thể loại</p>
-            </div>
             {genres ? (
                 <GenresConcept title={'Tâm trạng và hoạt động'} data={genres.topic} genres={true} />
             ) : (

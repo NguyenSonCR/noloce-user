@@ -12,7 +12,6 @@ const ProtectedRoute = ({ children }) => {
     const dispatch = useDispatch();
     useEffect(() => {
         if (!authState.user) {
-            console.log(1);
             authApi
                 .loadUser()
                 .then((data) => {

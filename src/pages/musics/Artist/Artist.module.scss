@@ -1,9 +1,13 @@
+.wrapper {
+    margin-top: 18px;
+}
+
 .song {
     height: 400px;
     overflow: auto;
 }
 
-tab3-list {
+.tab3-list {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -20,26 +24,13 @@ tab3-list {
     flex-direction: column;
 }
 
-@keyframes hover {
-    0% {
-        left: 0;
-        width: 100%;
-        top: 0;
-    }
-    100% {
-        left: -2%;
-        width: 104%;
-        top: -2%;
-    }
-}
-
 .album-img {
     width: 140px;
     height: 140px;
     &:hover {
         cursor: pointer;
         .item-img {
-            animation: hover 0.3s linear forwards;
+            transform: scale(1.08) translateZ(0);
         }
     }
     overflow: hidden;
@@ -51,7 +42,7 @@ tab3-list {
     width: 100%;
     object-fit: cover;
     border-radius: 50%;
-    position: absolute;
+    transition: transform 0.7s;
 }
 
 .item-name {

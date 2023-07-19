@@ -1,17 +1,19 @@
 import classNames from 'classnames/bind';
 import styles from './Navigation.module.scss';
 import config from '~/config';
-import { useState } from 'react';
 import NavItem from './NavItem';
 import Header from './Header';
 import { ReactComponent as IconMusic } from '~/assets/icon/icons8-music.svg';
 import { ReactComponent as IconKinds } from '~/assets/icon/kinds.svg';
 import images from '~/assets/img';
+import { useEffect, useState } from 'react';
+import { setCode, setHistoryStore } from '~/slices/navigateSlice';
+import { useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 function Navigation() {
-    const [navItem, setNavItem] = useState('home');
     const NAV_MENU = [
         {
             icon: <IconMusic />,
@@ -49,12 +51,7 @@ function Navigation() {
                 ],
             },
         },
-        {
-            icon: <img src={images.cenima} alt=""></img>,
-            code: 'cinema',
-            title: 'Cinema',
-            to: config.routes.cinema,
-        },
+
         {
             icon: <img src={images.website} alt="" />,
             code: 'website',
@@ -66,7 +63,8 @@ function Navigation() {
                 data: [
                     {
                         title: 'Giới thiệu',
-                        code: 'about',
+                        code: 'home',
+                        to: config.routes.website,
                     },
                     {
                         title: 'Quy trình',
@@ -76,20 +74,70 @@ function Navigation() {
                     {
                         title: 'Bảng giá',
                         code: 'price',
+                        to: config.routes.price,
                     },
 
                     {
                         title: 'Demo',
                         code: 'demo',
+                        to: config.routes.demo,
                     },
                 ],
             },
         },
     ];
-
     const [history, setHistory] = useState([{ data: NAV_MENU }]);
-
+    const [navItemActive, setNavItemActive] = useState('home');
     const current = history[history.length - 1];
+    const navigateState = useSelector((state) => state.navigation);
+    const { code } = navigateState;
+
+    const { pathname } = useLocation();
+    const dispatch = useDispatch();
+    const [condition, setCondition] = useState(false);
+
+    useEffect(() => {
+        current.data.forEach((item, index) => {
+            if (item.code === 'music' && pathname.includes('/music')) {
+                setHistory((prev) => [...prev, item.children]);
+                dispatch(setCode(item.code));
+                dispatch(setHistoryStore(1));
+            } else if (item.code === 'website' && pathname.includes('/website')) {
+                setHistory((prev) => [...prev, item.children]);
+                dispatch(setCode(item.code));
+                dispatch(setHistoryStore(1));
+            } else if (navigateState.code === item.code) {
+                setHistory((prev) => [...prev, item.children]);
+            }
+
+            if (item.code === pathname) {
+                setHistory((prev) => [...prev, item.children]);
+                dispatch(setHistoryStore(1));
+            }
+        });
+
+        if (pathname === '/') {
+            setHistory([{ data: NAV_MENU }]);
+            setNavItemActive('home');
+        }
+
+        // eslint-disable-next-line
+    }, [pathname, code, condition]);
+
+    useEffect(() => {
+        if (pathname.includes('/website') && navigateState.code === 'music') {
+            dispatch(setCode('website'));
+            setHistory((prev) => prev.slice(0, prev.length - 1));
+            setCondition((pre) => !pre);
+        }
+
+        if (pathname.includes('/music') && navigateState.code === 'website') {
+            dispatch(setCode('music'));
+            setHistory((prev) => prev.slice(0, prev.length - 1));
+            setCondition((pre) => !pre);
+        }
+        // eslint-disable-next-line
+    }, [pathname, code]);
 
     const renderItems = () => {
         return (
@@ -100,12 +148,14 @@ function Navigation() {
                     <NavItem
                         key={index}
                         data={item}
-                        navItem={navItem}
+                        navItemActive={navItemActive}
                         onClick={() => {
                             if (isParent) {
                                 setHistory((prev) => [...prev, item.children]);
+                                dispatch(setCode(item.code));
+                                dispatch(setHistoryStore(1));
                             } else {
-                                setNavItem(item.code);
+                                setNavItemActive(item.code);
                             }
                         }}
                     />
@@ -122,6 +172,8 @@ function Navigation() {
                     to={current.to}
                     onBack={() => {
                         setHistory((prev) => prev.slice(0, prev.length - 1));
+                        dispatch(setHistoryStore(0));
+                        setNavItemActive('home');
                     }}
                 />
             )}

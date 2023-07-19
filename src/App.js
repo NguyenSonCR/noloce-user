@@ -1,8 +1,7 @@
 import { Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { publicRoutes, privateRoutes } from '~/routes';
+import { publicRoutes, privateRoutes, nullLayoutRoutes } from '~/routes';
 import { DefaultLayout } from '~/layouts';
-
 import { useSelector } from 'react-redux';
 import Audio from '~/layouts/components/Audio';
 import Playlist from '~/pages/musics/playlist/Playlist';
@@ -15,60 +14,61 @@ function App() {
     const songState = useSelector((state) => state.song);
     const viewPort = useViewport();
     const isMobile = viewPort.width < 740;
-    var container = document.querySelector('#container');
+    let container = document.querySelector('#container');
 
     return (
         <Router>
             <div className="app" id="container">
                 <Routes>
-                    {publicRoutes.map((route, index) => {
-                        let Layout = DefaultLayout;
-                        if (route.layout === null) {
-                            Layout = Fragment;
-                        } else if (route.layout) {
-                            Layout = route.layout;
-                        }
-                        const Page = route.component;
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            ></Route>
-                        );
-                    })}
-                    {privateRoutes.map((route, index) => {
-                        let Layout = DefaultLayout;
-                        if (route.layout === null) {
-                            Layout = Fragment;
-                        } else if (route.layout) {
-                            Layout = route.layout;
-                        }
-                        const Page = route.component;
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <ProtectedRoute>
+                    <Route>
+                        {nullLayoutRoutes.map((route, index) => {
+                            let Layout = Fragment;
+                            if (route.layout) {
+                                Layout = route.layout;
+                            }
+                            const Page = route.component;
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
                                         <Layout>
                                             <Page />
                                         </Layout>
-                                    </ProtectedRoute>
-                                }
-                            ></Route>
-                        );
-                    })}
+                                    }
+                                ></Route>
+                            );
+                        })}
+                    </Route>
+
+                    <Route element={<DefaultLayout />}>
+                        {publicRoutes.map((route, index) => {
+                            const Page = route.component;
+                            return <Route key={index} path={route.path} element={<Page />}></Route>;
+                        })}
+
+                        {privateRoutes.map((route, index) => {
+                            const Page = route.component;
+                            return (
+                                <Route
+                                    key={route.path}
+                                    path={route.path}
+                                    element={
+                                        <ProtectedRoute>
+                                            <Page />
+                                        </ProtectedRoute>
+                                    }
+                                ></Route>
+                            );
+                        })}
+                    </Route>
                 </Routes>
 
                 {songState.song && !isMobile && <Audio container={container} />}
                 {songState.song && isMobile && <AudioMobile container={container} />}
                 {<Playlist />}
                 <Toast />
+                {/* <ChatBot /> */}
             </div>
         </Router>
     );

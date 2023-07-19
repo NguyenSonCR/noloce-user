@@ -43,40 +43,24 @@
 
 .song-img {
     position: relative;
-    width: 100%;
-    height: 220px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
     &:hover {
         .overlay {
             display: flex;
         }
         .img-content {
-            animation: hover linear 0.3s forwards;
+            transform: scale(1.1) translateZ(0);
         }
     }
     overflow: hidden;
 }
 
-@keyframes hover {
-    0% {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-    100% {
-        width: 110%;
-        height: 230px;
-        top: -5px;
-        left: -5%;
-    }
-}
-
 .img-content {
-    position: absolute;
     width: 100%;
-    height: 100%;
     object-fit: cover;
+    transition: transform 0.7s;
 }
 
 .overlay {

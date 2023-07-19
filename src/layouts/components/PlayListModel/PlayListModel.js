@@ -78,10 +78,10 @@ function PlayList({ playlist, showAlbum, setShowAlbum }) {
     const [active, setActive] = useState(null);
     return (
         <div className={cx('content-song')}>
-            <div className="grid wide">
+            <div className="grid">
                 <div className={cx(['row', 'sm-gutter'])}>
                     {playlist.map((item, index) => (
-                        <div className="col l-3 m-6 c-6" key={index}>
+                        <div className="col l-2-4 m-3 c-6" key={index}>
                             <div
                                 className={cx('song-list')}
                                 onClick={() => handleNavigate(`/music/mymusic/playlist/${item.slug}`, item)}

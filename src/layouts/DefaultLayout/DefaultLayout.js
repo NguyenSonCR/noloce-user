@@ -7,9 +7,11 @@ import { setPopup } from '~/slices/songSlice';
 import useViewport from '~/hooks/useViewport';
 import NaviMobi from '~/layouts/components/NaviMobi';
 import Footer from '~/layouts/components/Footer';
+import { Outlet } from 'react-router-dom';
+
 const cx = classNames.bind(styles);
 
-function DefaultLayout({ children }) {
+function DefaultLayout() {
     const dispatch = useDispatch();
     const viewPort = useViewport();
     const isMobile = viewPort.width < 740;
@@ -17,6 +19,7 @@ function DefaultLayout({ children }) {
     const handleClosePopup = () => {
         dispatch(setPopup(false));
     };
+
     let body = null;
     if (isMobile) {
         body = (
@@ -25,7 +28,9 @@ function DefaultLayout({ children }) {
                     <Header />
                     <div className={cx('container')}>
                         <div className={cx(['grid'])}>
-                            <div className={cx('content')}>{children}</div>
+                            <div className={cx('content')}>
+                                <Outlet />
+                            </div>
                         </div>
                     </div>
                     <NaviMobi />
@@ -36,16 +41,24 @@ function DefaultLayout({ children }) {
 
     if (!isMobile) {
         body = (
-            <div className={cx('wrapper')} onClick={handleClosePopup}>
+            <div
+                className={cx('wrapper')}
+                onClick={() => {
+                    handleClosePopup();
+                }}
+            >
                 <Header />
                 <div className={cx('container')}>
-                    <div className={cx(['grid', 'wide'])}>
-                        <div className={cx(['row'])}>
-                            <div className={cx('col', 'l-2', 'm-2')}>
-                                <Sidebar />
-                            </div>
-                            <div className={cx('col', 'l-10', 'm-10')}>
-                                <div className={cx('content')}>{children}</div>
+                    <div className={cx('sidebar')}>
+                        <Sidebar />
+                    </div>
+
+                    <div className={cx('content')}>
+                        <div className={cx(['grid'])}>
+                            <div className={cx(['row'])}>
+                                <div className={cx(['col', 'l-12', 'm-12'])}>
+                                    <Outlet />
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -29,13 +29,13 @@ function Artist() {
                     if (section.sectionType === 'song') {
                         body = (
                             <div className={cx('songs')} key={index}>
-                                <NewSongRelease concept={section} />
+                                <NewSongRelease concept={section} all={false} />
                             </div>
                         );
                     } else if (section.sectionType === 'playlist') {
                         body = (
                             <div className={cx('playlists')} key={index}>
-                                <SongConcept title={section.title} data={section.items} />
+                                <SongConcept title={section.title} data={section.items} all={false} />
                             </div>
                         );
                     } else if (section.sectionType === 'artist')

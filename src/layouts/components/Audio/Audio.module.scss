@@ -73,6 +73,7 @@
     width: 60px;
     height: 60px;
     object-fit: cover;
+    border-radius: 4px;
 }
 
 .info-song {
@@ -81,9 +82,22 @@
     color: var(--text-color);
     padding: 0 12px;
     line-height: 2rem;
+    overflow: hidden;
+    width: 220px;
+}
+.info-song__marquee {
+    width: 100%;
+    padding: 0 8px;
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
-.info-song p {
+.info-song__marquee-text {
+    padding-right: 24px;
+}
+
+.info-song__text {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
@@ -314,9 +328,10 @@
     user-select: none;
     cursor: pointer;
     &:hover {
-        border-width: 5px;
+        border-width: 2px;
         box-shadow: 10px 8px 10px rgba(24, 24, 24, 0.1);
     }
+    transition: border-width ease-in 0.1s;
 }
 
 .responsive-small {

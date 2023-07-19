@@ -6,14 +6,11 @@ import musicApi from '~/api/music/musicApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTop100 } from '~/slices/songSlice';
 import Loading from '~/layouts/components/Loading';
-import { IoIosArrowRoundBack } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 function Top100() {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
-    const navigate = useNavigate();
     useEffect(() => {
         if (!songState.top100) {
             musicApi.getTop100Zing().then((response) => {
@@ -26,7 +23,7 @@ function Top100() {
     let body = null;
     if (!songState.top100) {
         body = (
-            <div>
+            <div className={cx('loading-wrapper')}>
                 <Loading />
                 <Loading />
                 <Loading />
@@ -41,17 +38,8 @@ function Top100() {
     if (songState.top100) {
         body = (
             <div className={cx('wrapper')}>
-                <div className={cx('back')}>
-                    <IoIosArrowRoundBack
-                        className={cx('back-btn')}
-                        onClick={() => {
-                            navigate(-1);
-                        }}
-                    />
-                    <p className={cx('text')}>Top 100</p>
-                </div>
                 {songState.top100.map((item, index) => (
-                    <SongConcept key={index} title={item.genre.name} data={item} />
+                    <SongConcept key={index} title={item.genre.name} data={item} all={false} />
                 ))}
             </div>
         );

@@ -385,13 +385,25 @@ function AudioSong({ container }) {
         yOffset.current = 0;
     }, [small]);
 
-    container?.addEventListener('touchstart', dragStart);
-    container?.addEventListener('touchend', dragEnd);
-    container?.addEventListener('touchmove', drag);
+    container?.addEventListener('touchstart', dragStart, {
+        passive: false,
+    });
+    container?.addEventListener('touchend', dragEnd, {
+        passive: false,
+    });
+    container?.addEventListener('touchmove', drag, {
+        passive: false,
+    });
 
-    container?.addEventListener('mousedown', dragStart);
-    container?.addEventListener('mouseup', dragEnd);
-    container?.addEventListener('mousemove', drag);
+    container?.addEventListener('mousedown', dragStart, {
+        passive: false,
+    });
+    container?.addEventListener('mouseup', dragEnd, {
+        passive: false,
+    });
+    container?.addEventListener('mousemove', drag, {
+        passive: false,
+    });
 
     function dragStart(e) {
         if (e.type === 'touchstart') {
@@ -536,6 +548,7 @@ function AudioSong({ container }) {
                         <div className={cx('range')}>
                             <span>{calculateTime(currentTime)}</span>
                             <input
+                                name="range"
                                 ref={progressBar}
                                 className={cx('progressBar')}
                                 type={'range'}

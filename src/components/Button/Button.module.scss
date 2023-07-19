@@ -45,7 +45,7 @@
     border-radius: 999px;
 
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 8px 14px 0 rgba(0, 0, 0, 0.19);
-    background-color: var(--white-color);
+    background-color: var(--background-color);
     border: 1px solid var(--primary-color);
     color: var(--text-color);
 
@@ -155,4 +155,8 @@
 
 .left {
     margin-right: 24px;
+}
+
+.text {
+    color: var(--text-color);
 }

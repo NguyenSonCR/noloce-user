@@ -1,13 +1,46 @@
 .container {
-    margin-top: 60px;
-    padding: 24px 0 0 0;
-    margin-bottom: 82px;
-    min-height: 70vh;
+    margin-bottom: 60px;
+    min-height: 100vh;
+    display: flex;
 }
 
 .mobile .container {
     padding: 0;
+    display: block;
+}
+
+.mobile .content {
+    max-width: 100%;
+    padding: 0;
 }
 .content {
-    padding-top: 12px;
+    max-width: calc(100% - 160px);
+    padding: 0 28px 0 20px;
+    flex: 1 1;
+}
+
+.sidebar {
+    flex-shrink: 0;
+}
+
+.navigate {
+    margin-top: 18px;
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navigate-icon {
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.4);
+    margin: 0 12px;
+}
+
+.navigate-icon.active {
+    color: var(--primary-color);
+    &:hover {
+        cursor: pointer;
+    }
 }

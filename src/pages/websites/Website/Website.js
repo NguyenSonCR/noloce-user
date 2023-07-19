@@ -1,8 +1,8 @@
 import classNames from 'classnames/bind';
 import styles from './Website.module.scss';
 import images from '~/assets/img';
-import ImageSlider from '~/components/ImageSlider/ImageSlider';
-
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 const cx = classNames.bind(styles);
 
 function Website() {
@@ -31,7 +31,30 @@ function Website() {
 
     return (
         <div className={cx('wrapper')}>
-            <ImageSlider slider={slider}></ImageSlider>
+            <Swiper
+                slidesPerView={1}
+                spaceBetween={10}
+                loop={true}
+                navigation={true}
+                effect="fade"
+                pagination={{
+                    clickable: true,
+                }}
+                autoplay={{
+                    delay: 2500,
+                    disableOnInteraction: false,
+                }}
+                modules={[EffectFade, Navigation, Pagination, Autoplay]}
+                className="mySwiper"
+            >
+                {slider.map((item, index) => (
+                    <SwiperSlide key={index} className={cx('slider-item')}>
+                        <img src={item.img} alt="" className={cx('slider-img')}></img>
+                        <p className={cx('slider-text')}>{item.text}</p>
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+
             <div className={cx('container')}>
                 <div className={cx('header')}>
                     <p className={cx('header-title')}>DỊCH VỤ THIẾT KẾ WEBSITE CHUYÊN NGHIỆP - NOLOCE</p>

@@ -1,5 +1,7 @@
 .wrapper {
     position: relative;
+    height: 100%;
+    overflow: hidden;
 }
 
 .btn-left {
@@ -47,15 +49,23 @@
 .slider-container {
     position: relative;
     width: 100%;
-    height: 100px;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.slider-container.first {
+    transform: translateX(-33.33333%);
 }
 
 .slider-item {
-    position: absolute;
-    height: 100px;
-    width: 100%;
-    transition: opacity ease-in-out 1s;
-    opacity: 0;
+    padding: 0 3px;
+    height: 100%;
+    flex: 0 0 33.33333%;
+    max-width: 33.33333%;
+    // transition: opacity ease-in-out 1s;
+    // opacity: 0;
+    // position: absolute;
 }
 
 .slider-item.active {
@@ -64,18 +74,8 @@
 
 .slider-img {
     width: 100%;
-    height: 100px;
-    object-fit: cover;
+    border-radius: 8px;
 }
 
 .slider-text {
-    width: 80%;
-    text-align: center;
-    position: absolute;
-    color: var(--white-color);
-    z-index: 2;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-shadow: 1px 1px rgba($color: #000000, $alpha: 0.2);
 }

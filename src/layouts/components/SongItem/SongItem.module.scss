@@ -40,7 +40,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    flex: 1;
+    flex: 6;
 }
 
 .info {
@@ -92,6 +92,11 @@
     display: none;
 }
 
+.info-list {
+    overflow: hidden;
+    max-width: 100%;
+}
+
 .name {
     font-size: 1.6rem;
     font-weight: 400;
@@ -100,8 +105,17 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
     overflow: hidden;
+    overflow-wrap: break-word;
     &:hover {
         cursor: default;
+    }
+}
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
     }
 }
 
@@ -109,9 +123,12 @@
     font-size: 1.4rem;
     font-weight: 300;
     color: var(--text-color);
+    text-overflow: ellipsis;
+    overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
+    overflow-wrap: break-word;
     overflow: hidden;
     &:hover {
         cursor: default;
@@ -119,7 +136,7 @@
 }
 
 .album {
-    flex: 1;
+    flex: 4;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -136,6 +153,8 @@
     &:hover {
         cursor: default;
     }
+    max-width: 80%;
+    padding: 0 4px;
 }
 
 .action {

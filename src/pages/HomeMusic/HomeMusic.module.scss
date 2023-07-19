@@ -2,6 +2,17 @@
     margin: 0 12px;
 }
 
+.wrapper {
+    margin-top: 18px;
+}
+
+.mobile .wrapper {
+    margin-top: 6px;
+}
+
+.content {
+}
+
 .button {
     z-index: 2;
     display: flex;
@@ -32,12 +43,15 @@
 }
 
 // mobile
+.mobile .slider {
+}
+
 .mobile .img {
     border-radius: 8px;
     cursor: pointer;
     width: 100%;
     object-fit: cover;
-    height: 180px;
+    height: auto;
 }
 
 .icon {
@@ -52,13 +66,17 @@
     display: flex;
 }
 
-.img {
+.slider .img {
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
-    object-fit: cover;
-    height: 180px;
 }
+
+body .swiper-item {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
 .loading {
     border-radius: 8px;
     height: 160px;
@@ -109,3 +127,5 @@
     font-weight: 400;
     padding: 4px;
 }
+
+// slider

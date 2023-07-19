@@ -333,9 +333,10 @@
     user-select: none;
     cursor: pointer;
     &:hover {
-        border-width: 5px;
+        border-width: 2px;
         box-shadow: 10px 8px 10px rgba(24, 24, 24, 0.1);
     }
+    transition: border-width ease-in 0.1s;
 }
 
 .responsive-small {

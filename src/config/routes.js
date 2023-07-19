@@ -25,5 +25,7 @@ const routes = {
     website: '/website',
     economic: '/website/economic',
     procedure: '/website/procedure',
+    price: '/website/price',
+    demo: '/website/demo',
 };
 export default routes;

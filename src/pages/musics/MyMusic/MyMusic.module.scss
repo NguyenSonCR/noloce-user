@@ -30,6 +30,29 @@
     border-radius: 50%;
     margin: 0 8px;
     cursor: pointer;
+    &:hover {
+        color: var(--primary-color);
+        transform: scale(1.1) translateZ(0);
+    }
+    transition: transform 0.4s;
+}
+
+.playlist-header-add-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin: 0 8px;
+    cursor: pointer;
+    background-color: var(--background-color);
+    &:hover {
+        color: var(--primary-color);
+        transform: scale(1.1) translateZ(0);
+    }
+    transition: transform 0.4s;
 }
 
 .model-content {
@@ -110,4 +133,96 @@
     color: var(--text-color);
     font-weight: 400;
     font-size: 1.6rem;
+}
+
+// no playlist
+.song-img {
+    position: relative;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    &:hover {
+        .overlay {
+            display: flex;
+        }
+        .img-content {
+            transform: scale(1.1) translateZ(0);
+        }
+    }
+    overflow: hidden;
+}
+
+.img-content {
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.7s;
+}
+
+.overlay {
+    top: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overplay-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--white-color);
+}
+
+.overlay-icon {
+    color: var(--white-color);
+    font-size: 2rem;
+}
+
+.close-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 18px;
+}
+
+.more-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 18px;
+}
+
+.close-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-color);
+}
+
+.song-name {
+    font-weight: 400;
+    font-size: 1.6rem;
+    padding: 4px 0px;
+    color: var(--text-color);
+}
+
+.song-author {
+    font-weight: 400;
+    font-size: 1.4rem;
+    line-height: 1.6rem;
+    color: var(--text-color);
 }

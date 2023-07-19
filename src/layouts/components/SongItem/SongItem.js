@@ -35,11 +35,11 @@ import { BsDownload } from 'react-icons/bs';
 
 const cx = classNames.bind(styles);
 
-function SongItem({ songList, title, myPlaylist }) {
+function SongItem({ songList, title, myPlaylist, myMusic }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
     const authState = useSelector((state) => state.auth);
-    const [choose, setChoose] = useState(false);
+    const toastState = useSelector((state) => state.toast);
 
     // function
     const calculateTime = (secs) => {
@@ -50,22 +50,12 @@ function SongItem({ songList, title, myPlaylist }) {
         return `${returnedMinutes}:${returnedSeconds}`;
     };
 
-    const handleChoose = () => {
-        if (choose) {
-            setChoose(false);
-        } else {
-            setChoose(true);
-        }
-    };
-
     const convertTimeToNumber = (string) => {
         const minutes = string.slice(1, 2);
         const seconds = string.slice(3, 9);
         const value = Math.round(Number(minutes) * 60 * 1000 + Math.round(Number(seconds) * 1000));
         return value;
     };
-
-    const toastState = useSelector((state) => state.toast);
 
     const handleSelectSong = (item) => {
         dispatch(setAlbumPlaying({ playlist: songList, title }));
@@ -163,15 +153,15 @@ function SongItem({ songList, title, myPlaylist }) {
 
     const handleAddLibrary = async (item) => {
         dispatch(addSongLibrary(item));
-        dispatch(
-            addToast({
-                id: toastState.toastList.length + 1,
-                content: 'Đã thêm bài hát vào thư viện',
-                type: 'success',
-            }),
-        );
         try {
-            await musicApi.addSongLibrary(item);
+            const response = await musicApi.addSongLibrary(item);
+            dispatch(
+                addToast({
+                    id: toastState.toastList.length + 1,
+                    content: response.message,
+                    type: 'success',
+                }),
+            );
         } catch (error) {
             console.log(error);
         }
@@ -179,15 +169,15 @@ function SongItem({ songList, title, myPlaylist }) {
 
     const handleRemoveLibrary = async (item) => {
         dispatch(removeSongLibrary(item.encodeId));
-        dispatch(
-            addToast({
-                id: toastState.toastList.length + 1,
-                content: 'Đã xóa bài hát khỏi thư viện',
-                type: 'success',
-            }),
-        );
         try {
-            await musicApi.removeSongLibrary({ id: item.encodeId });
+            const response = await musicApi.removeSongLibrary({ id: item.encodeId });
+            dispatch(
+                addToast({
+                    id: toastState.toastList.length + 1,
+                    content: response.message,
+                    type: 'success',
+                }),
+            );
         } catch (error) {
             console.log(error);
         }
@@ -229,7 +219,6 @@ function SongItem({ songList, title, myPlaylist }) {
             console.log(error);
         }
     };
-
     // popper
     const renderItems = (item) => {
         return (
@@ -243,8 +232,8 @@ function SongItem({ songList, title, myPlaylist }) {
                                 <AiOutlinePlusCircle className={cx('playlist-title-icon')} />
                                 <div className={cx('playlist-title-text')}>Tạo playlist mới</div>
                             </div>
-                            {songState?.myPlaylist?.length > 0 &&
-                                songState.myPlaylist.map((playlist, index) => (
+                            {songState?.myPlaylist?.album.length > 0 &&
+                                songState.myPlaylist.album.map((playlist, index) => (
                                     <div
                                         className={cx('playlist-item')}
                                         key={index}
@@ -286,102 +275,115 @@ function SongItem({ songList, title, myPlaylist }) {
     return (
         <div className={cx('content')}>
             {songList &&
-                songList.map((item, index) => (
-                    <div
-                        key={index}
-                        className={cx(
-                            'wrapper',
-                            songState.song && songState.song.encodeId === item.encodeId && 'active',
-                        )}
-                        ref={refs[item.encodeId]}
-                    >
-                        <div className={cx('song')}>
-                            <TfiMusicAlt className={cx('icon')} />
-                            <input className={cx('input')} type={'checkbox'} onClick={handleChoose}></input>
-                            <div className={cx('info')}>
-                                <div
-                                    className={cx('info-img')}
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                    }}
-                                >
-                                    <img className={cx('img')} alt="" src={item.thumbnail}></img>
-                                    {songState.song && songState.song.encodeId === item.encodeId && songState.isPlay ? (
-                                        <div
-                                            className={cx('img-play')}
-                                            onClick={() => {
-                                                dispatch(pause());
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faPause} className={cx('img-play-icon')} />
-                                        </div>
-                                    ) : (
-                                        <div
-                                            className={cx('img-play')}
-                                            onClick={() => {
-                                                if (songState.song && songState.song.encodeId === item.encodeId) {
-                                                    dispatch(play());
-                                                } else {
-                                                    handleSelectSong(item);
-                                                }
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faPlay} className={cx('img-play-icon')} />
-                                        </div>
-                                    )}
-                                </div>
-                                <div className={cx('info-list')}>
-                                    <p className={cx('name')}>{item.title}</p>
-                                    <p className={cx('author')}>{item.artistsNames}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={cx('album')}>
-                            <p> {item.album && item.album.title}</p>
-                            <div className={cx('action')}>
-                                <Tippy content="Phát cùng lời bài hát">
-                                    <div className={cx('action-wrapper')} onClick={() => handlePlayWithLyric(item)}>
-                                        <TbMicrophone2 className={cx('icon-lyric')} />
-                                    </div>
-                                </Tippy>
-                                {authState?.user?.library?.find((song) => song.encodeId === item.encodeId) ? (
-                                    <Tippy content="Xóa bài hát khỏi thư viện">
-                                        <div className={cx('action-wrapper')} onClick={() => handleRemoveLibrary(item)}>
-                                            <AiFillHeart className={cx('icon-heart')} />
-                                        </div>
-                                    </Tippy>
-                                ) : (
-                                    <Tippy content="Thêm vào thư viện">
-                                        <div className={cx('action-wrapper')} onClick={() => handleAddLibrary(item)}>
-                                            <AiOutlineHeart className={cx('icon-heart')} />
-                                        </div>
-                                    </Tippy>
-                                )}
-
-                                <Tippy content="Khác">
-                                    <div className={cx('action-wrapper')}>
-                                        <FontAwesomeIcon
-                                            className={cx('action-item')}
-                                            icon={faEllipsis}
-                                            onClick={(event) => {
-                                                event.stopPropagation();
-                                                const value = !songState.popup;
-                                                dispatch(setPopup(value));
-                                                setId(item.encodeId);
-                                            }}
-                                        />
-                                    </div>
-                                </Tippy>
-                            </div>
-                            {songState && songState.popup && id === item.encodeId && (
-                                <div className={cx('menu-list')}>
-                                    <PopperWrapper className={cx('menu-popper')}>{renderItems(item)}</PopperWrapper>
-                                </div>
+                songList.map((item, index) => {
+                    if (myMusic && authState?.library.find((song) => song.encodeId === item.encodeId))
+                        return <div></div>;
+                    return (
+                        <div
+                            key={index}
+                            className={cx(
+                                'wrapper',
+                                songState.song && songState.song.encodeId === item.encodeId && 'active',
                             )}
-                            <p className={cx('duration')}>{calculateTime(item.duration)}</p>
+                            ref={refs[item.encodeId]}
+                        >
+                            <div className={cx('song')}>
+                                <TfiMusicAlt className={cx('icon')} />
+                                <TfiMusicAlt className={cx('input')} />
+
+                                <div className={cx('info')}>
+                                    <div
+                                        className={cx('info-img')}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                        }}
+                                    >
+                                        <img className={cx('img')} alt="" src={item.thumbnail}></img>
+                                        {songState.song &&
+                                        songState.song.encodeId === item.encodeId &&
+                                        songState.isPlay ? (
+                                            <div
+                                                className={cx('img-play')}
+                                                onClick={() => {
+                                                    dispatch(pause());
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faPause} className={cx('img-play-icon')} />
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className={cx('img-play')}
+                                                onClick={() => {
+                                                    if (songState.song && songState.song.encodeId === item.encodeId) {
+                                                        dispatch(play());
+                                                    } else {
+                                                        handleSelectSong(item);
+                                                    }
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon={faPlay} className={cx('img-play-icon')} />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className={cx('info-list')}>
+                                        <p className={cx('name')}>{item.title}</p>
+                                        <p className={cx('author')}>{item.artistsNames}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={cx('album')}>
+                                <p> {item.album && item.album.title}</p>
+                                <div className={cx('action')}>
+                                    <Tippy content="Phát cùng lời bài hát">
+                                        <div className={cx('action-wrapper')} onClick={() => handlePlayWithLyric(item)}>
+                                            <TbMicrophone2 className={cx('icon-lyric')} />
+                                        </div>
+                                    </Tippy>
+                                    {authState?.library?.find((song) => song.encodeId === item.encodeId) ? (
+                                        <Tippy content="Xóa bài hát khỏi thư viện">
+                                            <div
+                                                className={cx('action-wrapper')}
+                                                onClick={() => handleRemoveLibrary(item)}
+                                            >
+                                                <AiFillHeart className={cx('icon-heart')} />
+                                            </div>
+                                        </Tippy>
+                                    ) : (
+                                        <Tippy content="Thêm vào thư viện">
+                                            <div
+                                                className={cx('action-wrapper')}
+                                                onClick={() => handleAddLibrary(item)}
+                                            >
+                                                <AiOutlineHeart className={cx('icon-heart')} />
+                                            </div>
+                                        </Tippy>
+                                    )}
+
+                                    <Tippy content="Khác">
+                                        <div className={cx('action-wrapper')}>
+                                            <FontAwesomeIcon
+                                                className={cx('action-item')}
+                                                icon={faEllipsis}
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    const value = !songState.popup;
+                                                    dispatch(setPopup(value));
+                                                    setId(item.encodeId);
+                                                }}
+                                            />
+                                        </div>
+                                    </Tippy>
+                                </div>
+                                {songState && songState.popup && id === item.encodeId && (
+                                    <div className={cx('menu-list')}>
+                                        <PopperWrapper className={cx('menu-popper')}>{renderItems(item)}</PopperWrapper>
+                                    </div>
+                                )}
+                                <p className={cx('duration')}>{calculateTime(item.duration)}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
         </div>
     );
 }

@@ -1,39 +1,71 @@
 import classNames from 'classnames/bind';
 import styles from './ImageSlider.module.scss';
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import React from 'react';
 
 const cx = classNames.bind(styles);
 
 function ImageSlider({ slider }) {
-    const [imageActive, setImageActive] = useState(0);
+    const [sliderInfinity, setSliderInfinity] = useState(slider);
+    const [translate, setTranslate] = useState(0);
+    const [active, setActive] = useState(3);
+    const [transform, setTranform] = useState(true);
+
+    useEffect(() => {
+        if (transform === false && active === 3) {
+            setTranform(true);
+            const percent = 100 / 3;
+            setTranslate(-percent.toFixed(5) * (active - 2));
+            setActive((pre) => pre + 1);
+        }
+
+        if (transform === false && active === sliderInfinity.length) {
+            setTranform(true);
+            const percent = (100 / 3).toFixed(5);
+            const oldTranlate = Number(translate);
+            setTranslate(oldTranlate + Number(percent));
+            setActive((pre) => pre - 1);
+        }
+    }, [transform, active]);
 
     const handleNext = () => {
-        if (imageActive < slider.length - 1) {
-            setImageActive(imageActive + 1);
-        } else {
-            setImageActive(0);
+        if (active === sliderInfinity.length) {
+            setTranform(false);
+            setActive(3);
+            setTranslate(0);
+            return;
+        }
+
+        if (active === sliderInfinity.length - 1) {
+            const percent = 100 / 3;
+            setTranslate(-percent.toFixed(5) * (active - 2));
+            setActive((pre) => pre + 1);
+            return;
+        }
+
+        if (active < sliderInfinity.length) {
+            const percent = 100 / 3;
+            setTranslate(-percent.toFixed(5) * (active - 2));
+            setActive((pre) => pre + 1);
         }
     };
 
     const handlePre = () => {
-        if (imageActive > 0) {
-            setImageActive(imageActive - 1);
-        } else {
-            setImageActive(slider.length - 1);
+        if (active === 3) {
+            setActive(sliderInfinity.length);
+            setTranform(false);
+            const percent = 100 / 3;
+            setTranslate(-percent.toFixed(5) * (sliderInfinity.length - 3));
+            return;
+        }
+        if (active > 3) {
+            const percent = (100 / 3).toFixed(5);
+            const oldTranlate = Number(translate);
+            setTranslate(oldTranlate + Number(percent));
+            setActive((pre) => pre - 1);
         }
     };
-
-    useEffect(() => {
-        const autoPlay = setTimeout(() => {
-            handleNext();
-        }, 3000);
-
-        return () => {
-            clearTimeout(autoPlay);
-        };
-        //  eslint-disable-next-line
-    }, [imageActive]);
 
     return (
         <div className={cx('wrapper')}>
@@ -41,10 +73,16 @@ function ImageSlider({ slider }) {
                 <BsChevronLeft className={cx('btn-icon')} />
             </div>
 
-            <div className={cx('slider-container')}>
-                {slider.map((item, index) => (
-                    <div key={index} className={cx('slider-item', imageActive === index && 'active')}>
-                        <img src={item.img} alt="" className={cx('slider-img')}></img>
+            <div
+                className={cx('slider-container')}
+                style={{
+                    transform: `translateX(${translate}%)`,
+                    transition: transform ? `transform ease-in 0.5s` : null,
+                }}
+            >
+                {sliderInfinity.map((item, index) => (
+                    <div key={index} data-index={index} className={cx('slider-item')}>
+                        <img src={item.img || item.banner} alt="" className={cx('slider-img')}></img>
                         <p className={cx('slider-text')}>{item.text}</p>
                     </div>
                 ))}

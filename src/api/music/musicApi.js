@@ -71,6 +71,11 @@ const musicApi = {
         return axiosJWT.patch(url, song);
     },
 
+    getLibrary: () => {
+        const url = `/music/mymusic/library`;
+        return axiosJWT.get(url);
+    },
+
     getAllMyPlaylist: () => {
         const url = `/music/mymusic/playlist`;
         return axiosJWT.get(url);

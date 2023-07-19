@@ -11,10 +11,9 @@
 }
 
 .content-header p {
-    font-weight: 400;
-    font-size: 1.8rem;
-    color: var(--text-color);
-    padding: 4px 12px;
+    font-weight: 500;
+    font-size: 2rem;
+    color: var(--primary-color);
 }
 
 .content-header-all {
@@ -43,41 +42,30 @@
 
 .song-img {
     position: relative;
+    display: flex;
+    align-items: center;
     width: 100%;
-    height: 180px;
     border-radius: 4px;
     &:hover {
         cursor: pointer;
         .overlay {
             display: flex;
         }
-        .img-content {
-            animation: hover linear 0.3s forwards;
+        .img-tag {
+            transform: scale(1.1);
         }
     }
     overflow: hidden;
 }
 
-@keyframes hover {
-    0% {
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-    100% {
-        width: 110%;
-        height: 190px;
-        top: -5px;
-        left: -5%;
-    }
+.song-list {
+    margin-bottom: 18px;
 }
 
-.img-content {
-    position: absolute;
+.img-tag {
+    transition: transform ease-in 0.4s;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
 }
 
 .overlay {

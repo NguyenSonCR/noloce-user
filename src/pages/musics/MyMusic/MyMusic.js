@@ -1,7 +1,7 @@
 import styles from './MyMusic.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faPlay } from '@fortawesome/free-solid-svg-icons';
 import PlayList from '~/layouts/components/PlayListModel/PlayListModel';
 import { useEffect, useState } from 'react';
 import Model from '~/components/Model';
@@ -14,6 +14,11 @@ import SongItem from '~/layouts/components/SongItem';
 import { setMyPlaylist, addMyPlaylist } from '~/slices/songSlice';
 import { addToast } from '~/slices/toastSlice';
 import Loading from '~/layouts/components/Loading';
+import { setLibrary } from '~/slices/authSlice';
+import images from '~/assets/img';
+import { AiOutlineClose } from 'react-icons/ai';
+import { RiMoreLine } from 'react-icons/ri';
+import Tippy from '@tippyjs/react';
 
 const cx = classNames.bind(styles);
 function MyMusic() {
@@ -27,7 +32,7 @@ function MyMusic() {
     });
 
     useEffect(() => {
-        if (songState.myPlaylist.length === 0) {
+        if (songState.myPlaylist.loading) {
             musicApi
                 .getAllMyPlaylist()
                 .then((res) => {
@@ -35,8 +40,16 @@ function MyMusic() {
                 })
                 .catch((error) => console.log(error));
         }
+
         // eslint-disable-next-line
-    }, [songState.myPlaylist]);
+    }, [songState.myPlaylist.loading]);
+
+    useEffect(() => {
+        musicApi.getLibrary().then((res) => {
+            dispatch(setLibrary(res.library));
+        });
+        // eslint-disable-next-line
+    }, []);
 
     const navigate = useNavigate();
 
@@ -73,6 +86,7 @@ function MyMusic() {
             console.log(error);
         }
     };
+
     const [showAlbum, setShowAlbum] = useState(false);
     return (
         <div
@@ -87,6 +101,7 @@ function MyMusic() {
                     <div className={cx('model-content')}>
                         <p>Tạo playlist mới</p>
                         <input
+                            name="playlist"
                             type={'text'}
                             placeholder="Nhập tên playlist"
                             spellCheck={false}
@@ -94,7 +109,7 @@ function MyMusic() {
                             className={cx('model-input')}
                             onChange={onChangeName}
                         ></input>
-                        <Button type="text" primary onClick={handleAddNewPlaylist}>
+                        <Button type="text" primary onClick={() => handleAddNewPlaylist()}>
                             Tạo mới
                         </Button>
                     </div>
@@ -104,16 +119,41 @@ function MyMusic() {
                 <div className={cx('playlist-header')}>
                     <span>Playlist</span>
                     <div className={cx('playlist-header-add')} onClick={() => setModel(true)}>
-                        <FontAwesomeIcon icon={faPlus} />
+                        <FontAwesomeIcon icon={faPlus} className={cx('playlist-add-icon')} />
                     </div>
                 </div>
                 <div className={cx('playlist-content')}>
-                    {songState?.myPlaylist.length === 0 ? (
-                        <div>Không có playlist nào</div>
-                    ) : songState.myPlaylist.length > 0 ? (
-                        <PlayList showAlbum={showAlbum} setShowAlbum={setShowAlbum} playlist={songState.myPlaylist} />
-                    ) : (
+                    {songState.myPlaylist.loading ? (
                         <Loading />
+                    ) : songState.myPlaylist.album.length === 0 ? (
+                        <div className="row">
+                            <div className="col l-2-4 m-3 c-6">
+                                <div className={cx('song-img')}>
+                                    <img alt="" src={images.song} className={cx('img-content')}></img>
+                                    {
+                                        <div className={cx('overlay')}>
+                                            <Tippy content="Thêm mới playlist" placement="bottom">
+                                                <div
+                                                    className={cx('playlist-header-add-img')}
+                                                    onClick={() => setModel(true)}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faPlus}
+                                                        className={cx('playlist-add-icon')}
+                                                    />
+                                                </div>
+                                            </Tippy>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <PlayList
+                            showAlbum={showAlbum}
+                            setShowAlbum={setShowAlbum}
+                            playlist={songState.myPlaylist.album}
+                        />
                     )}
                 </div>
             </div>
@@ -130,7 +170,10 @@ function MyMusic() {
                         </div>
                     </div>
                     <div className={cx('content-songs')}>
-                        {authState?.user?.library && <SongItem songList={authState.user.library} />}
+                        {authState?.library && <SongItem songList={authState.library} />}
+                        {songState?.myPlaylist?.album.map((playlist, index) => {
+                            return <SongItem key={index} songList={playlist.song} myMusic={true} />;
+                        })}
                     </div>
                 </ul>
             </div>

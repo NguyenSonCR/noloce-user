@@ -27,7 +27,10 @@ const initialState = {
     genresDetail: null,
     lyricPage: false,
     vipSong: false,
-    myPlaylist: [],
+    myPlaylist: {
+        album: [],
+        loading: true,
+    },
     singleMyPlaylist: null,
     popup: false,
 };
@@ -113,7 +116,8 @@ export const songSlice = createSlice({
         },
 
         setMyPlaylist: (state, action) => {
-            state.myPlaylist = action.payload;
+            state.myPlaylist.album = action.payload;
+            state.myPlaylist.loading = false;
         },
 
         setSingleMyPlaylist: (state, action) => {
@@ -121,11 +125,11 @@ export const songSlice = createSlice({
         },
 
         addMyPlaylist: (state, action) => {
-            state.myPlaylist = state.myPlaylist.concat(action.payload);
+            state.myPlaylist.album = state.myPlaylist.album.concat(action.payload);
         },
 
         addSongPlaylist: (state, action) => {
-            state.myPlaylist = state.myPlaylist.map((item) => {
+            state.myPlaylist.album = state.myPlaylist.album.map((item) => {
                 if (item._id === action.payload.playlistId) {
                     return {
                         ...item,
@@ -142,7 +146,7 @@ export const songSlice = createSlice({
                 ...state.singleMyPlaylist,
                 song: state.singleMyPlaylist.song.filter((item) => item.encodeId !== action.payload.song.encodeId),
             };
-            state.myPlaylist = state.myPlaylist.map((item) => {
+            state.myPlaylist.album = state.myPlaylist.album.map((item) => {
                 if (item.slug === action.payload.slug) {
                     return {
                         ...item,
@@ -158,7 +162,7 @@ export const songSlice = createSlice({
             state.popup = action.payload;
         },
         deletePlaylist: (state, action) => {
-            state.myPlaylist = state.myPlaylist.filter((item) => item.slug !== action.payload);
+            state.myPlaylist.album = state.myPlaylist.album.filter((item) => item.slug !== action.payload);
         },
     },
 });

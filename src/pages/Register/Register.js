@@ -145,7 +145,7 @@ function Register() {
         }
     };
     return (
-        <div className={cx('wrapper', ['grid', 'wide'])}>
+        <div className={cx('wrapper', ['grid'])}>
             <div className={cx('header')}>
                 <div className={cx('inner')}>
                     <div className={cx('logo-wrapper')}>
@@ -158,7 +158,7 @@ function Register() {
                             </Link>
                         </div>
                         <Link to={config.routes.login} className={cx('logo-text')}>
-                            Đăng Nhập
+                            Đăng ký
                         </Link>
                     </div>
                 </div>
@@ -169,7 +169,7 @@ function Register() {
                     <div className={cx('title')}>
                         <h3> Đăng ký </h3>
                     </div>
-                    <form className={cx('form-content')} id="form-register" onSubmit={register}>
+                    <form className={cx('form-content')} id="form-register" onSubmit={register} name="form-register">
                         <div className={cx('form-group')}>
                             <input
                                 onFocus={(event) => setOnFocus(event, setFormValid, formValid, password)}
@@ -238,7 +238,7 @@ function Register() {
                                 </div>
                                 <div className={cx('show-password')}>
                                     <span>Hiện mật khẩu</span>
-                                    <input type={'checkbox'} onClick={onClickIcon}></input>
+                                    <input name="switch" type={'checkbox'} onClick={onClickIcon}></input>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +252,7 @@ function Register() {
                                 Quay lại
                             </Button>
                             {usernameValid && fullNameValid && passwordValid && passwordConfirmValid ? (
-                                <Button type="submit" primary fill className={cx('btn-back', width < 740 && 'mobile')}>
+                                <Button type="submit" primary className={cx('btn-back', width < 740 && 'mobile')}>
                                     Đăng ký
                                 </Button>
                             ) : (

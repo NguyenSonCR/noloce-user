@@ -2,7 +2,7 @@ import styles from './HomeMusic.module.scss';
 import classNames from 'classnames/bind';
 import SongConcept from '~/layouts/components/SongConcept';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import musicApi from '~/api/music/musicApi';
 import { useNavigate } from 'react-router-dom';
 import Loading from '~/layouts/components/Loading';
@@ -12,9 +12,9 @@ import config from '~/config';
 import useViewport from '~/hooks/useViewport';
 import images from '~/assets/img';
 import { ReactComponent as IconKinds } from '~/assets/icon/kinds.svg';
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Autoplay } from 'swiper';
-
 import { loadSong, play, setLink, setHomeMusic, setSongLyric, setAlbumPlaying } from '~/slices/songSlice';
 import React from 'react';
 import axios from 'axios';
@@ -22,8 +22,6 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 function HomeMusic() {
     const songState = useSelector((state) => state.song);
-    const swiperRef = useRef(null);
-
     const viewPort = useViewport();
     const isMobile = viewPort.width < 740;
 
@@ -33,17 +31,18 @@ function HomeMusic() {
             musicApi.getHome().then((response) => {
                 if (response.success) {
                     dispatch(setHomeMusic(response.homeData.items));
-                    setMobileSlider(response.homeData.items[0].items);
+                    setMobileSlider([...response.homeData.items[0].items, ...response.homeData.items[0].items]);
                 }
             });
         } else {
-            setMobileSlider(songState.homeMusic[0].items);
+            setMobileSlider([...songState.homeMusic[0].items, ...songState.homeMusic[0].items]);
         }
         // eslint-disable-next-line
     }, []);
 
     const [mobileSlider, setMobileSlider] = useState([]);
     const navigate = useNavigate();
+
     const handleChooseSlide = async (item) => {
         if (item.type === 4) {
             navigate(`/music/album/${item.encodeId}`);
@@ -110,20 +109,21 @@ function HomeMusic() {
         body = (
             <div className={cx('mobile')}>
                 <div className={cx('wrapper')}>
-                    {mobileSlider.length > 0 ? (
+                    {mobileSlider && mobileSlider.length > 0 ? (
                         <Swiper
                             slidesPerView={1}
                             spaceBetween={10}
                             loop={true}
+                            speed={1100}
                             pagination={{
                                 clickable: true,
                             }}
                             autoplay={{
-                                delay: 2500,
+                                delay: 3500,
                                 disableOnInteraction: false,
                             }}
                             modules={[Autoplay, Pagination]}
-                            className="mySwiper"
+                            className={cx('slider')}
                         >
                             {mobileSlider.map((item, index) => (
                                 <SwiperSlide key={index}>
@@ -133,7 +133,13 @@ function HomeMusic() {
                         </Swiper>
                     ) : (
                         <div className={cx(['row'])}>
-                            <div className={cx(['col', 'l-4', 'm-6', 'c-12'])}>
+                            <div className={cx(['col', 'l-4', 'm-4', 'c-12'])}>
+                                <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            </div>
+                            <div className={cx(['col', 'l-4', 'm-4'])}>
+                                <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            </div>
+                            <div className={cx(['col', 'l-4', 'm-4'])}>
                                 <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
                             </div>
                         </div>
@@ -227,41 +233,56 @@ function HomeMusic() {
     if (!isMobile) {
         body = (
             <div className={cx('wrapper')}>
-                {mobileSlider.length > 0 ? (
-                    <Swiper
-                        ref={swiperRef}
-                        init="false"
-                        slidesPerView={3}
-                        spaceBetween={10}
-                        loop={true}
-                        // autoplay={{
-                        //     delay: 2500,
-                        //     disableOnInteraction: false,
-                        // }}
-                        pagination={true}
-                        navigation
-                        modules={[Navigation, Pagination, Autoplay]}
-                    >
-                        {mobileSlider.map((item, index) => (
-                            <SwiperSlide key={index} onClick={() => handleChooseSlide(item)}>
-                                <img alt="" src={item.banner} className={cx('img')}></img>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                ) : (
-                    <div className={cx(['row', 'sm-gutter'])}>
-                        <div className={cx(['col', 'l-4'])}>
-                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                <div className={cx(['swiper-container'])}>
+                    {mobileSlider && mobileSlider.length > 0 ? (
+                        <div className="slider">
+                            <div className="button-prev">
+                                <BsChevronLeft className={cx('btn-icon')} />
+                            </div>
+                            <Swiper
+                                slidesPerView={3}
+                                spaceBetween={10}
+                                loop={true}
+                                autoplay={{
+                                    delay: 3500,
+                                    disableOnInteraction: false,
+                                }}
+                                speed={1100}
+                                navigation={{
+                                    nextEl: '.button-next',
+                                    prevEl: '.button-prev',
+                                }}
+                                pagination
+                                modules={[Autoplay, Navigation, Pagination]}
+                                className={cx('slider')}
+                            >
+                                {mobileSlider.map((item, index) => (
+                                    <SwiperSlide key={index} onClick={handleChooseSlide} className={cx('swiper-item')}>
+                                        <img alt="" src={item.banner} className={cx('img')}></img>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
+
+                            <div className="button-next">
+                                <BsChevronRight className={cx('btn-icon')} />
+                            </div>
                         </div>
-                        <div className={cx(['col', 'l-4'])}>
-                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                    ) : (
+                        <div className={cx(['row', 'sm-gutter'])}>
+                            <div className={cx(['col', 'l-4', 'm-4'])}>
+                                <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            </div>
+                            <div className={cx(['col', 'l-4', 'm-4'])}>
+                                <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            </div>
+                            <div className={cx(['col', 'l-4', 'm-4'])}>
+                                <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
+                            </div>
                         </div>
-                        <div className={cx(['col', 'l-4'])}>
-                            <div className={cx('loading')} style={{ animation: 'loading 2s infinite' }}></div>
-                        </div>
-                    </div>
-                )}
-                <div>
+                    )}
+                </div>
+
+                <div className={cx('content')}>
                     {songState.homeMusic ? (
                         songState.homeMusic.map((concept, index) => {
                             let value = null;

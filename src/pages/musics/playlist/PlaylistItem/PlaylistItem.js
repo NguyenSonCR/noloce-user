@@ -2,7 +2,7 @@ import styles from './PlaylistItem.module.scss';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import 'tippy.js/dist/tippy.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadSong, play, pause, setLink, setSongLyric, setAlbumPlaying } from '~/slices/songSlice';
@@ -16,15 +16,6 @@ const cx = classNames.bind(styles);
 function PlaylistItem({ songList, playlist, title, scroll }) {
     const dispatch = useDispatch();
     const songState = useSelector((state) => state.song);
-    const [choose, setChoose] = useState(false);
-
-    const handleChoose = () => {
-        if (choose) {
-            setChoose(false);
-        } else {
-            setChoose(true);
-        }
-    };
 
     const convertTimeToNumber = (string) => {
         const minutes = string.slice(1, 2);
@@ -116,7 +107,7 @@ function PlaylistItem({ songList, playlist, title, scroll }) {
                     >
                         <div className={cx('song')}>
                             <TfiMusicAlt className={cx('icon')} />
-                            <input className={cx('input')} type={'checkbox'} onClick={handleChoose}></input>
+                            <TfiMusicAlt className={cx('input')} />
                             <div className={cx('info')}>
                                 <div
                                     className={cx('info-img')}

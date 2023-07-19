@@ -46,7 +46,7 @@ function SongConcept({ title, data, details, all, link }) {
                                 {list &&
                                     Array.isArray(list) &&
                                     list.map((item, index) => (
-                                        <div className="col l-2-4 m-6 c-6" key={index}>
+                                        <div className="col l-2-4 m-4 c-6" key={index}>
                                             <div
                                                 className={cx('song-list')}
                                                 onClick={() => handleOnclick(item.encodeId)}
@@ -97,12 +97,12 @@ function SongConcept({ title, data, details, all, link }) {
                     </div>
                 )}
                 <div className={cx('content-song')}>
-                    <div className="grid wide">
+                    <div className="grid">
                         <div className={cx(['row', 'sm-gutter'])}>
                             {list &&
                                 Array.isArray(list) &&
                                 list.map((item, index) => (
-                                    <div className="col l-2-4" key={index}>
+                                    <div className="col l-2-4 m-4" key={index}>
                                         <div className={cx('song-list')} onClick={() => handleOnclick(item.encodeId)}>
                                             <div className={cx('song-img')}>
                                                 <img

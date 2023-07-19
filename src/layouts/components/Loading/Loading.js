@@ -24,28 +24,28 @@ function Loading({ single }) {
                         <div className={cx('header-title')} style={{ animation: 'loading 2s infinite' }}></div>
                     </div>
                     <div className={cx(['row', 'sm-gutter'])}>
-                        <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'], 'loading-item')}>
+                        <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'], 'loading-item')}>
                             <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                             <div
                                 className={cx('item-title-loading')}
                                 style={{ animation: 'loading 2s infinite' }}
                             ></div>
                         </div>
-                        <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                        <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                             <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                             <div
                                 className={cx('item-title-loading')}
                                 style={{ animation: 'loading 2s infinite' }}
                             ></div>
                         </div>
-                        <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                        <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                             <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                             <div
                                 className={cx('item-title-loading')}
                                 style={{ animation: 'loading 2s infinite' }}
                             ></div>
                         </div>
-                        <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                        <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                             <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                             <div
                                 className={cx('item-title-loading')}
@@ -65,23 +65,23 @@ function Loading({ single }) {
                     <div className={cx('header-title')} style={{ animation: 'loading 2s infinite' }}></div>
                 </div>
                 <div className={cx(['row', 'sm-gutter'])}>
-                    <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                    <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                         <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                         <div className={cx('item-title-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                     </div>
-                    <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                    <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                         <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                         <div className={cx('item-title-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                     </div>
-                    <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                    <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                         <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                         <div className={cx('item-title-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                     </div>
-                    <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                    <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                         <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                         <div className={cx('item-title-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                     </div>
-                    <div className={cx(['col', 'l-2-4', 'm-6', 'c-6'])}>
+                    <div className={cx(['col', 'l-2-4', 'm-4', 'c-6'])}>
                         <div className={cx('item-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                         <div className={cx('item-title-loading')} style={{ animation: 'loading 2s infinite' }}></div>
                     </div>

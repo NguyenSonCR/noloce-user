@@ -5,7 +5,7 @@ const cx = classNames.bind(styles);
 
 function Sidebar() {
     return (
-        <div className={cx('sidebar')}>
+        <div className={cx('wrapper')}>
             <Navigation />
         </div>
     );

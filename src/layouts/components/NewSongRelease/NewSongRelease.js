@@ -8,7 +8,7 @@ import useViewport from '~/hooks/useViewport';
 import { HiOutlineChevronRight } from 'react-icons/hi';
 
 const cx = classNames.bind(styles);
-function NewSongRelease({ concept, link }) {
+function NewSongRelease({ concept, link, all }) {
     const viewPort = useViewport();
     const isMobile = viewPort.width < 740;
 
@@ -42,11 +42,13 @@ function NewSongRelease({ concept, link }) {
         body = (
             <div className={cx('content')}>
                 <div className={cx('content-header')}>
-                    <p>{concept.title}</p>
-                    <Link to={link} className={cx('content-header-all')}>
-                        <p>Tất cả</p>
-                        <FontAwesomeIcon icon={faChevronRight} />
-                    </Link>
+                    <p className={cx('content-header-text')}>{concept.title}</p>
+                    {all === true && (
+                        <Link to={link} className={cx('content-header-all')}>
+                            <p>Tất cả</p>
+                            <FontAwesomeIcon icon={faChevronRight} />
+                        </Link>
+                    )}
                 </div>
                 <div>
                     <div className={cx(['row', 'sm-gutter'], 'container')}>
