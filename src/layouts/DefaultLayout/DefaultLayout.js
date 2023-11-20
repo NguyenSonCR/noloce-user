@@ -3,11 +3,13 @@ import Sidebar from '~/layouts/components/Sidebar';
 import classNames from 'classnames/bind';
 import styles from './DefaultLayout.module.scss';
 import { useDispatch } from 'react-redux';
-import { setPopup } from '~/slices/songSlice';
 import useViewport from '~/hooks/useViewport';
 import NaviMobi from '~/layouts/components/NaviMobi';
 import Footer from '~/layouts/components/Footer';
 import { Outlet } from 'react-router-dom';
+import ChatBot from '~/layouts/components/ChatBot';
+import { socket } from '~/socket';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -17,8 +19,27 @@ function DefaultLayout() {
     const isMobile = viewPort.width < 740;
 
     const handleClosePopup = () => {
-        dispatch(setPopup(false));
+        // dispatch(setPopup(false));
     };
+
+    const [isConnected, setIsConnected] = useState(socket.connected);
+
+    useEffect(() => {
+        function onConnect() {
+            setIsConnected(true);
+        }
+
+        function onDisconnect() {
+            setIsConnected(false);
+        }
+        socket.on('connect', onConnect);
+        socket.on('disconnect', onDisconnect);
+
+        return () => {
+            socket.off('connect', onConnect);
+            socket.off('disconnect', onDisconnect);
+        };
+    }, []);
 
     let body = null;
     if (isMobile) {
@@ -55,15 +76,12 @@ function DefaultLayout() {
 
                     <div className={cx('content')}>
                         <div className={cx(['grid'])}>
-                            <div className={cx(['row'])}>
-                                <div className={cx(['col', 'l-12', 'm-12'])}>
-                                    <Outlet />
-                                </div>
-                            </div>
+                            <Outlet />
                         </div>
                     </div>
                 </div>
                 <Footer />
+                <ChatBot />
             </div>
         );
     }

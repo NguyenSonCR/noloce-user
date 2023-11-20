@@ -7,9 +7,10 @@ import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function NavItem({ data, onClick, navItemActive }) {
+function NavItem({ data, onClick }) {
     const { pathname } = useLocation();
-    const [active, setActive] = useState(navItemActive);
+    const [active, setActive] = useState(pathname);
+
     useEffect(() => {
         if (pathname === '/') {
             return;

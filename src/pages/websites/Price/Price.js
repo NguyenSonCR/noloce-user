@@ -15,7 +15,7 @@ function Price() {
             </div>
             <div className={cx('content')}>
                 <div className="row">
-                    <div className={cx(['col', 'l-6'])}>
+                    <div className={cx(['col', 'l-4', 'm-6'])}>
                         <div className={cx('concept')}>
                             <div className={cx('content-header')}>
                                 <p>Gói tiêu chuẩn</p>
@@ -59,7 +59,7 @@ function Price() {
                             </ul>
                         </div>
                     </div>
-                    <div className={cx(['col', 'l-6'])}>
+                    <div className={cx(['col', 'l-4', 'm-6'])}>
                         <div className={cx('concept')}>
                             <div className={cx('content-header')}>
                                 <p>Thiết kế theo yêu cầu</p>
@@ -79,6 +79,52 @@ function Price() {
                                 <li className={cx('content-item')}>
                                     <AiOutlineCheck className={cx('item-icon')} />{' '}
                                     <p>Thiết kế giao diện theo yêu cầu</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Thiết kế logo</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Thiết kế chuẩn SEO</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Phiên bản mobile</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Chứng chỉ bảo mật SSL</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Bảo hành trọn đời</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Bàn giao source code</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} />{' '}
+                                    <p>Tích hợp các mạng xã hội trên web</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className={cx(['col', 'l-4', 'm-6'])}>
+                        <div className={cx('concept')}>
+                            <div className={cx('content-header')}>
+                                <p>Thiết kế nâng cao</p>
+                                <p>5.000.000 đồng</p>
+                            </div>
+                            <p></p>
+                            <ul className={cx('content-list')}>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>01 Tên miền</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Dung lượng lưu trữ: 10GB</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} /> <p>Băng thông không giới hạn</p>
+                                </li>
+                                <li className={cx('content-item')}>
+                                    <AiOutlineCheck className={cx('item-icon')} />{' '}
+                                    <p>Thiết kế giao diện theo yêu cầu nâng cao</p>
                                 </li>
                                 <li className={cx('content-item')}>
                                     <AiOutlineCheck className={cx('item-icon')} /> <p>Thiết kế logo</p>

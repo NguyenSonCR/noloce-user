@@ -40,12 +40,12 @@ function Website() {
                 pagination={{
                     clickable: true,
                 }}
-                autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                }}
-                modules={[EffectFade, Navigation, Pagination, Autoplay]}
-                className="mySwiper"
+                // autoplay={{
+                //     delay: 2500,
+                //     disableOnInteraction: false,
+                // }}
+                modules={[EffectFade, Navigation, Pagination]}
+                className={cx('mySwiper')}
             >
                 {slider.map((item, index) => (
                     <SwiperSlide key={index} className={cx('slider-item')}>
