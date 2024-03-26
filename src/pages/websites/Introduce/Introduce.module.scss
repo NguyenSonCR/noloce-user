@@ -1,0 +1,121 @@
+.concept-header {
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--primary-color);
+    padding: 24px 8px 24px 8px;
+    text-align: center;
+}
+
+.concept-descreption {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 2.2rem;
+    color: var(--text-color);
+    padding: 16px 16px 0px 16px;
+    text-align: justify;
+}
+
+.concept_show {
+    display: flex;
+    margin: 24px 0 24px 0;
+}
+
+.concept_show-col {
+    flex: 0 0 25%;
+    max-width: 25%;
+    padding: 0 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.concept_show-img {
+    height: 100px;
+}
+
+.concept_show-text {
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text-color);
+    padding: 16px 8px 0 8px;
+    text-align: center;
+}
+
+.concept_1 {
+    display: flex;
+    margin-top: 24px;
+}
+
+.concept_1-des {
+    flex: 0 0 50%;
+}
+
+.concept_1-des-header {
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 3rem;
+    color: var(--primary-color);
+    padding: 16px 8px 0 8px;
+    text-align: center;
+}
+
+.concept_1-list {
+    margin-left: 16px;
+}
+
+.concept_1-item {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 2.2rem;
+    color: var(--text-color);
+    padding: 8px 8px 0 8px;
+}
+
+.concept_1-des-footer {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 2.2rem;
+    color: var(--text-color);
+    padding: 8px 8px 0 8px;
+}
+
+.concept_1-img {
+    flex: 0 0 50%;
+}
+
+.concept_1-img-tag {
+    width: 100%;
+}
+
+.concept_2 {
+    margin-bottom: 48px;
+}
+
+.concept_2-header {
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 3rem;
+    color: var(--primary-color);
+    padding: 8px 8px 8px 8px;
+    text-align: center;
+    margin-top: 12px;
+}
+
+.concept_2-col-header {
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 3rem;
+    color: var(--primary-color);
+    padding: 16px 8px 8px 8px;
+    text-align: center;
+}
+
+.concept_2-text {
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 2.2rem;
+    color: var(--text-color);
+    padding: 8px 8px 0 8px;
+    text-align: justify;
+}

@@ -7,6 +7,7 @@ import Login from '~/pages/Login';
 import Procedure from '~/pages/websites/Procedure';
 import Price from '~/pages/websites/Price';
 import Demo from '~/pages/websites/Demo';
+import Introduce from '~/pages/websites/Introduce';
 
 const publicRoutes = [
     // general
@@ -17,6 +18,7 @@ const publicRoutes = [
     { path: config.routes.procedure, component: Procedure },
     { path: config.routes.price, component: Price },
     { path: config.routes.demo, component: Demo },
+    { path: config.routes.introduce, component: Introduce },
 ];
 
 const privateRoutes = [];

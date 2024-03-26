@@ -1,16 +1,16 @@
 :root {
-    --primary-color: rgb(77, 46, 168);
-    --primary-color-hover: rgb(42, 2, 159);
+    --primary-color: #4d2ea8;
+    --primary-color-hover: rgb(69, 24, 206);
     --primary-bold: #aa60e3;
     --delete-color: #ff0000;
     --white-color: #fff;
     --black-color: #000;
     --text-color: #333;
     --border-color: #dbdbdb;
-    --icon-color: rgba(22, 24, 35, 0.4);
-    --background-color: #d9d2f9;
+    --icon-color: #16182366;
+    --background-color: #d2b9f7;
     --error-color: #ff0000;
-    --light-color: #5e5e5e;
+    --light-color: #a3a1a1;
 }
 
 * {
@@ -136,11 +136,6 @@ html *::-webkit-scrollbar-track {
 }
 
 // slider
-.slider {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-}
 
 .button-prev {
     position: absolute;

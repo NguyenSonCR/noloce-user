@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 function Navigation() {
     const NAV_MENU = [
         {
-            title: 'Giới thiệu',
+            title: 'Trang chủ',
             code: 'home',
             to: config.routes.website,
         },
@@ -24,9 +24,14 @@ function Navigation() {
         },
 
         {
-            title: 'Demo',
+            title: 'Mẫu website',
             code: 'demo',
             to: config.routes.demo,
+        },
+        {
+            title: 'Giới thiệu',
+            code: 'introduce',
+            to: config.routes.introduce,
         },
     ];
 

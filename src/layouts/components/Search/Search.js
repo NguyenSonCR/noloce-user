@@ -5,8 +5,7 @@ import Tippy from '@tippyjs/react/headless';
 import { Wrapper } from '~/components/Popper';
 import { faCircleXmark, faSpinner, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { useDebounce } from '~/hooks';
 import useViewport from '~/hooks/useViewport';
 
@@ -38,9 +37,6 @@ function Search({ visible }) {
         }
         // eslint-disable-next-line
     }, [debouncedValue]);
-
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const handleSearch = () => {};
 

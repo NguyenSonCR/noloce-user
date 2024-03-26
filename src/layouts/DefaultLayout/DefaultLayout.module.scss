@@ -1,5 +1,4 @@
 .container {
-    margin-bottom: 60px;
     min-height: 100vh;
     display: flex;
 }
@@ -9,18 +8,17 @@
     display: block;
 }
 
+.sidebar {
+    padding-top: 24px;
+}
+
+.content {
+    padding-top: 24px;
+}
+
 .mobile .content {
     max-width: 100%;
     padding: 0;
-}
-.content {
-    max-width: calc(100% - 160px);
-    padding: 20px 28px 20px 20px;
-    flex: 1 1;
-}
-
-.sidebar {
-    flex-shrink: 0;
 }
 
 .navigate {

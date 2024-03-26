@@ -9,5 +9,6 @@ const routes = {
     procedure: '/website/procedure',
     price: '/website/price',
     demo: '/website/demo',
+    introduce: '/website/introduce',
 };
 export default routes;

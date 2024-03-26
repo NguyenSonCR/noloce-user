@@ -4,12 +4,8 @@ import { publicRoutes, privateRoutes, nullLayoutRoutes } from '~/routes';
 import { DefaultLayout } from '~/layouts';
 import Toast from './layouts/components/Toast';
 import ProtectedRoute from '~/routing/ProtectedRoute';
-import useViewport from './hooks/useViewport';
 
 function App() {
-    const viewPort = useViewport();
-    const isMobile = viewPort.width < 740;
-
     return (
         <Router>
             <div className="app" id="container">

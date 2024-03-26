@@ -10,12 +10,32 @@ import { AiFillFacebook, AiOutlineSend } from 'react-icons/ai';
 import config from '~/config';
 import { socket } from '~/socket';
 import chatApi from '~/api/chat/chatApi';
+import images from '~/assets/img';
 
 const cx = classNames.bind(styles);
 function ChatBot() {
     const userState = useSelector((state) => state.auth);
     const [toggle, setToggle] = useState(false);
+    const [time, setTime] = useState(1);
     const [formShow, setFormShow] = useState('login');
+    const [typingStatus, setTypingStatus] = useState('');
+
+    useEffect(() => {
+        socket.on('typingResponse', (data) => setTypingStatus(data));
+        return () => {
+            socket.off('typingResponse', (data) => setTypingStatus(data));
+        };
+        // eslint-disable-next-line
+    }, [socket]);
+
+    useEffect(() => {
+        socket.on('typingBlurResponse', (data) => setTypingStatus(data));
+        return () => {
+            socket.off('typingBlurResponse', (data) => setTypingStatus(data));
+        };
+        // eslint-disable-next-line
+    }, [socket]);
+
     const [formValue, setFormValue] = useState({
         username: '',
         email: '',
@@ -26,7 +46,11 @@ function ChatBot() {
         if (userState.user) {
             setFormShow('chat');
             socket.connect();
+            socket.emit('create', userState.user.username);
         }
+        return () => {
+            socket.disconnect();
+        };
     }, [userState?.user]);
 
     const [validate, setValidate] = useState({
@@ -103,18 +127,23 @@ function ChatBot() {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        setData((pre) => [
-            ...pre,
+        if (chatMess.trim().length === 0) return;
+
+        setData([
+            ...data,
             {
                 username: userState.user.username,
                 message: chatMess,
             },
         ]);
+
         try {
             if (userState?.user) {
                 await socket.emit('userChat', {
                     username: userState.user.username,
                     message: chatMess,
+                    id: `${socket.id}${Math.random()}`,
+                    socketId: socket.id,
                 });
                 setChatMess('');
                 inputRef.current.innerText = '';
@@ -124,6 +153,17 @@ function ChatBot() {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleTyping = (event) => {
+        socket.emit('typing', `${userState?.user?.username} is typing`);
+        if (event.key === 'Enter') {
+            onSubmit(event);
+        }
+    };
+
+    const handleTypingBlur = () => {
+        socket.emit('typingBlur', '');
     };
 
     const [data, setData] = useState([]);
@@ -137,19 +177,42 @@ function ChatBot() {
         // eslint-disable-next-line
     }, [userState?.user]);
 
-    const chatRef = useRef();
+    const scroll = useRef();
+
     useEffect(() => {
-        socket.on('serverChatMess', (mess) => {
-            chatRef.current.scrollIntoView({
-                behavior: 'smooth',
+        if (time === 2) {
+            scroll?.current.scrollIntoView({
+                behavior: 'auto',
                 block: 'end',
             });
+        }
+    }, [time]);
+
+    useEffect(() => {
+        scroll?.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
         });
+    }, [typingStatus]);
+
+    useEffect(() => {
+        socket.on('serverChatMess', (mess) => {
+            setData([...data, mess]);
+        });
+
+        scroll.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+        });
+
         return () => {
-            socket.off('serverChatMess');
+            socket.off('serverChatMess', (mess) => {
+                setData([...data, mess]);
+            });
         };
+
         // eslint-disable-next-line
-    }, [socket]);
+    }, [socket, data]);
 
     const [focusInput, setFocusInput] = useState(false);
     const inputRef = useRef();
@@ -157,12 +220,14 @@ function ChatBot() {
     return (
         <div className={cx('wrapper')}>
             <div
-                style={{ backgroundImage: 'url(https://chat.zozo.vn/resource/widget.svg)' }}
                 className={cx('icon', toggle && 'hidden')}
                 onClick={() => {
+                    setTime((pre) => pre + 1);
                     setToggle((pre) => !pre);
                 }}
-            />
+            >
+                <img alt="" className={cx('chat-image')} src={images.chatImage}></img>
+            </div>
             <div className={cx('content', toggle && 'show', formShow === 'chat' && 'chat')}>
                 <div className={cx('header')}>
                     {formShow === 'login' ? (
@@ -270,7 +335,7 @@ function ChatBot() {
                         <div className={cx('chat-contain-wrapper')}>
                             {data.map((mess, index) =>
                                 mess.username === 'son' ? (
-                                    <li key={index} className={cx('chat-user')} ref={chatRef}>
+                                    <li key={index} className={cx('chat-user')}>
                                         {mess.message}
                                     </li>
                                 ) : (
@@ -279,6 +344,15 @@ function ChatBot() {
                                     </li>
                                 ),
                             )}
+
+                            {typingStatus !== '' && (
+                                <div className={cx('typing')}>
+                                    <div className={cx('typing__dot')}></div>
+                                    <div className={cx('typing__dot')}></div>
+                                    <div className={cx('typing__dot')}></div>
+                                </div>
+                            )}
+                            <span ref={scroll}></span>
                         </div>
                     </div>
                     <div className={cx('input-group')}>
@@ -286,7 +360,11 @@ function ChatBot() {
                             ref={inputRef}
                             spellCheck={false}
                             onFocus={() => setFocusInput(true)}
-                            onBlur={() => setFocusInput(false)}
+                            onBlur={() => {
+                                handleTypingBlur();
+                                setFocusInput(false);
+                            }}
+                            onKeyDown={(event) => handleTyping(event)}
                             contentEditable={true}
                             className={cx('chat-input')}
                             onInput={(event) => {
@@ -296,7 +374,11 @@ function ChatBot() {
                         {!focusInput && chatMess.length === 0 && <div className={cx('chat-input-lable')}>Aa</div>}
 
                         <div className={cx('input-icon')} onClick={onSubmit}>
-                            <AiOutlineSend />
+                            {chatMess?.trim().length === 0 ? (
+                                <AiOutlineSend className={cx('input-icon-send')} />
+                            ) : (
+                                <AiOutlineSend />
+                            )}
                         </div>
                     </div>
                 </div>

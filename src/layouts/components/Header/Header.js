@@ -6,7 +6,7 @@ import config from '~/config';
 import Search from '../Search';
 import Menu from '~/components/Popper/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faSignOut, faStore } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import authApi from '~/api/auth/auth';
