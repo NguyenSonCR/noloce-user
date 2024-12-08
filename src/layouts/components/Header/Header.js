@@ -7,18 +7,17 @@ import Search from '../Search';
 import Menu from '~/components/Popper/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faSignOut } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import authApi from '~/api/auth/auth';
-import { setAuth } from '~/slices/authSlice';
-import { LOCAL_STORAGE_TOKEN_NAME } from '~/api/constants';
 import useViewport from '~/hooks/useViewport';
 import { BsChevronLeft } from 'react-icons/bs';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 function Header() {
+    const userState = useSelector((state) => state.auth);
     const viewPort = useViewport();
+    const [username, setUsername] = useState(userState?.user?.username);
     const isMobile = viewPort.width < 740;
     const { pathname } = useLocation();
     const navigate = useNavigate();
@@ -36,25 +35,9 @@ function Header() {
             code: 'logout',
         },
     ];
-
-    const dispatch = useDispatch();
     useEffect(() => {
-        authApi
-            .loadUser()
-            .then((data) => {
-                if (data.success) {
-                    dispatch(setAuth({ user: data.user, isAuthenticated: true }));
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
-                dispatch(setAuth({ user: null, isAuthenticated: false }));
-            });
-        // eslint-disable-next-line
-    }, []);
-
-    const userState = useSelector((state) => state.auth);
+        setUsername(userState?.user?.username);
+    }, [userState.user]);
 
     let body = null;
     if (isMobile) {
@@ -78,7 +61,7 @@ function Header() {
                                         <Menu items={userMenu}>
                                             <div className={cx('user')}>
                                                 <img src={images.avatar} alt="user" className={cx('user-img')}></img>
-                                                <span className={cx('user-name')}>{userState.user.username}</span>
+                                                <span className={cx('user-name')}>{username}</span>
                                             </div>
                                         </Menu>
                                     ) : (
@@ -124,7 +107,7 @@ function Header() {
                         {userState.isAuthenticated ? (
                             <Menu items={userMenu} offset={[0, 0]}>
                                 <div className={cx('user')}>
-                                    {userState.user.img ? (
+                                    {userState?.user?.img ? (
                                         <img src={userState.user.img} alt="user" className={cx('user-img')}></img>
                                     ) : (
                                         <div className={cx('user-img-clone')}>

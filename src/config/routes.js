@@ -3,6 +3,7 @@ const routes = {
     search: '/search',
     login: '/login',
     register: '/register',
+    profile: '/profile',
 
     // website
     website: '/website',

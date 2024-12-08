@@ -8,6 +8,7 @@ import Procedure from '~/pages/websites/Procedure';
 import Price from '~/pages/websites/Price';
 import Demo from '~/pages/websites/Demo';
 import Introduce from '~/pages/websites/Introduce';
+import Profile from '~/pages/Profile';
 
 const publicRoutes = [
     // general
@@ -21,7 +22,7 @@ const publicRoutes = [
     { path: config.routes.introduce, component: Introduce },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [{ path: config.routes.profile, component: Profile }];
 
 const nullLayoutRoutes = [
     { path: config.routes.register, component: Register, layout: null },

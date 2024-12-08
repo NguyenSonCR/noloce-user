@@ -2,7 +2,8 @@ import classNames from 'classnames/bind';
 import styles from './Demo.module.scss';
 import Button from '~/components/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark, faSpinner, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import images from '~/assets/img';
 
 const cx = classNames.bind(styles);
 
@@ -79,11 +80,7 @@ function Demo() {
                 <div className={cx(['row no-gutters'])}>
                     <div className={cx(['col', 'l-4', 'c-6', 'm-6'])}>
                         <div className={cx('item')}>
-                            <img
-                                alt=""
-                                className={cx('item-img')}
-                                src="https://theme.websiteviet.vn/files/builder/images/template/thuocnam.jpg"
-                            ></img>
+                            <img alt="" className={cx('item-img')} src={images.cake}></img>
                             <div className={cx('item-action')}>
                                 <Button target href={'https://perfume.noloce.com'} primary>
                                     Xem thử
@@ -94,11 +91,7 @@ function Demo() {
                     </div>
                     <div className={cx(['col', 'l-4', 'c-6', 'm-6'])}>
                         <div className={cx('item')}>
-                            <img
-                                alt=""
-                                className={cx('item-img')}
-                                src="https://theme.websiteviet.vn/files/builder/images/template/thuocnam.jpg"
-                            ></img>
+                            <img alt="" className={cx('item-img')} src={images.cake}></img>
                             <div className={cx('item-action')}>
                                 <Button target href={'https://perfume.noloce.com'} primary>
                                     Xem thử
@@ -109,11 +102,7 @@ function Demo() {
                     </div>
                     <div className={cx(['col', 'l-4', 'c-6', 'm-6'])}>
                         <div className={cx('item')}>
-                            <img
-                                alt=""
-                                className={cx('item-img')}
-                                src="https://theme.websiteviet.vn/files/builder/images/template/thuocnam.jpg"
-                            ></img>
+                            <img alt="" className={cx('item-img')} src={images.cake}></img>
                             <div className={cx('item-action')}>
                                 <Button target href={'https://perfume.noloce.com'} primary>
                                     Xem thử

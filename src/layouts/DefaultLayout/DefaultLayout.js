@@ -6,7 +6,6 @@ import useViewport from '~/hooks/useViewport';
 import NaviMobi from '~/layouts/components/NaviMobi';
 import Footer from '~/layouts/components/Footer';
 import { Outlet } from 'react-router-dom';
-import ChatBot from '~/layouts/components/ChatBot';
 
 const cx = classNames.bind(styles);
 
@@ -32,7 +31,6 @@ function DefaultLayout() {
                         </div>
                     </div>
                     <NaviMobi />
-                    <ChatBot />
                 </div>
             </div>
         );
@@ -61,7 +59,6 @@ function DefaultLayout() {
                     </div>
                 </div>
                 <Footer />
-                <ChatBot />
             </div>
         );
     }

@@ -1,0 +1,112 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.header-icon {
+    padding: 8px;
+    cursor: pointer;
+    :hover {
+        color: var(--primary-color);
+    }
+}
+.secsion {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    margin-top: 10px;
+}
+
+.secsion-text {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 1.4rem;
+    padding: 0 4px;
+}
+
+.social {
+    padding: 12px;
+    p {
+        color: var(--text-color);
+        font-weight: 400;
+        font-size: 1.4rem;
+        text-align: center;
+    }
+}
+
+.social-icon {
+    color: var(--primary-color);
+    font-weight: 400;
+    font-size: 2.4rem;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+// form login
+.header-login {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form {
+    margin-top: 12px;
+    padding: 0 24px;
+}
+
+.form-input-group {
+    position: relative;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-input {
+    position: relative;
+    width: 100%;
+    outline: none;
+    border: 1px solid var(--border-color);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--text-color);
+    padding: 8px 8px 8px 24px;
+    border-radius: 4px;
+    caret-color: var(--primary-color);
+    &:focus {
+        border-color: var(--primary-color);
+    }
+}
+
+.form-validate {
+    font-weight: 300;
+    font-size: 1.4rem;
+    color: var(--error-color);
+}
+
+.form-icon {
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--text-color);
+}
+
+.action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

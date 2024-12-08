@@ -1,89 +1,80 @@
-.title {
-    text-align: center;
-    margin-top: 24px;
-    padding: 12px 4px;
-    font-size: 2rem;
-    font-weight: 400;
-    color: var(--text-color);
+.banner {
+    height: 260px;
+    position: relative;
 }
-
-.wrapper {
-    padding: 0 12px;
-}
-
-.text {
-    padding: 12px 4px;
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--text-color);
-}
-
-.avatar {
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
+.banner-img {
+    height: 100%;
     object-fit: cover;
+    width: 100%;
+    border-radius: 16px;
 }
 
-.label-avatar {
-    margin: 12px 0;
+.banner-user {
+    align-items: flex-end;
+    bottom: -70px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    width: 80px;
-    height: 80px;
-    border: 1px dotted #ccc;
+    left: 40px;
+    position: absolute;
+    z-index: 1;
 }
 
-.label-avatar span {
-    text-align: center;
+.user-img {
+    border-radius: 50%;
+    height: 9em;
+    object-fit: cover;
+    width: 9em;
+    border: 1px solid var(--border-color);
+    box-shadow: 2px 2px 2px rgba($color: #000000, $alpha: 0.1);
 }
 
-.choose-avatar {
-    padding: 4px;
-    font-size: 1.6rem;
-    font-weight: 400;
+.user-name {
+    font-weight: 500;
+    font-size: 2rem;
     color: var(--primary-color);
 }
-.model {
-    padding: 12px 0;
-    width: 50vh;
+
+.container {
+    margin-top: 100px;
+    padding: 0px 24px;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
+.introduce,
+.service {
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    margin-bottom: 20px;
+    padding: 18px 14px;
 }
-.form-label {
+
+.introduce-header {
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    line-height: 2rem;
     padding: 8px;
-    font-size: 1.6rem;
-    font-weight: 400;
-    color: var(--text-color);
 }
 
-.form-input {
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    font-size: 1.6rem;
+.introduce-text {
     font-weight: 400;
+    font-size: 1.6rem;
     color: var(--text-color);
-    &:focus {
-        border-color: var(--primary-color);
+    line-height: 2rem;
+    padding: 6px;
+}
+
+.service {
+    list-style: none;
+    margin: 0;
+}
+
+.service-item {
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: var(--text-color);
+    line-height: 2rem;
+    padding: 8px;
+    &:hover {
+        color: var(--primary-color);
+        cursor: pointer;
     }
-}
-
-.form-btn {
-    margin-top: 12px;
-}
-
-.back {
-    margin-right: 12px;
-}
-
-.form-warning {
-    font-size: 1.4rem;
-    font-weight: 300;
-    color: red;
-    padding: 4px;
 }

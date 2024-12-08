@@ -1,3 +1,6 @@
+.wrapper {
+    padding: 0 48px;
+}
 .concept-header {
     font-size: 2.2rem;
     font-weight: 400;
@@ -90,6 +93,13 @@
 
 .concept_2 {
     margin-bottom: 48px;
+    margin: 0 90px 48px 90px;
+    box-shadow: 0 12px 18px -6px rgba(0, 0, 0, 0.12);
+    padding: 32px 64px;
+}
+
+.concept_2-content {
+    margin-bottom: 24px;
 }
 
 .concept_2-header {

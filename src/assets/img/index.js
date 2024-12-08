@@ -30,5 +30,7 @@ const images = {
     onlineShopping: require('~/assets/img/online-shopping.png'),
     newsPaper: require('~/assets/img/newspaper.png'),
     feature: require('~/assets/img/feature.png'),
+    userProfile: require('~/assets/img/user_profile.jpg'),
+    cake: require('~/assets/img/cake.png'),
 };
 export default images;

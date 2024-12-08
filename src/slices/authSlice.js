@@ -4,6 +4,8 @@ const initialState = {
     user: null,
     isAuthenticated: false,
     isLoading: true,
+    formShow: 'icon',
+    scrolling: false,
 };
 
 export const authSlice = createSlice({
@@ -20,9 +22,24 @@ export const authSlice = createSlice({
             state.isAuthenticated = false;
             state.isLoading = false;
         },
+
+        addMessage: (state, action) => {
+            state.user = {
+                ...state.user,
+                message: [...state.user.message, action.payload],
+            };
+        },
+
+        updatedUser: (state, action) => {
+            state.user = action.payload;
+        },
+
+        setFormShow: (state, action) => {
+            state.formShow = action.payload;
+        },
     },
 });
 
-export const { setAuth, logoutUser } = authSlice.actions;
+export const { setAuth, logoutUser, addMessage, updatedUser, setFormShow } = authSlice.actions;
 
 export default authSlice.reducer;
